@@ -1,6 +1,7 @@
 import styles from "./page.module.css";
 
 export default function Home() {
+  console.log('***********************\n***** CLUSTER APP *****\n*** @2025 unexcoder ***\n***********************');
   return (
     <div className={styles.page}>
       <main className={styles.main}>
