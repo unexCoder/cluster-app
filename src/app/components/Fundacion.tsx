@@ -7,8 +7,8 @@ export default function Fundacion() {
             <div className={`${styles.intro} ${styles.first}`}>
                 <p>
                     <span className={styles.cluster}>CLUSTER</span> es un festival que reúne a las industrias creativas locales y regionales 
-                    con el objetivo de compartir proyectos culturales de base tecnológica, conocimiento,
-                    experiencias e innovación digital.
+                    con el objetivo de compartir proyectos culturales de base tecnológica, conocimiento y
+                    experiencias en innovación digital
                 </p>
             </div>
 
@@ -22,7 +22,7 @@ export default function Fundacion() {
                 <p>
                     El propósito del festival <span className={styles.cluster}>CLUSTER</span> es crear un polo de convergencia orientado a visibilizar y estimular el 
                     desarrollo de estas actividades y recursos fundamentalmente en las ciudades de Funes y Roldán y
-                    su área de influencia.
+                    su área de influencia
                 </p>
             </div>
 
@@ -37,7 +37,7 @@ export default function Fundacion() {
                 <p>
                     <span className={styles.cluster}>CLUSTER</span> propone un espacio de encuentro y estimulo que permite vincular a los artistas y creativos
                     digitales con las empresas y negocios de base tecnologica en la región, al tiempo que ofrece para la 
-                    ciudad un evento cultural y didactico, innovador y de calidad.
+                    ciudad un evento cultural y didactico, innovador y de calidad
                 </p>
             </div>
 
