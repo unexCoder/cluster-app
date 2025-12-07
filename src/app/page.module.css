@@ -1,9 +1,9 @@
 .page {
-  --background: #fafafa;
-  --foreground: #fff;
+  --foreground: #d16014;
+  --background: #313715;
 
-  --text-primary: #000;
-  --text-secondary: #666;
+  --text-primary: #f5e6d3;
+  --text-secondary: #e8d4b8;
 
   --button-primary-hover: #383838;
   --button-secondary-hover: #f2f2f2;
@@ -14,7 +14,6 @@
   align-items: center;
   justify-content: center;
   font-family: var(--font-geist-sans);
-  background-color: var(--background);
 }
 
 .main {
@@ -27,6 +26,7 @@
   /* justify-content: space-between; */
   /* padding: 120px 60px; */
   background-color: var(--foreground);
+  color: var(--text-primary);
 }
 
 a.primary {
@@ -65,11 +65,11 @@ a.secondary {
   }
 
   .page {
-    --background: #000;
-    --foreground: #000;
+    --background: #d16014;
+    --foreground: #313715;
 
-    --text-primary: #ededed;
-    --text-secondary: #999;
+    --text-primary: #f5e6d3;
+    --text-secondary: #e8d4b8;
 
     --button-primary-hover: #ccc;
     --button-secondary-hover: #1a1a1a;

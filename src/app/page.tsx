@@ -1,5 +1,5 @@
+import Fundacion from "./components/Fundacion";
 import styles from "./page.module.css";
-import ImageLoad from "./components/ImageLoad";
 
 export default async function Home() {
   'use server'
@@ -7,10 +7,7 @@ export default async function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-          <h1>CLUSTER</h1>
-          <p>Festival Tecnológico</p>
-          <p>Encuentro de creatividad y transformacion digital</p>
-          <ImageLoad></ImageLoad>
+        <Fundacion/>
       </main>
     </div>
   );

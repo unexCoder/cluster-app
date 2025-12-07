@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Rubik, Sanchez } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Rubik, Rubik_80s_Fade, Rubik_Dirt, Sanchez } from "next/font/google";
 import "./globals.css";
+import Footer from "./components/Footer";
 
 const sanchez = Sanchez({
   variable: "--font-sanchez",
@@ -8,7 +9,7 @@ const sanchez = Sanchez({
   weight: "400"
 });
 
-const rubik = Rubik({
+const inter = Inter({
   variable: "--font-rubik",
   subsets: ["latin"],
 });
@@ -35,16 +36,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={rubik.className}>
+      <body className={inter.className}>
       {/* <body className={`${geistSans.variable} ${geistMono.variable}`}> */}
         <header>
           <p>@header</p>
         </header>
-          <p>@main</p>
         {children}
-        <footer>
-          <p>@footer</p>
-        </footer>
+        <Footer/>
       </body>
     </html>
   );
