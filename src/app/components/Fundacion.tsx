@@ -29,7 +29,7 @@ export default function Fundacion() {
             <div className={`${styles.intro} ${styles.four}`}>
                 <p>
                     La agenda del festival <span className={styles.cluster}>CLUSTER</span> contempla la realización de conciertos y recitales audiovisuales, 
-                    exposiciones de arte y tecnología, workshops y talleres, mesas de debate y rondas de negocio.
+                    exposiciones de arte y tecnología, workshops y talleres, mesas de debate y rondas de negocio
                 </p>
             </div>
 
