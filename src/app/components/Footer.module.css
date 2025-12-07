@@ -1,3 +1,64 @@
 .foot {
-    min-height: 50svh;
+    min-height: 60svh;
+}
+
+.footerContainer {
+    padding: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    height: 100%;
+    line-height: 2.2rem;
+}
+
+.footerContainer h3 {
+    font-size: 0.9rem;
+}
+
+.footerContainer li {
+    font-size: 1.2rem;
+}
+
+.bottomFooter {
+    text-align: center;
+    padding: 100px 20svw 0 20svw;
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+}
+
+.hooverTxt {
+    text-align: center;
+    position: relative;
+}
+
+.originalTxt {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.newTxt {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.hooverTxt:hover .originalTxt {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+.hooverTxt:hover .newTxt {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.decorated {
+    text-decoration: underline;
 }

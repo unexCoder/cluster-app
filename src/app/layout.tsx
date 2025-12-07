@@ -38,9 +38,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
       {/* <body className={`${geistSans.variable} ${geistMono.variable}`}> */}
-        <header>
+        {/* <header>
           <p>@header</p>
-        </header>
+        </header> */}
         {children}
         <Footer/>
       </body>

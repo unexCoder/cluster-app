@@ -4,10 +4,6 @@ import styles from './Fundacion.module.css'
 export default function Fundacion() {
     return (
         <div>         
-            <h1>CLUSTER</h1>
-            <h2>Festival Tecnológico</h2>
-            <h2>Encuentro de creatividad y transformacion digital</h2>
-
             <div className={`${styles.intro} ${styles.first}`}>
                 <p>
                     <span className={styles.cluster}>CLUSTER</span> es un festival que reúne a las industrias creativas locales y regionales 

@@ -1,0 +1,18 @@
+.cover {
+    min-height: 100svh;
+    width: 100svw;
+    background-color: var(--background);
+    color: var(--foreground);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    text-align: right;
+    padding: 0 30px 30px 0;
+}
+
+.cover h1 {
+    font-size: 5rem;
+}
+.cover h2 {
+    font-size: 2.25rem;
+}

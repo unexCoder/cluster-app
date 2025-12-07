@@ -1,10 +1,64 @@
 import React from 'react'
 import styles from './Footer.module.css';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
     <footer className={styles.foot}>
-        <p>@footer</p>
+        <div className={styles.footerContainer}>
+          <div>
+            <h3>Edición 2026</h3>
+            <ul>
+              <li>Festival</li>
+              <li>Tickets</li>
+              <li>Prensa</li>
+              <li>Sponsors</li>
+              <li>FAQ</li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3>Unite a Cluster</h3>
+            <ul>
+              <li>Empleos</li>
+              <li>Voluntariado</li>
+              <li>Asociate</li>
+              <li>Colabora</li>
+              <li>Network</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3>Acerca de</h3>
+            <ul>
+              <li>Accesibilidad</li>
+              <li>Compromiso Ambiental</li>
+              <li>Contacto y equipo</li>
+              <li>Ediciones previas</li>
+              <li>Misión</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3>Redes Sociales</h3>
+            <ul>
+              <li>Instagram</li>
+              <li>X</li>
+              <li>Facebook</li>
+              <li>YouTube</li>
+            </ul>
+          </div>
+        </div>
+          <div className={styles.bottomFooter}>
+            <p>© 2025 CLUSTER All rights reserved</p>
+            <p className={styles.decorated}>Privacy</p>
+            <p className={styles.decorated}>Terms</p>
+            <div className={styles.hooverTxt}>
+              <span className={styles.originalTxt}>Credits</span>
+              <span className={styles.newTxt}> <Link href={'https://www.unexcoder.com.ar/'} target={'blank'}>\unexCoder</Link></span>
+            </div>
+
+          </div>
     </footer>
   )
 }
