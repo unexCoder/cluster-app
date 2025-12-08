@@ -77,4 +77,8 @@
     .footerContainer ul {
         padding-bottom: 20px;
     }
+
+    .decorated {
+        max-width: 80px;
+    }
 }

@@ -44,8 +44,8 @@
 }
 
 .chapter {
-    background-color: var(--text-primary);
-    color: var(--foreground);
+    background-color: var(--text-secondary);
+    color: var(--background);
     font-size: 2rem;
     line-height: 1.1;
     padding: 20px;
