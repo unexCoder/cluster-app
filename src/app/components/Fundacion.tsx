@@ -35,7 +35,7 @@ export default function Fundacion() {
 
             <div className={`${styles.intro} ${styles.five}`}>
                 <p>
-                    <span className={styles.cluster}>CLUSTER</span> propone un espacio de encuentro y estimulo que permite vincular a los artistas y creativos
+                    <span className={styles.cluster}>CLUSTER</span> propone un espacio de encuentro y estímulo que permite vincular a los artistas y creativos
                     digitales con las empresas y negocios de base tecnologica en la región, al tiempo que ofrece para la 
                     ciudad un evento cultural y didactico, innovador y de calidad
                 </p>

@@ -51,13 +51,12 @@ export default function Footer() {
         </div>
           <div className={styles.bottomFooter}>
             <p>© 2025 CLUSTER All rights reserved</p>
-            <p className={styles.decorated}>Privacy</p>
-            <p className={styles.decorated}>Terms</p>
+            <p className={styles.decorated}>Política de privacidad</p>
+            <p className={styles.decorated}>Términos y condiciones</p>
             <div className={styles.hooverTxt}>
-              <span className={styles.originalTxt}>Credits</span>
+              <span className={styles.originalTxt}>Creditos</span>
               <span className={styles.newTxt}> <Link href={'https://www.unexcoder.com.ar/'} target={'blank'}>\unexCoder</Link></span>
             </div>
-
           </div>
     </footer>
   )
