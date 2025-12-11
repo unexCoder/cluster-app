@@ -1,9 +1,9 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo, useRef, useEffect } from 'react'
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from 'three';
 
 export default function GaussianCluster() {
-    const state = useThree();
+    // const state = useThree();
     // console.log(state)
 
     const groupRef = useRef<THREE.Group>(null!)
@@ -62,7 +62,8 @@ export default function GaussianCluster() {
             opacity: 10.6,
             side: THREE.DoubleSide,
             metalness: 0.3,
-            roughness: 0.7
+            roughness: 0.7,
+            // blending: THREE.AdditiveBlending
         });
         
         centerPoints.forEach(center => {
@@ -119,6 +120,18 @@ export default function GaussianCluster() {
         groupRef.current.rotation.x += 0.0003;
         groupRef.current.rotation.y += 0.0005;
     })
+
+    // Add cleanup
+    useEffect(() => {
+        return () => {
+            clusterGroup.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                    child.geometry.dispose();
+                    child.material.dispose();
+                }
+            });
+        };
+    }, [clusterGroup]);
 
     return (
         <>

@@ -3,7 +3,19 @@ import styles from './Fundacion.module.css'
 
 export default function Fundacion() {
     return (
-        <div>         
+        <div> 
+            {/* Improve SEO Structure
+            Add schema.org structured data */}
+            <script type="application/ld+json">
+                {JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "Event",
+                    "name": "CLUSTER Festival",
+                    "description": "Festival Tecnológico",
+                    "startDate": "2026",
+                })}
+            </script>
+            
             <div className={`${styles.intro} ${styles.first}`}>
                 <p>
                     <span className={styles.cluster}>CLUSTER</span> es un festival que reúne a las industrias creativas locales y regionales 

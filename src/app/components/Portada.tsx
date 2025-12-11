@@ -2,12 +2,15 @@
 import React, { use } from 'react'
 import styles from './Portada.module.css'
 import ClusterScene from '../scenes/ClusterScene'
+import ErrorBoundary from '../error/ErrorBoundary'
 
 export default function Portada() {
   return (
     <div className={styles.cover}>
       <div className={styles.canvasContainer}>
-        <ClusterScene/>
+        <ErrorBoundary fallback={<div>3D failed to load</div>}>
+          <ClusterScene/>
+        </ErrorBoundary>
       </div>
       <div className={styles.textContainer}>
         <h1>CLUSTER</h1>
