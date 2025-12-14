@@ -40,12 +40,14 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-
 # local test code & files
 /src/app/api/hello/
 /src/app/components/ImageLoad.tsx
 /src/app/api/users
 /src/app/api/search
 
-clusterDB.sql
-PROJECT_ANALYSIS.md
+# data layer
+/database
+
+# dev docs
+/PROJECT_ANALYSIS.md

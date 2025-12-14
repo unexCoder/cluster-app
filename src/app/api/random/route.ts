@@ -1,4 +1,4 @@
-import { generateCryptoToken } from '@/app/utils/CryptoToken';
+import { generateCryptoToken } from '@/app/utils/cryptoToken';
 import { randomUUID } from 'crypto';
 
 // GET /api/random/uuid
@@ -22,7 +22,7 @@ export async function GET(request: { url: string | URL; }) {
   }
 }
 
-
+// legacy code
 // Using the uuid package (most common)
 // This works everywhere and is the most popular choice:
 // npm install uuid
@@ -35,9 +35,7 @@ export async function GET(request: { url: string | URL; }) {
 //   })
 // }
 
-
 // export async function GET() {
-// 'use server'
 //   return Response.json({
 //     randomNumber: Math.random(),
 //   })

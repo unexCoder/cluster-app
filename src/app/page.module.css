@@ -1,9 +1,11 @@
 .page {
-  --foreground: #d16014;
-  --background: #313715;
+  /* --foreground: #d16014;
+  --background: #313715; */
+  --foreground: #c30f45;
+  --background: #231123;
 
-  --text-primary: #f5e6d3;
-  --text-secondary: #e8d4b8;
+  --text-primary: #D8DDDE;
+  --text-secondary: #CFCBCA;
 
   --button-primary-hover: #383838;
   --button-secondary-hover: #f2f2f2;
@@ -59,16 +61,18 @@ a.secondary {
 }
 
 @media (prefers-color-scheme: light) {
-  .logo {
+  /* .logo {
     filter: invert();
-  }
+  } */
 
   .page {
-    --background: #d16014;
-    --foreground: #313715;
+    /* --background: #d16014;
+    --foreground: #313715; */
+    --background: #c30f45;
+    --foreground: #231123;
 
-    --text-primary: #f5e6d3;
-    --text-secondary: #e8d4b8;
+    --text-primary: #D8DDDE;
+    --text-secondary: #CFCBCA;
 
     --button-primary-hover: #ccc;
     --button-secondary-hover: #1a1a1a;

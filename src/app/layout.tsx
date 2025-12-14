@@ -1,28 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter, Rubik, Rubik_80s_Fade, Rubik_Dirt, Sanchez } from "next/font/google";
+import {  DM_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import Footer from "./components/Footer";
-
-const sanchez = Sanchez({
-  variable: "--font-sanchez",
-  subsets: ["latin"],
-  weight: "400"
-});
+import { montreal } from "./fonts";
 
 const inter = Inter({
   variable: "--font-rubik",
   subsets: ["latin"],
 });
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const dm = DM_Sans({
+  variable: "--font-dm",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Cluster Festival",
@@ -36,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={montreal.className}>
       {/* <body className={`${geistSans.variable} ${geistMono.variable}`}> */}
         {/* <header>
           <p>@header</p>

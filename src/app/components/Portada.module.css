@@ -20,6 +20,7 @@
     text-align: right;
     pointer-events: none; /* Allows clicks to pass through */
     padding-right: 20px;
+    font-style: bold;
 }
 
 .textContainer h1 {
