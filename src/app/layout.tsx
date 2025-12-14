@@ -1,19 +1,13 @@
 import type { Metadata } from "next";
-import {  DM_Sans, Inter } from "next/font/google";
+import {  Inter } from "next/font/google";
 import "./globals.css";
 import Footer from "./components/Footer";
 import { montreal } from "./fonts";
 
 const inter = Inter({
-  variable: "--font-rubik",
+  variable: "--font-inter",
   subsets: ["latin"],
 });
-
-const dm = DM_Sans({
-  variable: "--font-dm",
-  subsets: ["latin"],
-});
-
 
 export const metadata: Metadata = {
   title: "Cluster Festival",
@@ -27,8 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={montreal.className}>
-      {/* <body className={`${geistSans.variable} ${geistMono.variable}`}> */}
+      <body className={montreal.className}> {/* className={`${inter.variable} ${montreal.className}`} */}         
         {/* <header>
           <p>@header</p>
         </header> */}

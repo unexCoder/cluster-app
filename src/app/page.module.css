@@ -3,6 +3,8 @@
   --background: #313715; */
   --foreground: #c30f45;
   --background: #231123;
+  /* --foreground-secondary: #CCFF66;
+  --background-secondary: #2EC4B6; */
 
   --text-primary: #D8DDDE;
   --text-secondary: #CFCBCA;
@@ -15,7 +17,7 @@
   min-height: 100vh;
   /* align-items: center; */
   /* justify-content: center; */
-  font-family: var(--font-geist-sans);
+  font-family: var(--font-montreal);
 }
 
 .main {
@@ -70,6 +72,8 @@ a.secondary {
     --foreground: #313715; */
     --background: #c30f45;
     --foreground: #231123;
+    --background-secondary: #CCFF66;
+    --foreground-secondary: #2EC4B6;
 
     --text-primary: #D8DDDE;
     --text-secondary: #CFCBCA;
