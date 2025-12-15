@@ -1,5 +1,5 @@
-import Fundacion from "./components/Fundacion";
-import Portada from "./components/Portada";
+import Fundacion from "../components/Fundacion";
+import Portada from "../components/Portada";
 import styles from "./page.module.css";
 
 export default async function Home() {

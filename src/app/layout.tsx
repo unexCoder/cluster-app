@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import {  Inter } from "next/font/google";
 import "./globals.css";
-import Footer from "./components/Footer";
 import { montreal } from "./fonts";
 import { SessionProvider } from "next-auth/react"
 
@@ -22,14 +21,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={montreal.className}> {/* className={`${inter.variable} ${montreal.className}`} */}         
-        {/* <header>
-          <p>@header</p>
-        </header> */}
+      <body className={montreal.className}> {/* className={`${inter.variable} ${montreal.className}`} */}
         <SessionProvider>
           {children}
         </SessionProvider>
-        <Footer/>
       </body>
     </html>
   );
