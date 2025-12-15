@@ -6,6 +6,7 @@ export default function page() {
     <div className={styles.page}>
       <main className={styles.main}>
         <h1>Microcluster home</h1>
+        <h2>Plataforma de creatividad tecnológica</h2>
       </main>
     </div>
   )

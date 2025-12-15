@@ -1,0 +1,69 @@
+.mainContainer {
+  /* --foreground: #d16014;
+  --background: #313715; */
+  --foreground: #c30f45;
+  --background: #231123;
+  /* --foreground-secondary: #CCFF66;
+  --background-secondary: #2EC4B6; */
+
+  --text-primary: #D8DDDE;
+  --text-secondary: #CFCBCA;
+
+  --button-primary-hover: #383838;
+  --button-secondary-hover: #f2f2f2;
+  --button-secondary-border: #ebebeb;
+
+  /* display: flex; */
+  max-height: 100svh;
+  /* align-items: center; */
+  /* justify-content: center; */
+  font-family: var(--font-montreal);
+}
+
+.loginContainer {
+  max-width: 400px;
+  margin: 200px auto; 
+  padding: 20px; 
+  background-color:var(--background);
+  color:var(--foreground);
+}
+
+.inputContainer {
+  margin-bottom: 15px;
+}
+
+.input {
+  width:100%;
+  padding:8px;
+}
+
+.errorMsg {
+  color: red;
+}
+
+.submitBtn {
+  width:100%;
+  padding: 10px;
+}
+
+@media (prefers-color-scheme: light) {
+  /* .logo {
+    filter: invert();
+  } */
+
+  .mainContainer {
+    /* --background: #d16014;
+    --foreground: #313715; */
+    --background: #c30f45;
+    --foreground: #231123;
+    --background-secondary: #CCFF66;
+    --foreground-secondary: #2EC4B6;
+
+    --text-primary: #D8DDDE;
+    --text-secondary: #CFCBCA;
+
+    --button-primary-hover: #ccc;
+    --button-secondary-hover: #1a1a1a;
+    --button-secondary-border: #1a1a1a;
+  }
+}

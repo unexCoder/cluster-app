@@ -25,7 +25,7 @@ export default function DashboardPage() {
         onClick={() => signOut({ redirect: true, redirectTo: "/login" })}
         style={{
           padding: "10px 20px",
-          backgroundColor: "#ff6b6b",
+          backgroundColor: "#c30f45",
           color: "white",
           border: "none",
           cursor: "pointer"

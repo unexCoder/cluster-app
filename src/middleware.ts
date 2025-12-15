@@ -12,7 +12,6 @@ export const config = {
     // Protect these routes
     "/dashboard/:path*",
     "/events/:path*",
-    "/microcluster/:path*"
     // Don't protect: /, /login, /api/auth/*
   ]
 }
