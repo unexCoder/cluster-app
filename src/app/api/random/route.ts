@@ -13,7 +13,7 @@ export async function GET(request: { url: string | URL; }) {
       return Response.json({ float: Math.random() });
     case 'token':
       const token = generateCryptoToken("TICKET-12345");
-      return Response.json({ token: token });
+      return Response.json({ token: token, generatedAt: new Date( Date.now()).toString() });
     default:
       return Response.json({
         message: 'Random API',

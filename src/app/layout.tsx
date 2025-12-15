@@ -3,6 +3,7 @@ import {  Inter } from "next/font/google";
 import "./globals.css";
 import Footer from "./components/Footer";
 import { montreal } from "./fonts";
+import { SessionProvider } from "next-auth/react"
 
 const inter = Inter({
   variable: "--font-inter",
@@ -25,7 +26,9 @@ export default function RootLayout({
         {/* <header>
           <p>@header</p>
         </header> */}
-        {children}
+        <SessionProvider>
+          {children}
+        </SessionProvider>
         <Footer/>
       </body>
     </html>
