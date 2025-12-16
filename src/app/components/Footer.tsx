@@ -1,10 +1,15 @@
+'use client'
 import React from 'react'
 import styles from './Footer.module.css';
 import Link from 'next/link';
+import NewsletterSubscription from './NewsletterSuscription';
 
 export default function Footer() {
   return (
     <footer className={styles.foot}>
+        <div className={styles.suscriptContainer}>
+          <NewsletterSubscription />
+        </div>
         <div className={styles.footerContainer}>
           <div>
             <h3>Edición 2026</h3>
