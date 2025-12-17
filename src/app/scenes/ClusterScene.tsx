@@ -7,7 +7,11 @@ import Loading from '../loading';
 // Memoize renderer creation
 const webgpuRendererPromise = createWebGPURenderer;
 
-export default function ClusterScene() {
+interface ClusterSceneProps {
+    clusterPosition?: [number, number, number];
+}
+
+export default function ClusterScene({ clusterPosition }: ClusterSceneProps) {
     return (
         <div style={{ width: '100vw', height: '100vh' }}>
             <Canvas
@@ -20,7 +24,7 @@ export default function ClusterScene() {
                 }}
                 frameloop='always'>
                 <Suspense fallback={<Loading/>}>
-                    <GaussianCluster />
+                    <GaussianCluster position={clusterPosition} />
                 </Suspense>
             </Canvas>
         </div>
