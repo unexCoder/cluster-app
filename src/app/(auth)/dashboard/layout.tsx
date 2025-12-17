@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Red Cluster | Login",
-  description: "Login page",
+  title: "Red Cluster | Dashboard",
+  description: "Dashboard page",
 };
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {

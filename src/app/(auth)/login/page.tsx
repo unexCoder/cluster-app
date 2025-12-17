@@ -3,6 +3,7 @@ import styles from './page.module.css'
 import { signIn } from "next-auth/react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { Metadata } from 'next'
 
 export default function LoginPage() {
     const [email, setEmail] = useState("")
