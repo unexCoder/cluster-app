@@ -2,7 +2,11 @@ import React, { useMemo, useRef, useEffect } from 'react'
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from 'three';
 
-export default function GaussianCluster() {
+interface GaussianClusterProps {
+    position?: [number, number, number];
+}
+
+export default function GaussianCluster({ position = [-30, 30, 0] }: GaussianClusterProps) {
     // const state = useThree();
     // console.log(state)
 
@@ -111,7 +115,7 @@ export default function GaussianCluster() {
         
         // Translate to upper left
         // Negative X = left, Positive Y = up, Negative Z = forward
-        group.position.set(-30, 30, 0);
+        group.position.set(position[0], position[1], position[2]);
         
         return group;
     }, [])
@@ -147,7 +151,7 @@ export default function GaussianCluster() {
     )
 }
 
-// prev code
+// legacy code
 // import React, { useMemo, useRef } from 'react'
 // import { useFrame, useThree } from "@react-three/fiber";
 // import * as THREE from 'three';
