@@ -1,8 +1,9 @@
 import { generateCryptoToken } from '@/app/utils/cryptoToken';
 import { randomUUID } from 'crypto';
+import { NextRequest } from 'next/server';
 
 // GET /api/random/uuid
-export async function GET(request: { url: string | URL; }) {
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const type = searchParams.get('type'); // e.g., /api/random?type=uuid
 
@@ -13,7 +14,7 @@ export async function GET(request: { url: string | URL; }) {
       return Response.json({ float: Math.random() });
     case 'token':
       const token = generateCryptoToken("TICKET-12345");
-      return Response.json({ token: token, generatedAt: new Date( Date.now()).toString() });
+      return Response.json({ token: token, generatedAt: new Date(Date.now()).toString() });
     default:
       return Response.json({
         message: 'Random API',
