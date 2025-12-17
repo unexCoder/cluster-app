@@ -1,5 +1,3 @@
-'use client'  
-import React, { use } from 'react'
 import styles from './PortadaMicro.module.css'
 import ClusterScene from '../scenes/ClusterScene'
 import ErrorBoundary from '../../error/ErrorBoundary'
@@ -16,7 +14,6 @@ export default function Portada() {
         <h1>microCluster</h1>
         <h2>Plataforma de creatividad tecnológica</h2>
       </div>
-
     </div>
   )
 }

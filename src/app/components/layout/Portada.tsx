@@ -1,5 +1,3 @@
-'use client'  
-import React, { use } from 'react'
 import styles from './Portada.module.css'
 import ClusterScene from '../scenes/ClusterScene'
 import ErrorBoundary from '../../error/ErrorBoundary'
@@ -19,7 +17,6 @@ export default function Portada() {
           <h2>Encuentro de creatividad y transformación digital</h2>
         </div>
       </div>
-
     </div>
   )
 }

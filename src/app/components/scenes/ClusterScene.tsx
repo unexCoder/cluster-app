@@ -1,7 +1,8 @@
+'use client'  
 import React, { Suspense } from 'react'
 import { Canvas } from "@react-three/fiber";
 import { createWebGPURenderer } from '../../renderer/createWebGPURenderer';
-import GaussianCluster from '../threeD/GaussianCluster';
+import GaussianCluster from './3dObjects/GaussianCluster';
 import Loading from '../../loading';
 
 // Memoize renderer creation
