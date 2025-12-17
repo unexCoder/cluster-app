@@ -1,48 +1,43 @@
-import Link from 'next/link';
-// import { XCircle, Clock, AlertCircle } from 'lucide-react';
+import Link from "next/link";
 
-export default function NewsletterError({
+export default async function NewsletterError({
   searchParams,
 }: {
-  searchParams: { reason?: string };
+  searchParams: Promise<{ reason?: string }>;
 }) {
-  const reason = searchParams.reason || 'unknown';
+  // Await the entire searchParams object first
+  const { reason } = await searchParams;
+  const errorReason = reason || 'unknown';
 
   const errorMessages = {
     invalid_token: {
       title: 'Token Inválido',
       message: 'El enlace de confirmación no es válido. Por favor, verifica que hayas copiado la URL completa.',
-    //   icon: XCircle,
       color: 'red',
     },
     not_found: {
       title: 'Token No Encontrado',
       message: 'No pudimos encontrar tu solicitud de suscripción. Es posible que ya hayas confirmado tu email.',
-    //   icon: AlertCircle,
       color: 'yellow',
     },
     expired: {
       title: 'Token Expirado',
       message: 'El enlace de confirmación ha expirado. Los enlaces son válidos por 24 horas. Por favor, suscríbete nuevamente.',
-    //   icon: Clock,
       color: 'orange',
     },
     server_error: {
       title: 'Error del Servidor',
       message: 'Ocurrió un error al procesar tu solicitud. Por favor, intenta nuevamente más tarde.',
-    //   icon: XCircle,
       color: 'red',
     },
     unknown: {
       title: 'Error Desconocido',
       message: 'Algo salió mal. Por favor, intenta nuevamente o contáctanos si el problema persiste.',
-    //   icon: AlertCircle,
       color: 'gray',
     },
   };
 
-  const error = errorMessages[reason as keyof typeof errorMessages] || errorMessages.unknown;
-//   const Icon = error.icon;
+  const error = errorMessages[errorReason as keyof typeof errorMessages] || errorMessages.unknown;
 
   const colorClasses = {
     red: {
@@ -96,7 +91,7 @@ export default function NewsletterError({
             Volver al inicio
           </Link>
           
-          {(reason === 'expired' || reason === 'not_found') && (
+          {(errorReason === 'expired' || errorReason === 'not_found') && (
             <Link
               href="/#newsletter"
               className="inline-block w-full bg-white hover:bg-gray-50 text-gray-700 font-semibold py-3 px-6 rounded-lg border-2 border-gray-200 transition duration-200"
