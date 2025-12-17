@@ -1,0 +1,85 @@
+.page {
+  /* --foreground: #d16014;
+  --background: #313715; */
+  --foreground: #c30f45;
+  --background: #231123;
+  /* --foreground-secondary: #CCFF66;
+  --background-secondary: #2EC4B6; */
+
+  --text-primary: #D8DDDE;
+  --text-secondary: #CFCBCA;
+
+  --button-primary-hover: #383838;
+  --button-secondary-hover: #f2f2f2;
+  --button-secondary-border: #ebebeb;
+
+  /* display: flex; */
+  min-height: 100vh;
+  /* align-items: center; */
+  /* justify-content: center; */
+  font-family: var(--font-montreal);
+}
+
+.main {
+  /* display: flex; */
+  /* min-height: 100vh; */
+  width: 100%;
+  /* max-width: 800px; */
+  /* flex-direction: column; */
+  /* align-items: flex-start; */
+  /* justify-content: space-between; */
+  /* padding: 120px 60px; */
+  background-color: var(--foreground);
+  color: var(--text-primary);
+}
+
+a.primary {
+  background: var(--text-primary);
+  color: var(--background);
+  gap: 8px;
+}
+
+a.secondary {
+  border-color: var(--button-secondary-border);
+}
+
+/* Enable hover only on non-touch devices */
+@media (hover: hover) and (pointer: fine) {
+  a.primary:hover {
+    background: var(--button-primary-hover);
+    border-color: transparent;
+  }
+
+  a.secondary:hover {
+    background: var(--button-secondary-hover);
+    border-color: transparent;
+  }
+}
+
+@media (max-width: 600px) {
+  /* .main {
+    padding: 48px 24px;
+  } */
+}
+
+@media (prefers-color-scheme: light) {
+  /* .logo {
+    filter: invert();
+  } */
+
+  .page {
+    /* --background: #d16014;
+    --foreground: #313715; */
+    --background: #c30f45;
+    --foreground: #231123;
+    --background-secondary: #CCFF66;
+    --foreground-secondary: #2EC4B6;
+
+    --text-primary: #D8DDDE;
+    --text-secondary: #CFCBCA;
+
+    --button-primary-hover: #ccc;
+    --button-secondary-hover: #1a1a1a;
+    --button-secondary-border: #1a1a1a;
+  }
+}
