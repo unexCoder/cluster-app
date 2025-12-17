@@ -26,11 +26,11 @@ export default function Fundacion() {
 
             <div className={`${styles.intro} ${styles.second}`}>
                 <p>
-                    <span className={styles.cluster}>microCluster</span> se basa 
-                    en una necesidad de aumentar la circulación de recursos de 
+                    <span className={styles.cluster}>microCluster</span> nace de 
+                    una necesidad de aumentar la circulación de recursos vinculados a la 
                     creatividad tecnológica y se fundamenta en la democratización de los 
                     medios de producción y del acceso a la información, así como en los 
-                    valores y prácticas de las comunidades de software y hardware libre
+                    valores y las prácticas de las comunidades de software y hardware libre
                 </p>
             </div>
 
@@ -40,7 +40,7 @@ export default function Fundacion() {
                     centra fundamentalmente en el uso de herramientas tecnológicas digitales 
                     en las prácticas artísticas y culturales contemporáneas, y resulta de 
                     interés para artistas y productores en diferentes campos del arte 
-                    digital, música electrónica y electroacústica, producción audiovisual, 
+                    digital, la música electrónica y electroacústica, la producción audiovisual  
                     y otras artes mediales
                 </p>
                 <p>

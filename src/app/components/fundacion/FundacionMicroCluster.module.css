@@ -80,6 +80,10 @@
 
 @media (max-width: 576px) {
   /* Styles */
+  .third {
+    padding-top:100px;
+}
+
   .chapter {
     flex-direction: column;
   }
