@@ -44,13 +44,18 @@ export default function Fundacion() {
                     y otras artes mediales
                 </p>
                 <p>
-                    Profesionales del diseño y desarrollo de contenidos digitales, 
-                    videojuegos, computación musical y computación gráfica, animación, etc
+                    Profesionales y empresas de diseño y desarrollo de aplicaciones y contenidos digitales, 
+                    videojuegos, computación musical y gráfica, animación, producción de eventos y festivales
                 </p>
                 <p>
-                    Profesionales, instituciones y educadores en el campo de la ciencia de 
+                    Profesionales, instituciones y educadores en ciencia de 
                     datos, artes y ciencias, programación para niños y adolescentes, etc., 
-                    tanto en la educación formal como en la no formal
+                    tanto en educación formal como en educación libre
+                </p>
+                <p>
+                    Estudiantes, académicos y artistas interesados en
+                    temáticas en torno al pensamiento de la cultura contemporánea
+                    y filosofía de la tecnología
                 </p>                
             </div>
 

@@ -30,6 +30,8 @@
     text-align: right;
     background-color: var(--text-primary);
     color: var(--background);
+    padding-top:100px;
+    padding-bottom:100px;
 }
 
 .third p, .four p {

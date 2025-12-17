@@ -2,7 +2,7 @@
 import React from 'react'
 import styles from './Footer.module.css';
 import Link from 'next/link';
-import NewsletterSubscription from './NewsletterSuscription';
+import NewsletterSubscription from '../utils/NewsletterSuscription';
 
 export default function Footer() {
   return (

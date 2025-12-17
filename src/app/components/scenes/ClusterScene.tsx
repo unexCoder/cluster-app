@@ -1,8 +1,8 @@
 import React, { Suspense } from 'react'
 import { Canvas } from "@react-three/fiber";
-import { createWebGPURenderer } from '../renderer/createWebGPURenderer';
-import GaussianCluster from '../components/GaussianCluster';
-import Loading from '../loading';
+import { createWebGPURenderer } from '../../renderer/createWebGPURenderer';
+import GaussianCluster from '../threeD/GaussianCluster';
+import Loading from '../../loading';
 
 // Memoize renderer creation
 const webgpuRendererPromise = createWebGPURenderer;
