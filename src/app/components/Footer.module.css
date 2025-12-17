@@ -21,7 +21,7 @@
 
 .bottomFooter {
     text-align: center;
-    padding: 100px 20svw 0 20svw;
+    padding: 100px 20svw 20px 20svw;
     font-size: 0.85rem;
     display: flex;
     justify-content: center;
