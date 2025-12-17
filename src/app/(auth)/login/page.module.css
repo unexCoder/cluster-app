@@ -67,3 +67,9 @@
     --button-secondary-border: #1a1a1a;
   }
 }
+
+@media (max-width: 600px) {
+  .loginContainer {
+    margin: 200px 10px; 
+  }
+}
