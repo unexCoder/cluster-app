@@ -1,3 +1,5 @@
+// import { Montreal } from "../../public/fonts/Montreal.otf"
+
 export const welcomeEmailTemplate = (email: string, confirmationToken?: string) => {
   // Usar la URL completa con protocolo
   const baseUrl = process.env.APP_URL || 'http://localhost:3000';

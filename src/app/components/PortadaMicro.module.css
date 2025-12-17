@@ -21,6 +21,7 @@
     pointer-events: none; /* Allows clicks to pass through */
     padding-left: 20px;
     font-style: bold;
+    /* mix-blend-mode:hard-light; */
 }
 
 .textContainer h1 {
@@ -45,7 +46,6 @@
     
     .textContainer h1 {
         font-size: 3.5rem;
-    
     }
 
     .textContainer h2 {
