@@ -13,8 +13,12 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const token = searchParams.get('token');
 
+  console.log('Confirmation request received:', { token }); // Debug
+
   if (!token) {
-    return NextResponse.redirect(new URL('/newsletter/error?reason=invalid_token', request.url));
+    const redirectUrl = new URL('/newsletter/error', request.url);
+    redirectUrl.searchParams.set('reason', 'invalid_token');
+    return NextResponse.redirect(redirectUrl);
   }
 
   try {
@@ -27,14 +31,18 @@ export async function GET(request: Request) {
     ) as MailingListRow[];
 
     if (subscribers.length === 0) {
-      return NextResponse.redirect(new URL('/newsletter/error?reason=not_found', request.url));
+      const redirectUrl = new URL('/newsletter/error', request.url);
+      redirectUrl.searchParams.set('reason', 'not_found');
+      return NextResponse.redirect(redirectUrl);
     }
 
     const subscriber = subscribers[0];
 
     // Verificar si el token expiró
     if (new Date(subscriber.confirmation_token_expires_at) < new Date()) {
-      return NextResponse.redirect(new URL('/newsletter/error?reason=expired', request.url));
+      const redirectUrl = new URL('/newsletter/error', request.url);
+      redirectUrl.searchParams.set('reason', 'expired');
+      return NextResponse.redirect(redirectUrl);
     }
 
     // Activar suscripción
@@ -49,11 +57,15 @@ export async function GET(request: Request) {
       [subscriber.id]
     );
 
+    console.log('Subscription confirmed:', subscriber.email); // Debug
+
     // Redirigir a página de éxito
     return NextResponse.redirect(new URL('/newsletter/confirmed', request.url));
 
   } catch (error) {
     console.error('Confirmation error:', error);
-    return NextResponse.redirect(new URL('/newsletter/error?reason=server_error', request.url));
+    const redirectUrl = new URL('/newsletter/error', request.url);
+    redirectUrl.searchParams.set('reason', 'server_error');
+    return NextResponse.redirect(redirectUrl);
   }
 }

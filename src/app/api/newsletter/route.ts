@@ -95,7 +95,7 @@ export async function POST(request: Request) {
         id,
         email,
         name || null,
-        'active', // Cambia a 'pending_confirmation' cuando tengas emails
+        'pending_confirmation',
         source || 'newsletter_widget',
         referer,
         referer,
