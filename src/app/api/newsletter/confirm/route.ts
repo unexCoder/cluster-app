@@ -16,7 +16,7 @@ export async function GET(request: Request) {
   console.log('Confirmation request received:', { token }); // Debug
 
   if (!token) {
-    const redirectUrl = new URL('/newsletter/error', request.url);
+    const redirectUrl = new URL('/error', request.url);
     redirectUrl.searchParams.set('reason', 'invalid_token');
     return NextResponse.redirect(redirectUrl);
   }
@@ -31,7 +31,7 @@ export async function GET(request: Request) {
     ) as MailingListRow[];
 
     if (subscribers.length === 0) {
-      const redirectUrl = new URL('/newsletter/error', request.url);
+      const redirectUrl = new URL('/error', request.url);
       redirectUrl.searchParams.set('reason', 'not_found');
       return NextResponse.redirect(redirectUrl);
     }
@@ -40,7 +40,7 @@ export async function GET(request: Request) {
 
     // Verificar si el token expiró
     if (new Date(subscriber.confirmation_token_expires_at) < new Date()) {
-      const redirectUrl = new URL('/newsletter/error', request.url);
+      const redirectUrl = new URL('/error', request.url);
       redirectUrl.searchParams.set('reason', 'expired');
       return NextResponse.redirect(redirectUrl);
     }
@@ -60,11 +60,11 @@ export async function GET(request: Request) {
     console.log('Subscription confirmed:', subscriber.email); // Debug
 
     // Redirigir a página de éxito
-    return NextResponse.redirect(new URL('/newsletter/confirmed', request.url));
+    return NextResponse.redirect(new URL('/confirmed', request.url));
 
   } catch (error) {
     console.error('Confirmation error:', error);
-    const redirectUrl = new URL('/newsletter/error', request.url);
+    const redirectUrl = new URL('/error', request.url);
     redirectUrl.searchParams.set('reason', 'server_error');
     return NextResponse.redirect(redirectUrl);
   }
