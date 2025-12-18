@@ -1,57 +1,72 @@
+// app/api/newsletter/route.ts
 import { query } from '@/lib/db';
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { RowDataPacket } from 'mysql2/promise';
-import { sendWelcomeEmail } from '@/lib/resend';
 
-interface MailingListRow extends RowDataPacket {
+export const maxDuration = 10;
+export const dynamic = 'force-dynamic';
+
+interface MailingListRow {
   id: string;
   status: string;
 }
 
 export async function POST(request: Request) {
+  const startTime = Date.now();
+  
   try {
-    const { email, name, source } = await request.json();
-    const headers = request.headers;
+    console.log('[Newsletter] Request received');
+    
+    // 1. Parse body
+    const body = await request.json().catch(() => ({}));
+    const { email, name, source } = body;
+    console.log('[Newsletter] Email:', email);
 
-    // Validación
+    // 2. Validación
     if (!email || !email.includes('@')) {
+      console.log('[Newsletter] Invalid email');
       return NextResponse.json(
         { error: 'Email inválido' }, 
         { status: 400 }
       );
     }
 
-    // Generar token de confirmación para double opt-in
-    const confirmationToken = crypto.randomBytes(32).toString('hex');
-    const tokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 horas
-
-    // Obtener IP y User Agent
+    // 3. Headers info
+    const headers = request.headers;
     const ipAddress = headers.get('x-forwarded-for')?.split(',')[0] || 
                       headers.get('x-real-ip') || 
                       null;
     const userAgent = headers.get('user-agent') || null;
     const referer = headers.get('referer') || null;
 
-    // Verificar si el email ya existe
-    const result = await query(
+    console.log('[Newsletter] IP:', ipAddress, 'Source:', source);
+
+    // 4. Generar token
+    const confirmationToken = crypto.randomBytes(32).toString('hex');
+    const tokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    // 5. Verificar si existe
+    console.log('[Newsletter] Checking existing subscriber...');
+    const existing = await query(
       'SELECT id, status FROM mailing_list WHERE email = ? AND deleted_at IS NULL',
       [email]
     ) as MailingListRow[];
 
-    if (result.length > 0) {
-      const subscriber = result[0];
+    console.log('[Newsletter] Existing check result:', existing.length > 0);
+
+    if (existing.length > 0) {
+      const subscriber = existing[0];
       
-      // Si ya está activo o confirmado
       if (subscriber.status === 'active') {
+        console.log('[Newsletter] Already active subscriber');
         return NextResponse.json(
           { message: 'Ya estás suscrito' },
           { status: 200 }
         );
       }
       
-      // Si se había dado de baja, reactivar
       if (subscriber.status === 'unsubscribed') {
+        console.log('[Newsletter] Reactivating unsubscribed user');
         await query(
           `UPDATE mailing_list 
             SET status = 'pending_confirmation',
@@ -64,8 +79,8 @@ export async function POST(request: Request) {
           [confirmationToken, tokenExpiry, subscriber.id]
         );
         
-        // Enviar email de confirmación
-        await sendWelcomeEmail(email, confirmationToken);
+        // Enviar email de forma asíncrona sin esperar
+        sendWelcomeEmailAsync(email, confirmationToken);
         
         return NextResponse.json({ 
           success: true,
@@ -74,8 +89,10 @@ export async function POST(request: Request) {
       }
     }
 
-    // Insertar nuevo suscriptor
+    // 6. Insertar nuevo suscriptor
+    console.log('[Newsletter] Inserting new subscriber...');
     const id = crypto.randomUUID();
+    
     await query(
       `INSERT INTO mailing_list (
         id,
@@ -106,19 +123,83 @@ export async function POST(request: Request) {
       ]
     );
 
-    // Enviar email de confirmación
-    await sendWelcomeEmail(email, confirmationToken);
+    console.log('[Newsletter] Subscriber inserted successfully');
+
+    // Enviar email de forma asíncrona sin bloquear la respuesta
+    sendWelcomeEmailAsync(email, confirmationToken);
+
+    const elapsed = Date.now() - startTime;
+    console.log(`[Newsletter] Success in ${elapsed}ms`);
 
     return NextResponse.json({ 
       success: true,
-      message: '¡Gracias por suscribirte!'
+      message: '¡Gracias por suscribirte! Revisa tu email para confirmar.'
     }, { status: 201 });
 
   } catch (error) {
-    console.error('Mailing list subscription error:', error);
+    const elapsed = Date.now() - startTime;
+    console.error(`[Newsletter] Error after ${elapsed}ms:`, error);
+    
+    // Log más detallado del error
+    if (error instanceof Error) {
+      console.error('[Newsletter] Error name:', error.name);
+      console.error('[Newsletter] Error message:', error.message);
+      console.error('[Newsletter] Error stack:', error.stack);
+    }
+    
     return NextResponse.json(
-      { error: 'Error al procesar la suscripción' },
+      { 
+        error: 'Error al procesar la suscripción',
+        details: process.env.NODE_ENV === 'development' ? String(error) : undefined
+      },
       { status: 500 }
     );
+  }
+}
+
+// Función auxiliar para enviar emails sin bloquear
+async function sendWelcomeEmailAsync(email: string, token: string) {
+  try {
+    console.log('[Newsletter] Attempting to send welcome email to:', email);
+    
+    // Importación dinámica para evitar errores de módulo
+    const { sendWelcomeEmail } = await import('@/lib/resend').catch(() => ({
+      sendWelcomeEmail: null
+    }));
+    
+    if (!sendWelcomeEmail) {
+      console.warn('[Newsletter] sendWelcomeEmail not available, skipping email');
+      return;
+    }
+    
+    await sendWelcomeEmail(email, token);
+    console.log('[Newsletter] Welcome email sent successfully');
+    
+  } catch (error) {
+    // No fallar la request si el email falla
+    console.error('[Newsletter] Failed to send welcome email:', error);
+    console.error('[Newsletter] Email error details:', {
+      email,
+      error: error instanceof Error ? error.message : String(error)
+    });
+  }
+}
+
+// Endpoint GET para verificar estado
+export async function GET() {
+  try {
+    const result = await query(
+      'SELECT COUNT(*) as total FROM mailing_list WHERE deleted_at IS NULL'
+    ) as Array<{ total: number }>;
+    
+    return NextResponse.json({
+      success: true,
+      totalSubscribers: result[0].total
+    });
+  } catch (error) {
+    return NextResponse.json({
+      success: false,
+      error: String(error)
+    }, { status: 500 });
   }
 }
