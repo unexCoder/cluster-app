@@ -24,7 +24,11 @@ export function getPool(): Pool {
       // Connection health checks
       connectTimeout: 10000,
       // Prevent connection drops
-      charset: 'utf8mb4'
+      charset: 'utf8mb4',
+      ssl: {
+        rejectUnauthorized: true
+      }
+
     });
     
     console.log('✅ Database connection pool created and running');
