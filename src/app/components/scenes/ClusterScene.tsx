@@ -1,13 +1,18 @@
+'use client'  
 import React, { Suspense } from 'react'
 import { Canvas } from "@react-three/fiber";
-import { createWebGPURenderer } from '../renderer/createWebGPURenderer';
-import GaussianCluster from '../components/GaussianCluster';
-import Loading from '../loading';
+import { createWebGPURenderer } from '../../renderer/createWebGPURenderer';
+import GaussianCluster from './3dObjects/GaussianCluster';
+import Loading from '../../loading';
 
 // Memoize renderer creation
 const webgpuRendererPromise = createWebGPURenderer;
 
-export default function ClusterScene() {
+interface ClusterSceneProps {
+    clusterPosition?: [number, number, number];
+}
+
+export default function ClusterScene({ clusterPosition }: ClusterSceneProps) {
     return (
         <div style={{ width: '100vw', height: '100vh' }}>
             <Canvas
@@ -20,7 +25,7 @@ export default function ClusterScene() {
                 }}
                 frameloop='always'>
                 <Suspense fallback={<Loading/>}>
-                    <GaussianCluster />
+                    <GaussianCluster position={clusterPosition} />
                 </Suspense>
             </Canvas>
         </div>

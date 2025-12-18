@@ -12,16 +12,16 @@
 .canvasContainer {
     grid-column: 1 / -1; /* Spans all columns */
     grid-row: 1 / -1;    /* Spans all rows */
-    width: 100%;
-    height: 100%;
 }
 
 .textContainer {
-    grid-column: 3 / -1; 
-    grid-row: 4 / -1; 
-    text-align: right;
+    grid-column: 1 / -1; 
+    grid-row: 1 / -1; 
+    text-align: left;
     pointer-events: none; /* Allows clicks to pass through */
-    padding-right: 20px;
+    padding-left: 20px;
+    font-style: bold;
+    /* mix-blend-mode:hard-light; */
 }
 
 .textContainer h1 {
@@ -38,11 +38,21 @@
         grid-template-rows: repeat(5,1fr);
     }
     .textContainer {
-        grid-column: 1 / -1; 
-        grid-row: 4 / -1; 
+        /* grid-column: 1 / -1;  */
+        /* grid-row: 4 / -1;  */
+        padding-left: 5px;
         z-index: 1;
     }
-    .subtitle h2{
+    
+    .textContainer h1 {
+        font-size: 3.5rem;
+    }
+
+    .textContainer h2 {
         font-size: 1.5rem;
-    } 
+    }
+    
+    /* .subtitle h2{
+        font-size: 1.5rem;
+    }  */
 }
