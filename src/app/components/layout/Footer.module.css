@@ -85,4 +85,12 @@
     .decorated {
         max-width: 80px;
     }
+
+    .suscriptContainer {
+        /* padding: 50px 40px 0; */
+        padding: 50px 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
