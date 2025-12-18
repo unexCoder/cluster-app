@@ -4,7 +4,6 @@ import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
 export const maxDuration = 10;
-// export const dynamic = 'force-dynamic';
 
 interface MailingListRow {
   id: string;
