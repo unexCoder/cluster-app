@@ -44,7 +44,7 @@ export default async function NewsletterError({
     <div className="mainContainer">
       <div className="logContainer">
         <div className="icon">✕</div>
-        <h1>Algo salió mal</h1>
+        <h1 className="title">Algo salió mal</h1>
         <p>{error.title}</p>
         <h4 style={{marginTop:'5px'}}>No pudimos procesar tu suscripción. Por favor verifica tu correo electrónico.</h4>
         <button className='btn'>
