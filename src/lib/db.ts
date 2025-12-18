@@ -26,7 +26,7 @@ export function getPool(): Pool {
       // Prevent connection drops
       charset: 'utf8mb4',
       ssl: {
-        rejectUnauthorized: true
+        rejectUnauthorized: false
       }
 
     });
