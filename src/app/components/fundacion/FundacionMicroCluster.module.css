@@ -16,7 +16,7 @@
 .first {
     text-align: right;
     background-color: var(--foreground);
-    color: var(--background);
+    color: var(--text-primary);
     padding-left: 125px;
 }
 
@@ -49,7 +49,7 @@
     text-align: right;
     padding-left: 50px;
     background-color: var(--text-secondary);
-    color: var(--foreground);
+    color: var(--text-primary);
 }
 
 .chapter {
