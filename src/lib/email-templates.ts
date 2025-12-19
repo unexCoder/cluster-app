@@ -76,10 +76,10 @@ export const welcomeEmailTemplate = (email: string, confirmationToken?: string) 
                         Qué vas a recibir:
                       </h2>
                       <ul style="margin: 0; padding: 0 0 0 20px; color: #231123; font-size: 15px; line-height: 1.8;">
-                        <li>Noticias y recursos exclusivos</li>
+                        <li>Contenido exclusivo en temas de cultura digital</li>
                         <li>Novedades y actualizaciones importantes</li>
+                        <li>Noticias y recursos exclusivos</li>
                         <li>Ofertas especiales solo para suscriptores</li>
-                        <li>Contenido relevante y de calidad</li>
                       </ul>
                     </td>
                   </tr>
