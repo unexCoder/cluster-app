@@ -5,7 +5,7 @@ import Credentials from "next-auth/providers/credentials"
 // In production, this would be a database
 const VALID_USERS = [
   { id: "1", email: "admin@festivalcluster.org", password: "clusteradmin" },
-  { id: "2", email: "bosca.musicn@gmail.com", password: "@unexcoder101" }
+  { id: "2", email: "bosca.music@gmail.com", password: "@unexcoder101" }
 ]
 
 export const { handlers, signIn, signOut, auth } = NextAuth({

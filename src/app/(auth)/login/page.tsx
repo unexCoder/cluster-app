@@ -41,25 +41,27 @@ export default function LoginPage() {
             <div className={styles.loginContainer}>
                 <h1>Login</h1>
                 <form onSubmit={handleSubmit}>
-                    <div className={styles.inputContainer}>
-                        <label>Email:</label>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className={styles.input}
-                        />
-                    </div>
-                    <div className={styles.inputContainer}>
-                        <label>Password:</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className={styles.input}
-                        />
+                    <div className={styles.credentialsContainer}>
+                        <div className={styles.inputContainer}>
+                            <label>Email:</label>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                className={styles.input}
+                            />
+                        </div>
+                        <div className={styles.inputContainer}>
+                            <label>Password:</label>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                className={styles.input}
+                            />
+                        </div>
                     </div>
                     {error && <p className={styles.errorMsg}>{error}</p>}
                     <button

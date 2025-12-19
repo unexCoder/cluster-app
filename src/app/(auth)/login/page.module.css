@@ -15,6 +15,10 @@
   font-family: var(--font-montreal);
 }
 
+.credentialsContainer {
+  margin-top: 15px;
+}
+
 .loginContainer {
   max-width: 400px;
   margin: 200px auto; 
