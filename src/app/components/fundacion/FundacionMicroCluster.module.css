@@ -45,6 +45,13 @@
     padding-right: 80px;
 }
 
+.five {
+    text-align: right;
+    padding-left: 50px;
+    background-color: var(--text-secondary);
+    color: var(--foreground);
+}
+
 .chapter {
     background-color: var(--background);
     color: var(--text-primary);

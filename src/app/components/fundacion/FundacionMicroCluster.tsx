@@ -19,29 +19,37 @@ export default function Fundacion() {
             <div className={`${styles.intro} ${styles.first}`}>
                 <p>
                     <span className={styles.cluster}> microCluster</span> es una organización 
-                    creada para promover y difundir valores y recursos vinculados a la cultura 
-                    tecnológica actual y futura
+                    creada para promover y difundir valores y recursos vinculados a la creatividad digital
+                    y a la cultura de la tecnológica actual y futura
                 </p>
             </div>
 
             <div className={`${styles.intro} ${styles.second}`}>
                 <p>
-                    <span className={styles.cluster}>microCluster</span> nace de 
-                    una necesidad de aumentar la circulación de recursos vinculados a la 
-                    creatividad tecnológica y se fundamenta en la democratización de los 
-                    medios de producción y del acceso a la información, así como en los 
-                    valores y las prácticas de las comunidades de software y hardware libre
+                    <span className={styles.cluster}>microCluster</span> se origina 
+                    en una necesidad de aumentar la circulación de bienes y servicios 
+                    vinculados al desarrollo de la creatividad tecnológica y se fundamenta 
+                    en la democratización de los medios de producción y del acceso 
+                    a la información, así como en los valores y las prácticas de 
+                    las comunidades de software y hardware libre
                 </p>
             </div>
 
-            <div className={`${styles.intro} ${styles.third}`}>
+            <div className={`${styles.intro} ${styles.five}`}>
                 <p>
                     El área temática de <span className={styles.cluster}> microCluster</span> se 
                     centra fundamentalmente en el uso de herramientas tecnológicas digitales 
                     en las prácticas artísticas y culturales contemporáneas, y resulta de 
                     interés para artistas y productores en diferentes campos del arte 
-                    digital, la música electrónica y electroacústica, la producción audiovisual  
-                    y otras artes mediales
+                    digital, el diseńo y la educación en arte, ciencia y tecnología
+                </p>
+            </div>
+
+            <div className={`${styles.intro} ${styles.third}`}>
+                <p>
+                    Las propuesats de <span className={styles.cluster}> microCluster</span> estan
+                    destinadas a profesionales de la música electrónica y electroacústica, la 
+                    producción audiovisual y otras artes mediales
                 </p>
                 <p>
                     Profesionales y empresas de diseño y desarrollo de aplicaciones y contenidos digitales, 
@@ -49,20 +57,20 @@ export default function Fundacion() {
                 </p>
                 <p>
                     Profesionales, instituciones y educadores en ciencia de 
-                    datos, artes y ciencias, programación para niños y adolescentes, etc., 
+                    datos, artes y ciencias, programación para niños y adolescentes, 
                     tanto en educación formal como en educación libre
                 </p>
                 <p>
                     Estudiantes, académicos y artistas interesados en
-                    temáticas en torno al pensamiento de la cultura contemporánea
-                    y filosofía de la tecnología
+                    temáticas en torno al pensamiento sobre la cultura contemporánea
+                    y la filosofía de la tecnología
                 </p>                
             </div>
 
             <div className={`${styles.intro} ${styles.four}`}>
                 <p>
                     La agenda de <span className={styles.cluster}>microCluster</span> incluye 
-                    la organización de eventos culturales y pedagógicos, como talleres, 
+                    la organización de eventos culturales y pedagógicos, talleres, 
                     seminarios, conferencias, conciertos y exposiciones. También contempla la 
                     producción de publicaciones especializadas y documentación general del 
                     proyecto en medios digitales
