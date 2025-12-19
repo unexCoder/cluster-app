@@ -50,6 +50,7 @@ next-env.d.ts
 # dev docs
 /PROJECT_ANALYSIS.md
 em.html
+/src/app/api/api_design.txt
 
 # not implemented code
 src/app/(main)/microcluster/blog

@@ -19,8 +19,8 @@ export default function Fundacion() {
             <div className={`${styles.intro} ${styles.first}`}>
                 <p>
                     <span className={styles.cluster}> microCluster</span> es una organización 
-                    creada para promover y difundir valores y recursos vinculados a la creatividad digital
-                    y a la cultura de la tecnológica actual y futura
+                    creada para promover y difundir recursos y contenidos vinculados a la creatividad digital
+                    y a la cultura tecnológica actual y futura
                 </p>
             </div>
 
@@ -29,7 +29,7 @@ export default function Fundacion() {
                     <span className={styles.cluster}>microCluster</span> se origina 
                     en una necesidad de aumentar la circulación de bienes y servicios 
                     vinculados al desarrollo de la creatividad tecnológica y se fundamenta 
-                    en la democratización de los medios de producción y del acceso 
+                    en la democratización de los medios de producción y acceso 
                     a la información, así como en los valores y las prácticas de 
                     las comunidades de software y hardware libre
                 </p>
@@ -41,7 +41,7 @@ export default function Fundacion() {
                     centra fundamentalmente en el uso de herramientas tecnológicas digitales 
                     en las prácticas artísticas y culturales contemporáneas, y resulta de 
                     interés para artistas y productores en diferentes campos del arte 
-                    digital, el diseńo y la educación en arte, ciencia y tecnología
+                    digital, el diseńo y la educación en arte, ciencia, tecnología y programación
                 </p>
             </div>
 
@@ -62,8 +62,8 @@ export default function Fundacion() {
                 </p>
                 <p>
                     Estudiantes, académicos y artistas interesados en
-                    temáticas en torno al pensamiento sobre la cultura contemporánea
-                    y la filosofía de la tecnología
+                    temáticas en torno al pensamiento sobre la cultura contemporánea,
+                    la arqueología de medios y la filosofía de la tecnología
                 </p>                
             </div>
 

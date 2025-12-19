@@ -1,6 +1,5 @@
 import QRCode from "qrcode";
 import { NextResponse } from "next/server";
-import { Metadata } from "next";
 
 export async function GET(
   _req: Request,
