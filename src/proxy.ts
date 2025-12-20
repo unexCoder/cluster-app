@@ -51,6 +51,9 @@ export const config = {
   matcher: [
     
     "/dashboard/:path*",
+    "/api/users",
+    "/api/qr",
+    "/api/random"
     // "/api/:path*"
   ],
 };
