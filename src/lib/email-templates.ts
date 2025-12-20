@@ -2,9 +2,8 @@
 
 export const welcomeEmailTemplate = (email: string, confirmationToken?: string) => {
   // Usar la URL completa con protocolo
-  const baseUrl = process.env.APP_URL || 'http://localhost:3000';
   const confirmationUrl = confirmationToken 
-    ? `${baseUrl}/api/newsletter/confirm?token=${confirmationToken}`
+    ? `${process.env.NEXT_PUBLIC_APP_URL}/confirm?token=${confirmationToken}`
     : null;
 
   return {
