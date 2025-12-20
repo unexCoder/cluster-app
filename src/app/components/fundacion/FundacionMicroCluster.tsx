@@ -49,20 +49,20 @@ export default function Fundacion() {
                 <p>
                     Las propuesats de <span className={styles.cluster}> microCluster</span> estan
                     destinadas a profesionales de la música electrónica y electroacústica, la 
-                    producción audiovisual y otras artes mediales
+                    producción audiovisual, performance y otras artes mediales
                 </p>
                 <p>
                     Profesionales y empresas de diseño y desarrollo de aplicaciones y contenidos digitales, 
                     videojuegos, computación musical y gráfica, animación, producción de eventos y festivales
                 </p>
                 <p>
-                    Profesionales, instituciones y educadores en ciencia de 
-                    datos, artes y ciencias, programación para niños y adolescentes, 
-                    tanto en educación formal como en educación libre
+                    Profesionales, instituciones y educadores en artes y ciencias, 
+                    ciencia de datos, programación para niños y adolescentes, 
+                    tanto en educación formal como libre
                 </p>
                 <p>
                     Estudiantes, académicos y artistas interesados en
-                    temáticas en torno al pensamiento sobre la cultura contemporánea,
+                    temáticas en torno al pensamiento sobre cultura contemporánea,
                     la arqueología de medios y la filosofía de la tecnología
                 </p>                
             </div>

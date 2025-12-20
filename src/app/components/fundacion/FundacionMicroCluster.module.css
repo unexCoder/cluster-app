@@ -27,7 +27,7 @@
 }
 
 .third {
-    text-align: right;
+    text-align: left;
     background-color: var(--text-primary);
     color: var(--background);
     padding-top:100px;
@@ -39,7 +39,7 @@
 }
 
 .four {
-    text-align: left;
+    text-align: right;
     background-color: var(--foreground);
     color: var(--background);
     padding-right: 80px;
