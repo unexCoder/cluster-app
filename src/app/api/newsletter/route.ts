@@ -1,9 +1,10 @@
 // app/api/newsletter/route.ts
 import { query } from '@/lib/db';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { newsletterSubscribeSchema } from "@/lib/validators/newsletter";
 import { formatZodError } from '@/lib/zod';
+import { requireApiKey } from '@/lib/security';
 
 
 export const maxDuration = 10;
@@ -13,12 +14,12 @@ interface MailingListRow {
   status: "active" | "pending_confirmation" | "unsubscribed";
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const startTime = Date.now();
   const requestId =
     request.headers.get("x-request-id") ??
     crypto.randomUUID();
-
+  
   try {
     // debug logs
     console.log(`[Newsletter][${requestId}] Request received`);
@@ -254,7 +255,12 @@ async function sendWelcomeEmailAsync(email: string, token: string, requestId: st
 }
 
 // Endpoint GET para verificar estado
-export async function GET() {
+export async function GET(request: NextRequest) {
+
+  // API KEY CHECK (prod only)
+    const authError = requireApiKey(request);
+    if (authError) return authError;
+
   try {
     const result = await query(
       'SELECT COUNT(*) as total FROM mailing_list WHERE deleted_at IS NULL'

@@ -20,6 +20,7 @@ interface User extends RowDataPacket {
 const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS ?? 10);
 
 export async function POST(req: Request) {
+    
     try {
         const body = await req.json();
         const { email, password } = registerSchema.parse(body);

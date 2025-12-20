@@ -1,10 +1,16 @@
 import QRCode from "qrcode";
 import { NextResponse } from "next/server";
+import { requireApiKey } from "@/lib/security";
 
 export async function GET(
   _req: Request,
   context: { params: Promise<{ uuid: string }> }
 ) {
+
+  // API KEY CHECK (prod only)
+  const authError = requireApiKey(_req);
+  if (authError) return authError;
+
   const { uuid } = await context.params;
 
   try {
