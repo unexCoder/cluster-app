@@ -11,7 +11,8 @@ export async function sendWelcomeEmail(
     const template = welcomeEmailTemplate(email, confirmationToken);
     
     const { data, error } = await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
+      // from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
+      from: 'hello@festivalcluster.org',
       to: email,
       subject: template.subject,
       html: template.html,
