@@ -11,7 +11,7 @@ export const proxy = auth((req) => {
   const { pathname } = req.nextUrl;
 
   // ─────────────────────────────
-  // 🔐 API protection (prod only)
+  //  API protection (prod only)
   // ─────────────────────────────
   if (
     process.env.NODE_ENV === "production" &&
@@ -36,7 +36,7 @@ export const proxy = auth((req) => {
   }
 
   // ─────────────────────────────
-  // 🔒 Page protection (sessions)
+  //  Page protection (sessions)
   // ─────────────────────────────
   if (!req.auth) {
     return NextResponse.redirect(
