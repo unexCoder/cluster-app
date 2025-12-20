@@ -3,7 +3,7 @@
 export const welcomeEmailTemplate = (email: string, confirmationToken?: string) => {
   // Usar la URL completa con protocolo
   const confirmationUrl = confirmationToken 
-    ? `${process.env.NEXT_PUBLIC_APP_URL}/confirm?token=${confirmationToken}`
+    ? `${process.env.NEXT_PUBLIC_APP_URL}/api/newsletter/confirm?token=${confirmationToken}`
     : null;
 
   return {
