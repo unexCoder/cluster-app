@@ -120,7 +120,8 @@ export async function POST(request: Request) {
         return NextResponse.json({
           success: true,
           data: {
-            message: 'Revisa tu email para confirmar la suscripción'
+            message: 'Revisa tu email para confirmar la suscripción',
+            token: confirmationToken
           },
           meta: {
             requestId,
@@ -174,7 +175,8 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       data: {
-        message: '¡Gracias por suscribirte! Revisa tu email para confirmar.'
+        message: '¡Gracias por suscribirte! Revisa tu email para confirmar.',
+        token: confirmationToken
       },
       meta: {
         requestId,
