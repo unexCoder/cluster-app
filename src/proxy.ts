@@ -9,13 +9,15 @@ const allowedOrigins = [
 
 export const proxy = auth((req) => {
   const { pathname } = req.nextUrl;
+  const isServerCall = !req.headers.get("origin");
 
   // ─────────────────────────────
   //  API protection (prod only)
   // ─────────────────────────────
   if (
     process.env.NODE_ENV === "production" &&
-    pathname.startsWith("/api")
+    pathname.startsWith("/api") &&
+    !isServerCall
   ) {
     const apiKey = req.headers.get("x-api-key");
     const origin = req.headers.get("origin");
