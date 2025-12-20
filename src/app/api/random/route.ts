@@ -1,12 +1,17 @@
 import { generateCryptoToken } from '@/app/utils/cryptoToken';
+import { requireApiKey } from '@/lib/security';
 import { randomUUID } from 'crypto';
 import { NextRequest } from 'next/server';
 
-// GET /api/random/uuid
+// GET /api/random/?type=
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const type = searchParams.get('type'); // e.g., /api/random?type=uuid
 
+  // API KEY CHECK (prod only)
+  const authError = requireApiKey(request);
+  if (authError) return authError;
+  
   switch (type) {
     case 'uuid':
       return Response.json({ uuid: randomUUID() });
