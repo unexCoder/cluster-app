@@ -9,6 +9,9 @@ interface MailingListRow {
   confirmation_token_expires_at: Date | null;
 }
 
+// Cache simple para evitar procesamiento duplicado
+  const processingTokens = new Set<string>();
+  
 function redirectWithReason(request: Request, reason: string) {
   const url = new URL('/error', request.url);
   url.searchParams.set('reason', reason);
@@ -30,6 +33,17 @@ export async function GET(request: Request) {
     return redirectWithReason(request, "invalid_token");
   }
 
+  // Verificar si ya se está procesando este token
+  if (processingTokens.has(token)) {
+    console.log(`[Confirm][${requestId}] Token already being processed, waiting...`);
+    // Esperar un poco y redirigir a confirmed de todos modos
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return NextResponse.redirect(new URL('/confirmed', request.url));
+  }
+
+  // Marcar token como en proceso
+  processingTokens.add(token);
+
   try {
     const rows = await query(
       `SELECT id, email, status, confirmation_token_expires_at
@@ -43,17 +57,20 @@ export async function GET(request: Request) {
     const subscriber = rows[0] ?? null;
 
     if (!subscriber) {
+      processingTokens.delete(token);
       return redirectWithReason(request, "not_found");
     }
-
+    
     if (subscriber.status === "active") {
+      processingTokens.delete(token);
       return redirectWithReason(request, "already_confirmed");
     }
-
+    
     if (
       !subscriber.confirmation_token_expires_at ||
       subscriber.confirmation_token_expires_at.getTime() < now
     ) {
+      processingTokens.delete(token);
       return redirectWithReason(request, "expired");
     }
 
@@ -74,11 +91,15 @@ export async function GET(request: Request) {
       { email: subscriber.email }
     );
 
+    // clean cache
+    processingTokens.delete(token);
+
     return NextResponse.redirect(
       new URL('/confirmed', request.url)
     );
 
   } catch (error) {
+    processingTokens.delete(token);
     console.error(
       `[Confirm][${requestId}] Unexpected error`,
       error
