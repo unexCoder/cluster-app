@@ -55,8 +55,7 @@ export const config = {
     "/dashboard/:path*",
     "/api/users",
     "/api/qr",
-    "/api/random",
-    "/api/newsletter"
+    "/api/random"
   ],
 };
 
