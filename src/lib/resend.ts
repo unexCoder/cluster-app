@@ -2,6 +2,8 @@ import { Resend } from 'resend';
 import { welcomeEmailTemplate } from './email-templates';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+export const runtime = "nodejs";
+export const maxDuration = 10;
 
 export async function sendWelcomeEmail(
   email: string, 
