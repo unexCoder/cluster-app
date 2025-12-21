@@ -35,11 +35,11 @@ export default function Footer() {
           <div>
             <h3>Acerca de</h3>
             <ul>
+              <li><Link href={'/microcluster'}>Misión</Link></li>
+              <li><Link href={'/contacto'}>Contacto y equipo</Link></li>
               <li>Accesibilidad</li>
               <li>Compromiso Ambiental</li>
-              <li><Link href={'/contacto'}>Contacto y equipo</Link></li>
               <li>Ediciones previas</li>
-              <li><Link href={'/microcluster'}>Misión</Link></li>
             </ul>
           </div>
 
