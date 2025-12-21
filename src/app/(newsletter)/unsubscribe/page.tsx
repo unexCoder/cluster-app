@@ -1,6 +1,8 @@
 'use client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import '../globals.css'
+import { color } from 'three/tsl';
 
 function UnsubscribeResultContent() {
   const router = useRouter();
@@ -15,44 +17,44 @@ function UnsubscribeResultContent() {
   }> = {
     success: {
       title: '¡Desuscripción exitosa!',
-      description: 'Ya no recibirás más correos de nuestra lista. Lamentamos verte partir.',
+      description: 'Ya no recibirás más correos de nuestra lista.',
       icon: '✓',
       color: 'green'
     },
     already_unsubscribed: {
       title: 'Ya estabas desuscrito',
-      description: 'Tu correo ya había sido removido de nuestra lista anteriormente.',
+      description: 'Tu correo ya ha sido removido de nuestra lista anteriormente.',
       icon: 'ℹ',
       color: 'blue'
     },
     not_found: {
       title: 'Suscripción no encontrada',
       description: 'No pudimos encontrar tu suscripción en nuestra base de datos.',
-      icon: '✗',
+      icon: '✕',
       color: 'red'
     },
     missing_email: {
       title: 'Enlace inválido',
       description: 'El enlace de desuscripción no contiene un email válido.',
-      icon: '✗',
+      icon: '✕',
       color: 'red'
     },
     update_failed: {
       title: 'Error al desuscribir',
       description: 'No pudimos procesar tu desuscripción. Por favor intenta nuevamente.',
-      icon: '✗',
+      icon: '✕',
       color: 'red'
     },
     server_error: {
       title: 'Error del servidor',
       description: 'Ocurrió un error inesperado. Por favor intenta más tarde.',
-      icon: '✗',
+      icon: '✕',
       color: 'red'
     },
     unknown: {
       title: 'Error desconocido',
       description: 'Ocurrió un error inesperado.',
-      icon: '✗',
+      icon: '✕',
       color: 'red'
     }
   };
@@ -60,22 +62,18 @@ function UnsubscribeResultContent() {
   const message = messages[reason] || messages.unknown;
 
   return (
-    <div>
-      <div>
-        <h1>
-          {message.title}
-        </h1>
-        <p>
-          {message.description}
-        </p>
+    <div className='mainContainer'>
+      <div className='logContainer'>
+        <h1 className="title">{message.title}</h1>
+        <div className='icon' style={{color:message.color}}>{message.icon}</div>
+        <h3>{message.description}</h3>
 
         {message.color === 'green' && (
-          <p>
-            Si cambiaste de opinión, siempre puedes volver a suscribirte en nuestra página principal.
-          </p>
+          <h4>Si cambiaste de opinión, siempre puedes volver a suscribirte en nuestra página principal.</h4>
         )}
         
         <button
+          className='btn'
           onClick={() => router.push('/')}
         >
           Volver al inicio

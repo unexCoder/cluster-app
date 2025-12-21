@@ -17,7 +17,7 @@ function redirectWithReason(request: Request, reason: string) {
 
 export async function GET(request: Request) {
   const requestId = request.headers.get("x-request-id") ?? crypto.randomUUID();
-  
+
   const { searchParams } = new URL(request.url);
   const email = searchParams.get('email');
 
@@ -64,6 +64,7 @@ export async function GET(request: Request) {
     const updateResult = await query(
       `UPDATE mailing_list
        SET status = 'unsubscribed',
+          confirmation_token = NULL,
            unsubscribed_at = NOW(),
            updated_at = NOW()
        WHERE id = ?`,
