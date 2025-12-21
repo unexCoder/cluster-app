@@ -13,7 +13,7 @@ export default function Footer() {
           <div>
             <h3>Edición 2026</h3>
             <ul>
-              <li>Festival</li>
+              <li><Link href={'/festival'}>Festival</Link></li>
               <li>Tickets</li>
               <li>Prensa</li>
               <li>Sponsors</li>
