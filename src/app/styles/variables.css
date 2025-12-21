@@ -1,0 +1,12 @@
+/* app/_styles/variables.module.css */
+:global(:root) {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(:root) {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}

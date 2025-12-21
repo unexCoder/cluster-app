@@ -82,7 +82,7 @@
     color: var(--foreground);
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
   /* Styles */
   .chapter {
     flex-direction: column;

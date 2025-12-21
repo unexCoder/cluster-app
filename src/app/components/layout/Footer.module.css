@@ -67,7 +67,7 @@
     padding: 50px 150px 0;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
     /* Styles */
     .footerContainer {
         flex-direction: column;

@@ -2,7 +2,6 @@
     min-height: 100svh;
     width: 100svw;
     background-color: var(--background);
-    /* background-color: #222; */
     color: var(--foreground);
     display: grid;
     grid-template-columns: repeat(2,1fr);
@@ -31,15 +30,13 @@
     font-size: 2.25rem;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
     /* Styles */
     .cover {
         grid-template-columns: 1fr;
         grid-template-rows: repeat(5,1fr);
     }
     .textContainer {
-        /* grid-column: 1 / -1;  */
-        /* grid-row: 4 / -1;  */
         padding-left: 5px;
         z-index: 1;
     }
@@ -51,8 +48,4 @@
     .textContainer h2 {
         font-size: 1.5rem;
     }
-    
-    /* .subtitle h2{
-        font-size: 1.5rem;
-    }  */
 }

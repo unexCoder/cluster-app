@@ -1,8 +1,11 @@
-// import type { Metadata } from "next";
-// import {  Inter } from "next/font/google";
-import "./globals.css";
+import "./styles/globals.css";
+import './styles/variables.css'
+
 import { montreal } from "./fonts";
 import { SessionProvider } from "next-auth/react"
+
+// import type { Metadata } from "next";
+// import {  Inter } from "next/font/google";
 
 // const inter = Inter({
 //   variable: "--font-inter",

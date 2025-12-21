@@ -49,7 +49,7 @@ export default function Footer() {
               <li>Instagram</li>
               <li>X</li>
               <li>Facebook</li>
-              <li>YouTube</li>
+              <li><Link href={'https://www.youtube.com/@FestivalCluster'} target='_blank'>YouTube</Link></li>
             </ul>
           </div>
         </div>
