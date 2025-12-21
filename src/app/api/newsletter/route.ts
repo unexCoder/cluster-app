@@ -4,8 +4,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { newsletterSubscribeSchema } from "@/lib/validators/newsletter";
 import { formatZodError } from '@/lib/zod';
-import { requireApiKey } from '@/lib/security';
-
 
 export const maxDuration = 10;
 
@@ -255,25 +253,25 @@ async function sendWelcomeEmailAsync(email: string, token: string, requestId: st
 }
 
 // Endpoint GET para verificar estado
-export async function GET(request: NextRequest) {
+// export async function GET(request: NextRequest) {
 
-  // API KEY CHECK (prod only)
-    const authError = requireApiKey(request);
-    if (authError) return authError;
+//   // API KEY CHECK (prod only)
+//     const authError = requireApiKey(request);
+//     if (authError) return authError;
 
-  try {
-    const result = await query(
-      'SELECT COUNT(*) as total FROM mailing_list WHERE deleted_at IS NULL'
-    ) as Array<{ total: number }>;
+//   try {
+//     const result = await query(
+//       'SELECT COUNT(*) as total FROM mailing_list WHERE deleted_at IS NULL'
+//     ) as Array<{ total: number }>;
 
-    return NextResponse.json({
-      success: true,
-      totalSubscribers: result[0].total
-    });
-  } catch (error) {
-    return NextResponse.json({
-      success: false,
-      error: String(error)
-    }, { status: 500 });
-  }
-}
+//     return NextResponse.json({
+//       success: true,
+//       totalSubscribers: result[0].total
+//     });
+//   } catch (error) {
+//     return NextResponse.json({
+//       success: false,
+//       error: String(error)
+//     }, { status: 500 });
+//   }
+// }

@@ -41,13 +41,13 @@ export default function Fundacion() {
                     centra fundamentalmente en el uso de herramientas tecnológicas digitales 
                     en las prácticas artísticas y culturales contemporáneas, y resulta de 
                     interés para artistas y productores en diferentes campos del arte 
-                    digital, el diseńo y la educación en arte, ciencia, tecnología y programación
+                    digital, el diseño y la educación en arte, ciencia, tecnología y programación
                 </p>
             </div>
 
             <div className={`${styles.intro} ${styles.third}`}>
                 <p>
-                    Las propuesats de <span className={styles.cluster}> microCluster</span> estan
+                    Las propuestas de <span className={styles.cluster}> microCluster</span> estan
                     destinadas a profesionales de la música electrónica y electroacústica, la 
                     producción audiovisual, performance y otras artes mediales
                 </p>

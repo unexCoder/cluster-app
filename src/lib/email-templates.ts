@@ -5,6 +5,8 @@ export const welcomeEmailTemplate = (email: string, confirmationToken?: string) 
   const confirmationUrl = confirmationToken 
     ? `${process.env.NEXT_PUBLIC_APP_URL}/api/newsletter/confirm?token=${confirmationToken}`
     : null;
+  
+  const unsubscribeUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/newsletter/unsubscribe?email=${encodeURIComponent(email)}`;
 
   return {
     subject: '¡Bienvenido a la red Cluster!',
@@ -92,7 +94,7 @@ export const welcomeEmailTemplate = (email: string, confirmationToken?: string) 
                       </p>
                       <p style="margin: 20px 0 0; color: #231123; font-size: 12px; line-height: 1.6;">
                         Si no te suscribiste a esta lista, puedes ignorar este email.<br>
-                        Para dejar de recibir emails, <a href="${process.env.APP_URL}/unsubscribe" style="color: #3b82f6;">haz clic aquí</a>.
+                        Para dejar de recibir emails, <a href="${unsubscribeUrl}" style="color: #3b82f6;">haz clic aquí</a>.
                       </p>
                     </td>
                   </tr>

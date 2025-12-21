@@ -46,9 +46,9 @@ export default async function NewsletterError({
         <div className="icon">✕</div>
         <h1 className="title">Algo salió mal</h1>
         <p>{error.title}</p>
-        <h4 style={{marginTop:'5px'}}>No pudimos procesar tu suscripción. Por favor verifica tu correo electrónico.</h4>
+        <h4 style={{ marginTop: '5px' }}>No pudimos procesar tu suscripción. Por favor verifica tu correo electrónico.</h4>
         <button className='btn'>
-          <a href="#">INTENTA NUEVAMENTE</a>
+          <Link href={'/'}>VOLVER</Link>
         </button>
       </div>
     </div>
