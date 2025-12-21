@@ -15,7 +15,7 @@
 
 .first {
     text-align: right;
-    color: var(--background);
+    color: var(--text-primary);
     padding-left: 125px;
 }
 
@@ -27,25 +27,26 @@
 
 .third {
     text-align: right;
-    background-color: var(--text-primary);
-    color: var(--foreground);
+    background-color: var(--text-secondary);
+    color: var(--text-primary);
 }
 
 .four {
     text-align: left;
-    background-color: var(--background);
-    color: var(--foreground);
+    background-color: var(--text-primary);
+    color: var(--background);
     padding-right: 80px;
 }
 
 .five {
     text-align: right;
     padding-left: 50px;
+    color: var(--background);
 }
 
 .chapter {
-    background-color: var(--text-secondary);
-    color: var(--background);
+    background-color: var(--background);
+    color: var(--text-primary);
     font-size: 2rem;
     line-height: 1.1;
     padding: 20px;
@@ -77,8 +78,8 @@
 }
 
 .chapterTwo {
-    background-color: var(--background);
-    color: var(--text-primary);
+    background-color: var(--text-primary);
+    color: var(--foreground);
 }
 
 @media (max-width: 576px) {

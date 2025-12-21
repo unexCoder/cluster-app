@@ -1,8 +1,11 @@
 .page {
-  --foreground: #CCFF66;
-  --background: #2EC4B6;
-
-  --text-primary: #2C1320;
+  /* --foreground: #CCFF66;
+  --background: #2EC4B6; */
+  --foreground: #c30f45;
+  --background: #231123;
+  /* --text-primary: #2C1320;
+  --text-secondary: #CFCBCA; */
+  --text-primary: #D8DDDE;
   --text-secondary: #CFCBCA;
 
   --button-primary-hover: #383838;

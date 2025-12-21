@@ -16,7 +16,7 @@
 .first {
     text-align: right;
     background-color: var(--foreground);
-    color: var(--text-primary);
+    color: var(--background);
     padding-left: 125px;
 }
 
@@ -28,33 +28,33 @@
 
 .third {
     text-align: left;
-    background-color: var(--text-primary);
-    color: var(--background);
+    background-color: var(--background);
+    color: var(--foreground);
     padding-top:100px;
     padding-bottom:100px;
 }
 
 .third p, .four p {
-    margin-bottom: 20px;
+    margin: 30px 0;
 }
 
 .four {
     text-align: right;
     background-color: var(--foreground);
-    color: var(--background);
+    color: var(--text-primary);
     padding-right: 80px;
 }
 
 .five {
     text-align: right;
     padding-left: 50px;
-    background-color: var(--text-secondary);
-    color: var(--text-primary);
+    background-color: var(--text-primary);
+    color: var(--foreground);
 }
 
 .chapter {
-    background-color: var(--background);
-    color: var(--text-primary);
+    background-color: var(--text-secondary);
+    color: var(--background);
     font-size: 2rem;
     line-height: 1.1;
     padding: 20px;
