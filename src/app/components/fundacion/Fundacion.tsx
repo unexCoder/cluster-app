@@ -26,7 +26,7 @@ export default function Fundacion() {
 
             <div className={`${styles.intro} ${styles.second}`}>
                 <p>
-                    <span className={styles.cluster}>CLUSTER</span> se origina en los festivales alternativos de música electrónica y artes digitales como <a href="https://montreal.mutek.org/">Mutek</a> (Montreal) o <a href="https://www.ctm-festival.de/">CTM</a> (Berlin), pero involucra además a otras industrias relacionadas como la programación, el desarrollo de videojuegos, el diseño, medios digitales, etc.
+                    <span className={styles.cluster}>CLUSTER</span> se inspira en los festivales alternativos de música electrónica y artes digitales europeos {/*como <a href="https://montreal.mutek.org/">Mutek</a> (Montreal) o <a href="https://www.ctm-festival.de/">CTM</a> (Berlin),   */}pero involucra además a otras industrias relacionadas como la programación, el desarrollo de videojuegos, el diseño, medios digitales, etc.
                 </p>
             </div>
 

@@ -37,7 +37,7 @@ export default function Footer() {
             <ul>
               <li>Accesibilidad</li>
               <li>Compromiso Ambiental</li>
-              <li>Contacto y equipo</li>
+              <li><Link href={'/contacto'}>Contacto y equipo</Link></li>
               <li>Ediciones previas</li>
               <li>Misión</li>
             </ul>

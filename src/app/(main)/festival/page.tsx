@@ -1,5 +1,5 @@
-import Fundacion from "../components/fundacion/Fundacion";
-import Portada from "../components/layout/Portada";
+import Fundacion from "../../components/fundacion/Fundacion";
+import Portada from "../../components/layout/Portada";
 import styles from "./page.module.css";
 
 export default async function Home() {
@@ -9,7 +9,7 @@ export default async function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
         <Portada/>
-        {/* <Fundacion/> */}
+        <Fundacion/>
       </main>
     </div>
   );
