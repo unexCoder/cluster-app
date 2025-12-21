@@ -16,6 +16,19 @@
   font-family: var(--font-montreal);
 }
 
+.colorSchemaA {
+  --foreground: #CCFF66;
+  --background: #2EC4B6;
+  --text-primary: #2C1320;
+  --text-secondary: #CFCBCA;
+}
+.colorSchemaB {
+  --background: #c30f45;
+  --text-primary: #231123;
+  /* --text-primary: #D8DDDE; */
+  --foreground: #CFCBCA;
+}
+
 .txtContainer {
   padding: 250px 150px 0;
   min-width: 100svw;

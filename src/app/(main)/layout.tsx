@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Footer from "../components/layout/Footer";
+import { NavigationProvider } from "../context/NavigationContext";
 
 export const metadata: Metadata = {
   title: "Festival Cluster",
@@ -13,8 +14,10 @@ export default function MainLayout({
 }>) {
   return (
     <>
-      {children}
-      <Footer />
+      <NavigationProvider>
+        {children}
+        <Footer />
+      </NavigationProvider>
     </>
   );
 }
