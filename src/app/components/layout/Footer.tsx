@@ -39,7 +39,7 @@ export default function Footer() {
               <li>Compromiso Ambiental</li>
               <li><Link href={'/contacto'}>Contacto y equipo</Link></li>
               <li>Ediciones previas</li>
-              <li>Misión</li>
+              <li><Link href={'/microcluster'}>Misión</Link></li>
             </ul>
           </div>
 
