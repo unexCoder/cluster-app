@@ -43,7 +43,7 @@ export default function
                     </h3>
                     <p>
                         El usuario se compromete a utilizar la Plataforma de conformidad
-                        con la leyes vigentes y los presentes Términos y Condiciones.
+                        con las leyes vigentes y los presentes Términos y Condiciones.
                         Queda prohibido:
                     </p>
                     <ul style={{ listStyleType: 'square', lineHeight: '2rem', paddingLeft: '40px', marginBottom: '15px' }}>
@@ -168,11 +168,11 @@ export default function
                         renuncia expresa a cualquier otro fuero.
                     </p>
 
-                    <h3>14. Aceptación</h3>
+                    <h3>13. Aceptación</h3>
                     <p>El uso de la Plataforma implica la aceptación expresa de estos 
                         Términos y Condiciones.</p>
 
-                    <h3>15. Titular</h3>
+                    <h3>14. Titular</h3>
                     <p>
                         La Plataforma es operada por Luis Alfonso Tamagnini, CUIT 20-24411925-6, 
                         con domicilio en Meridiano 2141, Ciudad de Roldán, Provincia de Santa Fe,  
