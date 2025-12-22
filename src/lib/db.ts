@@ -14,6 +14,7 @@ export function getPool(): Pool {
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
+      timezone: '-03:00', // set timezone for every poll 
       // POOL SETTINGS
       waitForConnections: true,   // Wait if no connections available
       connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT || '10'), // Max concurrent connections
@@ -32,7 +33,7 @@ export function getPool(): Pool {
       }
 
     });
-    
+
     console.log('✅ Database connection pool created and running');
   }
   return pool;
