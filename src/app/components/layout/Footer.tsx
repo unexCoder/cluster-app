@@ -55,7 +55,7 @@ export default function Footer() {
         </div>
           <div className={styles.bottomFooter}>
             <p>© 2025 CLUSTER All rights reserved</p>
-            <p className={styles.decorated}>Política de privacidad</p>
+            <p className={styles.decorated}><Link href={'/politica-de-privacidad'}>Política de privacidad</Link></p>
             <p className={styles.decorated}>Términos y condiciones</p>
             <div className={styles.hooverTxt}>
               <span className={styles.originalTxt}>Creditos</span>

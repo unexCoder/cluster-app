@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { emailRegex } from "@/lib/validators/userCredentials";
+import { emailRegex } from "@/lib/validations/userCredentials";
 
 export const newsletterSubscribeSchema = z.object({
   email: z

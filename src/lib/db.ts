@@ -14,15 +14,17 @@ export function getPool(): Pool {
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      waitForConnections: true,
-      connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT || '10'),
-      maxIdle: 10, // Max idle connections
+      // POOL SETTINGS
+      waitForConnections: true,   // Wait if no connections available
+      connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT || '10'), // Max concurrent connections
+      maxIdle: 10,        // Max idle connections
       idleTimeout: 60000, // Close idle connections after 60s
-      queueLimit: 0, // Unlimited queue
-      enableKeepAlive: true,
-      keepAliveInitialDelay: 0,
+      queueLimit: 0,      // Unlimited queue
+      // PERFORMANCE
+      enableKeepAlive: true,      // Keep TCP connection alive
+      keepAliveInitialDelay: 0,   // Start keep-alive immediately
       // Connection health checks
-      connectTimeout: 10000,
+      connectTimeout: 10000,      // 10s to establish connection
       // Prevent connection drops
       charset: 'utf8mb4',
       ssl: {

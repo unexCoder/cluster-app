@@ -4,7 +4,7 @@ import { z, ZodError } from "zod";
 import { query } from '@/lib/db';
 import { randomUUID } from 'crypto';
 import { RowDataPacket } from "mysql2";
-import { emailRegex, passwordSchema } from "@/lib/validators/userCredentials";
+import { emailRegex, passwordSchema } from "@/lib/validations/userCredentials";
 
 const registerSchema = z.object({
     email: z.string().regex(emailRegex, 'Invalid email'),

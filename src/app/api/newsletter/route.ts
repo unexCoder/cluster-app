@@ -2,7 +2,7 @@
 import { query } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { newsletterSubscribeSchema } from "@/lib/validators/newsletter";
+import { newsletterSubscribeSchema } from "@/lib/validations/newsletter";
 import { formatZodError } from '@/lib/zod';
 
 export const maxDuration = 10;
