@@ -23,8 +23,8 @@
   --text-secondary: #CFCBCA;
 }
 .colorSchemaB {
-  --background: #c30f45;
-  --text-primary: #231123;
+  --text-primary: #c30f45;
+  --background: #231123;
   /* --text-primary: #D8DDDE; */
   --foreground: #CFCBCA;
 }
@@ -36,6 +36,7 @@
   background-color: var(--text-primary);
   color: var(--background);
   font-size: 1.2rem;
+  
 }
 
 .txtContainer h1 {
@@ -47,7 +48,8 @@
 }
 
 .txtContainer p {
-  line-height: 2.2rem;
+  line-height: 1.75rem;
+  font-weight: 700;
 }
 
 .txtContainer span {

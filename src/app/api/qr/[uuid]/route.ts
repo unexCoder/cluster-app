@@ -21,7 +21,10 @@ export async function GET(
         // width: 300,
         color: {
           dark: "#231123",  // QR code color
-          light: "#c30f45", // Transparent background
+          // dark: "#CCFF66",  // QR code color
+          // light: "#c30f45", // Transparent background
+          // light: "#2EC4B6", // Transparent background
+          light: "#CCFF66", // Transparent background
         },    
       });
     
