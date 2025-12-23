@@ -4,7 +4,7 @@ import './styles/variables.css'
 import { montreal } from "./fonts";
 import { SessionProvider } from "next-auth/react"
 
-// import type { Metadata } from "next";
+import type { Metadata } from "next";
 // import {  Inter } from "next/font/google";
 
 // const inter = Inter({
@@ -12,10 +12,13 @@ import { SessionProvider } from "next-auth/react"
 //   subsets: ["latin"],
 // });
 
-// export const metadata: Metadata = {
-//   title: "Festival Cluster",
-//   description: "Encuentro de creatividad y transformación digital",
-// };
+export const metadata: Metadata = {
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  }
+};
 
 export default function RootLayout({
   children,
