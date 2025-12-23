@@ -178,7 +178,7 @@ export default function
                         con domicilio en Meridiano 2141, Ciudad de Roldán, Provincia de Santa Fe,  
                         República Argentina.
                     </p>
-                    <p> Correo electrónico de contacto: bosca.music@gmail.com</p>
+                    <p> Contacto: <span style={{fontWeight:'900'}}>luigi@festivalcluster.org</span></p>
                 </div>
 
             </div>
