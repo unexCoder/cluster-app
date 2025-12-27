@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
   
   let bckGnd0: string = searchParams.get('bckGnda') || '#2EC4B6';
   let bckGnd1: string = searchParams.get('bckGndb') || '#c30f45';
+  let color: string = searchParams.get('color') || '#231123';
 
    // Ensure colors have # prefix for canvas
   bckGnd0 = bckGnd0.startsWith('#') ? bckGnd0 : `#${bckGnd0}`;
@@ -172,14 +173,9 @@ export async function GET(request: NextRequest) {
     const attenuation = 1 / (1 + 0.01 * toLightLength);
     const pointIntensity = 1.0 * pointDot * attenuation;
     
-    // Base color matching MeshStandardMaterial: color: 'rgba(123, 25, 110, 1)'
-    const baseR = 49;  // 0x31
-    const baseG = 55;  // 0x37
-    const baseB = 21;  // 0x15
-    
-    // const baseR = 123;  // 0x31
-    // const baseG = 25;  // 0x37
-    // const baseB = 110;  // 0x15
+    const baseR = parseColor(color).r;
+    const baseG = parseColor(color).g;
+    const baseB = parseColor(color).b;
     
     // Apply ambient light color contribution
     const ambientR = (baseR / 255) * ambientColor.r * ambientIntensity;
