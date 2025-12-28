@@ -32,7 +32,7 @@ export default function DashboardLayout({
       case "staff":
         return "#2563eb"
       case "artist":
-        return "#2563eb"
+        return "#2EC4B6"
       case "customer":
       default:
         return "#059669"

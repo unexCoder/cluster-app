@@ -118,11 +118,24 @@ export async function POST(req: Request) {
       process.env.JWT_SECRET || "your-secret-key-change-in-production"
     );
 
-    const token = await new SignJWT({ userId: newUser[0].id.toString() })
+    const user = newUser[0];
+
+    const token = await new SignJWT({ 
+        userId: user.id.toString(),
+        email: user.email,
+        name: user.first_name,
+        role: user.role,
+       })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
       .setExpirationTime("7d")
       .sign(secret);
+
+    // const token = await new SignJWT({ userId: newUser[0].id.toString() })
+    //   .setProtectedHeader({ alg: "HS256" })
+    //   .setIssuedAt()
+    //   .setExpirationTime("7d")
+    //   .sign(secret);
 
     return NextResponse.json(
       {
