@@ -13,6 +13,13 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || "your-secret-key-change-in-production"
 );
 
+// Define role-based route permissions
+const ROLE_ROUTES = {
+  admin: ["/dashboard/admin", "/dashboard/manager", "/dashboard/user"],
+  manager: ["/dashboard/manager", "/dashboard/user"],
+  user: ["/dashboard/user"]
+} as const;
+
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
@@ -32,9 +39,24 @@ export async function middleware(request: NextRequest) {
     }
 
     try {
-      await jwtVerify(token, JWT_SECRET);
+      const payload = await jwtVerify(token, JWT_SECRET);
       // Token is valid, continue
+      // Debug logs
+      console.log('=== JWT Payload Debug ===');
+      console.log('Full payload:', payload);
+      // console.log('Role:', payload.role);
+      // console.log('Email:', payload.email);
+      console.log('========================');
+  
+      // const userRole = (payload.role as string) || "user";
       return NextResponse.next();
+      // Pass user role to the page via headers
+      const response = NextResponse.next();
+      // response.headers.set("x-user-role", payload.role as string || "user");
+      // response.headers.set("x-user-email", payload.email as string || "");
+      // response.headers.set("x-user-name", payload.name as string || "");
+      
+      return response;
     } catch (error) {
       // Token is invalid or expired
       const response = NextResponse.redirect(new URL("/login", request.url));

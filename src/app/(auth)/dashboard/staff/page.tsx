@@ -1,0 +1,107 @@
+"use client"
+
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { getToken, isAuthenticated } from "@/lib/auth-client"
+import { useAuthHeader } from "@/hooks/useAuthHeader"
+import DashboardLayout, { cardStyle } from "../components/DashboardLayout"
+
+interface UserData {
+  userId: string
+  email: string
+  name: string
+  role: string
+}
+
+export default function StaffDashboard() {
+  const router = useRouter()
+  useAuthHeader()
+  
+  const [loading, setLoading] = useState(true)
+  const [userData, setUserData] = useState<UserData | null>(null)
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.push("/login")
+      return
+    }
+
+    const token = getToken()
+    if (token) {
+      try {
+        const parts = token.split(".")
+        if (parts.length === 3) {
+          const decoded = JSON.parse(
+            Buffer.from(parts[1], "base64").toString("utf-8")
+          )
+          
+          // Check if user has manager role
+          if (decoded.role !== "staff") {
+            router.replace(`/dashboard/${decoded.role}`)
+            return
+          }
+
+          setUserData({
+            userId: decoded.userId || "",
+            email: decoded.email || "User",
+            name: decoded.name || "User",
+            role: decoded.role || "customer"
+          })
+        }
+      } catch (err) {
+        console.error("Failed to decode token:", err)
+        router.push("/login")
+        return
+      }
+    }
+
+    setLoading(false)
+  }, [router])
+
+  if (loading || !userData) {
+    return (
+      <div style={{ 
+        display: "flex", 
+        justifyContent: "center", 
+        alignItems: "center", 
+        height: "100vh" 
+      }}>
+        <p>Loading...</p>
+      </div>
+    )
+  }
+
+  return (
+    <DashboardLayout
+      userName={userData.name}
+      userEmail={userData.email}
+      userRole="staff"
+    >
+      <>staff layout</>
+      {/* <div>
+        <h2>📋 Manager Dashboard</h2>
+        <p style={{ color: "#666", marginBottom: "20px" }}>
+          Team oversight and operational management
+        </p>
+        <div style={{ display: "grid", gap: "15px" }}>
+          <div style={cardStyle}>
+            <h3>👨‍👩‍👧‍👦 Team Management</h3>
+            <p>Oversee your team members and assignments</p>
+          </div>
+          <div style={cardStyle}>
+            <h3>✅ Approval Queue</h3>
+            <p>Review and approve pending requests</p>
+          </div>
+          <div style={cardStyle}>
+            <h3>📈 Team Reports</h3>
+            <p>View team performance and metrics</p>
+          </div>
+          <div style={cardStyle}>
+            <h3>🎯 Goals & Targets</h3>
+            <p>Track team goals and objectives</p>
+          </div>
+        </div>
+      </div> */}
+    </DashboardLayout>
+  )
+}
