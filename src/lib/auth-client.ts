@@ -56,6 +56,7 @@ export async function login(
     }
 
     return data;
+    
   } catch (error: any) {
     // Handle network errors and JSON parsing errors
     if (error instanceof SyntaxError) {

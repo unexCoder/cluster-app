@@ -30,7 +30,7 @@ export default function DashboardPage() {
           const decoded = JSON.parse(
             Buffer.from(parts[1], "base64").toString("utf-8")
           )
-          setUserEmail(decoded.email || "User")
+          setUserEmail(decoded.name || "User")
         }
       } catch (err) {
         console.error("Failed to decode token:", err)

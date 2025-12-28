@@ -27,7 +27,7 @@ export default function LoginForm() {
         email: validatedData.email,
         password: validatedData.password,
       });
-
+      
       // Store token
       if (response?.token) {
         setToken(response.token);
