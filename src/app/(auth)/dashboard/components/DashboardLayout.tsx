@@ -51,9 +51,9 @@ export default function DashboardLayout({
         gap: "20px"
       }}>
         <div>
-          <h1 style={{ margin: "0 0 10px 0" }}>Dashboard</h1>
+          <h1 style={{ margin: "0 0 10px 0" }}>Cluster Dashboard</h1>
           <p style={{ margin: "5px 0", fontSize: "16px" }}>
-            Welcome back, <strong>{userName}</strong>!
+            Bienvenido, <strong>{userName}</strong>!
           </p>
           <p style={{ margin: "5px 0", fontSize: "14px", color: "#666" }}>
             {userEmail}
