@@ -26,7 +26,8 @@
             "driver": "MySQL",
             "name": "AWS RDS MySQL",
             "username": "admin",
-            "database": "festival_cluster"
+            "database": "festival_cluster",
+            "askForPassword": true
         }
     ]
 }

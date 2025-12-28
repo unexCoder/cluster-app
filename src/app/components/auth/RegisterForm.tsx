@@ -1,108 +1,154 @@
-"use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { registerSchema, RegisterInput } from "@/lib/validations/auth";
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { register, setToken } from '@/lib/auth-client';
+import styles from './registerForm.module.css';
+
+interface FormData {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+interface ApiError {
+  error?: string | any[];
+  message?: string;
+}
 
 export default function RegisterForm() {
   const router = useRouter();
-  const [formData, setFormData] = useState<RegisterInput>({
-    name: "",
-    email: "",
-    password: "",
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError("");
+    setError('');
     setLoading(true);
 
     try {
-      const validatedData = registerSchema.parse(formData);
+      // Validate inputs client-side
+      if (!formData.name.trim()) {
+        setError('Name is required');
+        setLoading(false);
+        return;
+      }
 
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(validatedData),
+      if (!formData.email.trim()) {
+        setError('Email is required');
+        setLoading(false);
+        return;
+      }
+
+      if (!formData.password) {
+        setError('Password is required');
+        setLoading(false);
+        return;
+      }
+
+      if (formData.password !== formData.confirmPassword) {
+        setError('Passwords do not match');
+        setLoading(false);
+        return;
+      }
+
+      // Call register function from auth utilities
+      const response = await register({
+        name: formData.name.trim(),
+        email: formData.email.toLowerCase().trim(),
+        password: formData.password,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Registration failed");
-      }
-
-      router.push("/login?registered=true");
-    } catch (err: any) {
-      if (err.errors) {
-        setError(err.errors[0].message);
+      // Store token and redirect to dashboard
+      if (response?.token) {
+        setToken(response.token);
+        router.push('/dashboard');
+        router.refresh();
       } else {
-        setError(err.message || "Something went wrong");
+        setError('No token received from server');
+        setLoading(false);
       }
-    } finally {
+    } catch (err: any) {
+      const errorMsg = err.message || err?.response?.data?.error || 'Registration failed';
+      setError(errorMsg);
       setLoading(false);
+      console.error("Register error:", err);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {error && (
-        <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">
-          {error}
-        </div>
-      )}
-
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium mb-2">
-          Name
-        </label>
+    <form onSubmit={handleSubmit}>
+      <div className={styles.formGroup}>
+        <label htmlFor="name">Full Name</label>
         <input
-          id="name"
           type="text"
+          id="name"
+          name="name"
           value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full px-3 py-2 border rounded-md"
+          onChange={handleChange}
+          placeholder="John Doe"
           required
         />
       </div>
 
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium mb-2">
-          Email
-        </label>
+      <div className={styles.formGroup}>
+        <label htmlFor="email">Email</label>
         <input
-          id="email"
           type="email"
+          id="email"
+          name="email"
           value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className="w-full px-3 py-2 border rounded-md"
+          onChange={handleChange}
+          placeholder="your@email.com"
           required
         />
       </div>
 
-      <div>
-        <label htmlFor="password" className="block text-sm font-medium mb-2">
-          Password
-        </label>
+      <div className={styles.formGroup}>
+        <label htmlFor="password">Password</label>
         <input
-          id="password"
           type="password"
+          id="password"
+          name="password"
           value={formData.password}
-          onChange={(e) =>
-            setFormData({ ...formData, password: e.target.value })
-          }
-          className="w-full px-3 py-2 border rounded-md"
+          onChange={handleChange}
+          placeholder="Min. 8 characters"
           required
         />
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
-      >
-        {loading ? "Creating account..." : "Create Account"}
+      <div className={styles.formGroup}>
+        <label htmlFor="confirmPassword">Confirm Password</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          placeholder="Confirm your password"
+          required
+        />
+      </div>
+
+      {error && <p className={styles.error}>{error}</p>}
+
+      <button type="submit" disabled={loading} className={styles.submitButton}>
+        {loading ? 'Creating Account...' : 'Sign Up'}
       </button>
     </form>
   );
