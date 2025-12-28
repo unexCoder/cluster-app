@@ -9,13 +9,14 @@ export async function GET(request: NextRequest) {
   let bckGnd0: string = searchParams.get('bckGnda') || '#2EC4B6';
   let bckGnd1: string = searchParams.get('bckGndb') || '#c30f45';
   let color: string = searchParams.get('color') || '#231123';
+  const w: number = parseInt(searchParams.get('width') || '3840');
 
    // Ensure colors have # prefix for canvas
   bckGnd0 = bckGnd0.startsWith('#') ? bckGnd0 : `#${bckGnd0}`;
   bckGnd1 = bckGnd1.startsWith('#') ? bckGnd1 : `#${bckGnd1}`;
 
-  const width: number = 3840*3/4;  // 4K width
-  const height: number = 3840; // 4K height
+  const width: number = w*3/4;  // 4K width
+  const height: number = w; // 4K height
 
   // Create canvas
   const canvas: Canvas = createCanvas(width, height);
