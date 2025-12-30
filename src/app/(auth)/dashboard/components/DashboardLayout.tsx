@@ -74,12 +74,3 @@ export default function DashboardLayout({
     </div>
   )
 }
-
-export const cardStyle: React.CSSProperties = {
-  padding: "20px",
-  border: "1px solid #e5e7eb",
-  borderRadius: "8px",
-  backgroundColor: "#fff",
-  cursor: "pointer",
-  transition: "all 0.2s",
-}

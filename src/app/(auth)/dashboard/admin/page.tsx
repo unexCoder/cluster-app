@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { getToken, isAuthenticated } from "@/lib/auth-client"
 import { useAuthHeader } from "@/hooks/useAuthHeader"
-import DashboardLayout, { cardStyle } from "../components/DashboardLayout"
+import DashboardLayout from "../components/DashboardLayout"
+import NavBar from "../components/NavBar"
 
 interface UserData {
   userId: string
@@ -71,6 +72,10 @@ export default function AdminDashboard() {
     )
   }
 
+  const navItems = [
+  { label: 'Managment', href: '/managment' },
+  { label: 'Profile', href: '/profile' }
+];
   return (
     <div>
       <DashboardLayout
@@ -78,31 +83,7 @@ export default function AdminDashboard() {
         userEmail={userData.email}
         userRole="admin"
       >
-        <>admin layout</>
-        {/* <div>
-          <h2>🔧 Admin Dashboard</h2>
-          <p style={{ color: "#666", marginBottom: "20px" }}>
-            Full system access and management capabilities
-          </p>
-          <div style={{ display: "grid", gap: "15px" }}>
-            <div style={cardStyle}>
-              <h3>👥 User Management</h3>
-              <p>Manage all users, roles, and permissions</p>
-            </div>
-            <div style={cardStyle}>
-              <h3>⚙️ System Settings</h3>
-              <p>Configure application settings and preferences</p>
-            </div>
-            <div style={cardStyle}>
-              <h3>📊 Analytics & Reports</h3>
-              <p>View comprehensive system analytics</p>
-            </div>
-            <div style={cardStyle}>
-              <h3>🔐 Security Logs</h3>
-              <p>Monitor system security and audit logs</p>
-            </div>
-          </div>
-        </div> */}
+        <NavBar items={navItems} />
       </DashboardLayout>
     </div>
   )

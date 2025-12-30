@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { getToken, isAuthenticated } from "@/lib/auth-client"
 import { useAuthHeader } from "@/hooks/useAuthHeader"
-import DashboardLayout, { cardStyle } from "../components/DashboardLayout"
+import DashboardLayout from "../components/DashboardLayout"
+import NavBar from "../components/NavBar"
 
 interface UserData {
   userId: string
@@ -16,7 +17,7 @@ interface UserData {
 export default function AdminDashboard() {
   const router = useRouter()
   useAuthHeader()
-  
+
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<UserData | null>(null)
 
@@ -34,7 +35,7 @@ export default function AdminDashboard() {
           const decoded = JSON.parse(
             Buffer.from(parts[1], "base64").toString("utf-8")
           )
-          
+
           // Check if user has admin role
           if (decoded.role !== "super_admin") {
             router.replace(`/dashboard/${decoded.role}`)
@@ -60,16 +61,26 @@ export default function AdminDashboard() {
 
   if (loading || !userData) {
     return (
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "center", 
-        alignItems: "center", 
-        height: "100vh" 
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh"
       }}>
         <p>Loading...</p>
       </div>
     )
   }
+
+  const navItems = [
+    { label: 'System Settings', href: '/user-managment' },
+    { label: 'User Managment', href: '/user-managment' },
+    { label: 'Cluster Managment', href: '/cluster-managment' },
+    { label: 'Financial Control', href: '/financial-control' },
+    { label: 'Analitics', href: '/analitics' },
+    { label: 'Security Logs', href: '/security-logs' },
+    { label: 'Profile', href: '/profile' }
+  ]
 
   return (
     <DashboardLayout
@@ -77,31 +88,7 @@ export default function AdminDashboard() {
       userEmail={userData.email}
       userRole="super_admin"
     >
-      <>super_admin layout</>
-      {/* <div>
-        <h2>🔧 Admin Dashboard</h2>
-        <p style={{ color: "#666", marginBottom: "20px" }}>
-          Full system access and management capabilities
-        </p>
-        <div style={{ display: "grid", gap: "15px" }}>
-          <div style={cardStyle}>
-            <h3>👥 User Management</h3>
-            <p>Manage all users, roles, and permissions</p>
-          </div>
-          <div style={cardStyle}>
-            <h3>⚙️ System Settings</h3>
-            <p>Configure application settings and preferences</p>
-          </div>
-          <div style={cardStyle}>
-            <h3>📊 Analytics & Reports</h3>
-            <p>View comprehensive system analytics</p>
-          </div>
-          <div style={cardStyle}>
-            <h3>🔐 Security Logs</h3>
-            <p>Monitor system security and audit logs</p>
-          </div>
-        </div>
-      </div> */}
+      <NavBar items={navItems}/>
     </DashboardLayout>
   )
 }

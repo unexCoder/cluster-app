@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { getToken, isAuthenticated } from "@/lib/auth-client"
 import { useAuthHeader } from "@/hooks/useAuthHeader"
-import DashboardLayout, { cardStyle } from "../components/DashboardLayout"
+import DashboardLayout from "../components/DashboardLayout"
+import NavBar from "../components/NavBar"
 
 interface UserData {
   userId: string
@@ -71,13 +72,19 @@ export default function StaffDashboard() {
     )
   }
 
+  const navItems = [
+    { label: 'Managment', href: '/managment' },
+    { label: 'Task Control', href: '/task-control' },
+    { label: 'Profile', href: '/profile' }
+  ];
+
   return (
     <DashboardLayout
       userName={userData.name}
       userEmail={userData.email}
       userRole="staff"
     >
-      <>staff layout</>
+      <NavBar items={navItems}/>
       {/* <div>
         <h2>📋 Manager Dashboard</h2>
         <p style={{ color: "#666", marginBottom: "20px" }}>
