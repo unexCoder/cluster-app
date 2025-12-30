@@ -48,7 +48,8 @@ next-env.d.ts
 /database
 
 # dev docs
-/PROJECT_ANALYSIS.md
+z_PROJECT_ANALYSIS.md
+z_AUTH_IMPLEMENTATION_ANALYSIS.md
 em.html
 /src/app/api/api_design.txt
 
