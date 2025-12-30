@@ -273,8 +273,8 @@ import path from 'path';
 // Register your custom font (do this once at module load)
 // Adjust the path to match where your font file is located
 try {
-  registerFont(path.join(process.cwd(), 'public/fonts/YourFont.ttf'), { 
-    family: 'CustomFont' 
+  registerFont(path.join(process.cwd(), 'public/fonts/Montreal.otf'), { 
+    family: 'Montreal' 
   });
 } catch (error) {
   console.error('Font registration failed:', error);
@@ -289,22 +289,22 @@ export async function GET(request: NextRequest) {
   let color: string = searchParams.get('color') || '#231123';
   const w: number = parseInt(searchParams.get('width') || '3840');
   
+  // Ensure colors have # prefix for canvas
+  bckGnd0 = bckGnd0.startsWith('#') ? bckGnd0 : `#${bckGnd0}`;
+  bckGnd1 = bckGnd1.startsWith('#') ? bckGnd1 : `#${bckGnd1}`;
+  
+  const width: number = w * 3 / 4;
+  const height: number = w;
+  
   // Text parameters
   const text: string | null = searchParams.get('text');
   const textColor: string = searchParams.get('textColor') || 'ffffff';
   const textSize: number = parseInt(searchParams.get('textSize') || '200');
   const textPosition: string = searchParams.get('textPos') || 'center';
 
-  // Ensure colors have # prefix for canvas
-  bckGnd0 = bckGnd0.startsWith('#') ? bckGnd0 : `#${bckGnd0}`;
-  bckGnd1 = bckGnd1.startsWith('#') ? bckGnd1 : `#${bckGnd1}`;
-
-  const width: number = w * 3 / 4;
-  const height: number = w;
-
   // Parse cluster color ONCE before the loop
   const clusterRGB = parseColor(color);
-  console.log('Cluster RGB:', clusterRGB); // DEBUG
+  // console.log('Cluster RGB:', clusterRGB); // DEBUG
 
   // Create canvas
   const canvas: Canvas = createCanvas(width, height);
@@ -508,7 +508,7 @@ export async function GET(request: NextRequest) {
     let textY: number;
     switch (textPosition) {
       case 'top':
-        textY = height * 0.1;
+        textY = height * 0.08;
         break;
       case 'bottom':
         textY = height * 0.85;
@@ -521,7 +521,7 @@ export async function GET(request: NextRequest) {
 
     const textX = width / 2;
     
-    // Use custom font instead of Arial
+    // Use custom font
     ctx.font = `bold ${textSize}px Montreal`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
