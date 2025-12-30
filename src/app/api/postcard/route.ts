@@ -539,11 +539,22 @@ export async function GET(request: NextRequest) {
     // ctx.lineWidth = textSize / 6;
     // ctx.strokeText(text, textX, textY);
 
+    // Set shadow properties before drawing text
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.3)'; // Black with 30% opacity
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetX = 9;
+    ctx.shadowOffsetY = 9;
+    
     // Fill with bright color on top
     const finalTextColor = textColor.startsWith('#') ? textColor : `#${textColor}`;
     ctx.fillStyle = finalTextColor;
     ctx.fillText(text, textX, textY);
     
+    // Reset shadow to avoid affecting other drawings
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
     // console.log('Text drawn at:', textX, textY, 'with color:', finalTextColor); // DEBUG
   }
 
