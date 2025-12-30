@@ -72,36 +72,38 @@ export default function AdminDashboard() {
   }
 
   return (
-    <DashboardLayout
-      userName={userData.name}
-      userEmail={userData.email}
-      userRole="admin"
-    >
-      <>admin layout</>
-      {/* <div>
-        <h2>🔧 Admin Dashboard</h2>
-        <p style={{ color: "#666", marginBottom: "20px" }}>
-          Full system access and management capabilities
-        </p>
-        <div style={{ display: "grid", gap: "15px" }}>
-          <div style={cardStyle}>
-            <h3>👥 User Management</h3>
-            <p>Manage all users, roles, and permissions</p>
+    <div>
+      <DashboardLayout
+        userName={userData.name}
+        userEmail={userData.email}
+        userRole="admin"
+      >
+        <>admin layout</>
+        {/* <div>
+          <h2>🔧 Admin Dashboard</h2>
+          <p style={{ color: "#666", marginBottom: "20px" }}>
+            Full system access and management capabilities
+          </p>
+          <div style={{ display: "grid", gap: "15px" }}>
+            <div style={cardStyle}>
+              <h3>👥 User Management</h3>
+              <p>Manage all users, roles, and permissions</p>
+            </div>
+            <div style={cardStyle}>
+              <h3>⚙️ System Settings</h3>
+              <p>Configure application settings and preferences</p>
+            </div>
+            <div style={cardStyle}>
+              <h3>📊 Analytics & Reports</h3>
+              <p>View comprehensive system analytics</p>
+            </div>
+            <div style={cardStyle}>
+              <h3>🔐 Security Logs</h3>
+              <p>Monitor system security and audit logs</p>
+            </div>
           </div>
-          <div style={cardStyle}>
-            <h3>⚙️ System Settings</h3>
-            <p>Configure application settings and preferences</p>
-          </div>
-          <div style={cardStyle}>
-            <h3>📊 Analytics & Reports</h3>
-            <p>View comprehensive system analytics</p>
-          </div>
-          <div style={cardStyle}>
-            <h3>🔐 Security Logs</h3>
-            <p>Monitor system security and audit logs</p>
-          </div>
-        </div>
-      </div> */}
-    </DashboardLayout>
+        </div> */}
+      </DashboardLayout>
+    </div>
   )
 }

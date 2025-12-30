@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { logout } from "@/lib/auth-client"
+import styles from './dashboard.module.css'
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -40,52 +41,27 @@ export default function DashboardLayout({
   }
 
   return (
-    <div style={{ padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
-      {/* Header */}
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "space-between", 
-        alignItems: "flex-start",
-        marginBottom: "30px",
-        flexWrap: "wrap",
-        gap: "20px"
-      }}>
-        <div>
-          <h1 style={{ margin: "0 0 10px 0" }}>Cluster Dashboard</h1>
-          <p style={{ margin: "5px 0", fontSize: "16px" }}>
+    <div className={styles.container}>
+      <div className={styles.innerContainer}>
+        <div className={styles.header}>
+          <h1>Cluster Dashboard</h1>
+          <p>
             Bienvenido, <strong>{userName}</strong>!
           </p>
-          <p style={{ margin: "5px 0", fontSize: "14px", color: "#666" }}>
+          <p className={styles.userEmail}>
             {userEmail}
           </p>
-          <span style={{
-            display: "inline-block",
-            marginTop: "10px",
-            padding: "4px 12px",
-            backgroundColor: getRoleBadgeColor(),
-            color: "white",
-            borderRadius: "4px",
-            fontSize: "12px",
-            fontWeight: "600",
-            textTransform: "uppercase"
-          }}>
+          <span 
+            style={{ backgroundColor: getRoleBadgeColor()}}
+            className={styles.roleDisplay}
+            >
             {userRole}
           </span>
         </div>
         
         <button
           onClick={handleLogout}
-          style={{
-            padding: "10px 24px",
-            backgroundColor: "#c30f45",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-            borderRadius: "6px",
-            fontSize: "14px",
-            fontWeight: "500",
-            transition: "background-color 0.2s"
-          }}
+          className={styles.signOutBtn}
         >
           Sign Out
         </button>
