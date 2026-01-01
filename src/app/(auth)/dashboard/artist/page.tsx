@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { getToken, isAuthenticated } from "@/lib/auth-client"
 import { useAuthHeader } from "@/hooks/useAuthHeader"
+import styles from './page.module.css'
 import DashboardLayout from "../components/DashboardLayout"
 import NavBar from "../components/NavBar"
 
@@ -20,6 +21,12 @@ export default function AdminDashboard() {
   
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<UserData | null>(null)
+  
+  const [displayUX, setDisplayUX] = useState('');
+  const updateUX = (value: string) => {
+    setDisplayUX(value);
+    console.log(value)
+  };
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -73,19 +80,53 @@ export default function AdminDashboard() {
   }
 
   const navItems = [
-    { label: 'Artist Managment', href: '/artist-managment' },
-    { label: 'Gig Managment', href: '/gig-managment' },
-    { label: 'Fee Control', href: '/fee-control' },
-    { label: 'Profile', href: '/profile' }
+    { label: 'Artist Managment',
+      children:[
+        {label:'Password'},
+        {label:'Picture Profile'},
+      ]
+     },
+    { label: 'Gig Managment' },
+    { label: 'Fee Control' },
+    { label: 'Profile',
+      children:[
+        {label:'Password'},
+        {label:'Picture Profile'},
+      ]
+    }
   ]
 
   return (
-    <DashboardLayout
-      userName={userData.name}
-      userEmail={userData.email}
-      userRole="artist"
-    >
-      <NavBar items={navItems}/>
-    </DashboardLayout>
+    <div style={{height:'100svh'}}>
+      <DashboardLayout
+        userName={userData.name}
+        userEmail={userData.email}
+        userRole="artist"
+      >
+        <div className={styles.innerDashboardContainer}>
+          <NavBar items={navItems} onUpdate={updateUX}/>
+
+          {displayUX === navItems[0].label && (
+            <>artist-managment</>
+            )}
+          {displayUX === navItems[1].label && (
+            <>gig-managment</>
+            )}
+          {displayUX === navItems[2].label && (
+            <>fee-control</>
+            )}
+          {displayUX === navItems[3].label && (
+            <>profile</>
+            )}
+          {displayUX === navItems[3].children?.[0].label && (
+            <>password</>
+            )}
+          {displayUX === navItems[3].children?.[1].label && (
+            <>profile-picture</>
+            )}
+
+        </div>
+      </DashboardLayout>
+    </div>
   )
 }
