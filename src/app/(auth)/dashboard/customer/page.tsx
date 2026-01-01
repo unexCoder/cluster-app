@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { getToken, isAuthenticated } from "@/lib/auth-client"
 import { useAuthHeader } from "@/hooks/useAuthHeader"
-import DashboardLayout, { cardStyle } from "../components/DashboardLayout"
+import DashboardLayout from "../components/DashboardLayout"
 
 interface UserData {
   userId: string
@@ -20,6 +20,12 @@ export default function CustomerDashboard() {
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<UserData | null>(null)
 
+  const [displayUX, setDisplayUX] = useState('');
+  const updateUX = (value: string) => {
+    setDisplayUX(value);
+    console.log(value)
+  };
+  
   useEffect(() => {
     if (!isAuthenticated()) {
       router.push("/login")
@@ -78,30 +84,6 @@ export default function CustomerDashboard() {
       userRole="customer"
     >
       <>customer layout</>
-      {/* <div>
-        <h2>🎫 Customer Dashboard</h2>
-        <p style={{ color: "#666", marginBottom: "20px" }}>
-          Welcome to Festival Cluster!
-        </p>
-        <div style={{ display: "grid", gap: "15px" }}>
-          <div style={cardStyle}>
-            <h3>🎪 My Events</h3>
-            <p>View and manage your festival registrations</p>
-          </div>
-          <div style={cardStyle}>
-            <h3>🎟️ My Tickets</h3>
-            <p>Access your purchased tickets and QR codes</p>
-          </div>
-          <div style={cardStyle}>
-            <h3>👤 Profile Settings</h3>
-            <p>Update your personal information</p>
-          </div>
-          <div style={cardStyle}>
-            <h3>💳 Payment History</h3>
-            <p>View your transaction history</p>
-          </div>
-        </div>
-      </div> */}
     </DashboardLayout>
   )
 }

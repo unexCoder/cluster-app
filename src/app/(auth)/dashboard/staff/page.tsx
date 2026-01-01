@@ -21,6 +21,12 @@ export default function StaffDashboard() {
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<UserData | null>(null)
 
+  const [displayUX, setDisplayUX] = useState('');
+  const updateUX = (value: string) => {
+    setDisplayUX(value);
+    console.log(value)
+  };
+
   useEffect(() => {
     if (!isAuthenticated()) {
       router.push("/login")
@@ -84,31 +90,7 @@ export default function StaffDashboard() {
       userEmail={userData.email}
       userRole="staff"
     >
-      <NavBar items={navItems}/>
-      {/* <div>
-        <h2>📋 Manager Dashboard</h2>
-        <p style={{ color: "#666", marginBottom: "20px" }}>
-          Team oversight and operational management
-        </p>
-        <div style={{ display: "grid", gap: "15px" }}>
-          <div style={cardStyle}>
-            <h3>👨‍👩‍👧‍👦 Team Management</h3>
-            <p>Oversee your team members and assignments</p>
-          </div>
-          <div style={cardStyle}>
-            <h3>✅ Approval Queue</h3>
-            <p>Review and approve pending requests</p>
-          </div>
-          <div style={cardStyle}>
-            <h3>📈 Team Reports</h3>
-            <p>View team performance and metrics</p>
-          </div>
-          <div style={cardStyle}>
-            <h3>🎯 Goals & Targets</h3>
-            <p>Track team goals and objectives</p>
-          </div>
-        </div>
-      </div> */}
+      <NavBar items={navItems} onUpdate={updateUX}/>
     </DashboardLayout>
   )
 }

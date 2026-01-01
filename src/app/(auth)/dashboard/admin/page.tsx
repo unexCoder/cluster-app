@@ -21,6 +21,12 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<UserData | null>(null)
 
+  const [displayUX, setDisplayUX] = useState('');
+  const updateUX = (value: string) => {
+    setDisplayUX(value);
+    console.log(value)
+  };
+
   useEffect(() => {
     if (!isAuthenticated()) {
       router.push("/login")
@@ -83,7 +89,7 @@ export default function AdminDashboard() {
         userEmail={userData.email}
         userRole="admin"
       >
-        <NavBar items={navItems} />
+        <NavBar items={navItems} onUpdate={updateUX} />
       </DashboardLayout>
     </div>
   )
