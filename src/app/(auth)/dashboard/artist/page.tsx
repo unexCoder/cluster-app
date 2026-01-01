@@ -7,6 +7,7 @@ import { useAuthHeader } from "@/hooks/useAuthHeader"
 import styles from './page.module.css'
 import DashboardLayout from "../components/DashboardLayout"
 import NavBar from "../components/NavBar"
+import DashboardContent from "../components/DashboardContent"
 
 interface UserData {
   userId: string
@@ -105,26 +106,7 @@ export default function AdminDashboard() {
       >
         <div className={styles.innerDashboardContainer}>
           <NavBar items={navItems} onUpdate={updateUX}/>
-
-          {displayUX === navItems[0].label && (
-            <>artist-managment</>
-            )}
-          {displayUX === navItems[1].label && (
-            <>gig-managment</>
-            )}
-          {displayUX === navItems[2].label && (
-            <>fee-control</>
-            )}
-          {displayUX === navItems[3].label && (
-            <>profile</>
-            )}
-          {displayUX === navItems[3].children?.[0].label && (
-            <>password</>
-            )}
-          {displayUX === navItems[3].children?.[1].label && (
-            <>profile-picture</>
-            )}
-
+        <DashboardContent activeView={displayUX} />
         </div>
       </DashboardLayout>
     </div>

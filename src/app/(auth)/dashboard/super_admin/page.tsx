@@ -4,8 +4,10 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { getToken, isAuthenticated } from "@/lib/auth-client"
 import { useAuthHeader } from "@/hooks/useAuthHeader"
+import styles from './page.module.css'
 import DashboardLayout from "../components/DashboardLayout"
 import NavBar from "../components/NavBar"
+import DashboardContent from "../components/DashboardContent"
 
 interface UserData {
   userId: string
@@ -20,6 +22,12 @@ export default function AdminDashboard() {
 
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<UserData | null>(null)
+
+  const [displayUX, setDisplayUX] = useState('');
+  const updateUX = (value: string) => {
+    setDisplayUX(value);
+    console.log(value)
+  };
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -73,22 +81,31 @@ export default function AdminDashboard() {
   }
 
   const navItems = [
-    { label: 'System Settings', href: '/user-managment' },
-    { label: 'User Managment', href: '/user-managment' },
-    { label: 'Cluster Managment', href: '/cluster-managment' },
-    { label: 'Financial Control', href: '/financial-control' },
-    { label: 'Analitics', href: '/analitics' },
-    { label: 'Security Logs', href: '/security-logs' },
-    { label: 'Profile', href: '/profile' }
+    { label: 'System Settings' },
+    { label: 'User Managment' , children: [
+      {label:'Browse Users'}
+    ]},
+    { label: 'Cluster Managment' },
+    { label: 'Financial Control' },
+    { label: 'Analitics' },
+    { label: 'Security Logs' },
+    { label: 'Profile' }
   ]
 
   return (
-    <DashboardLayout
-      userName={userData.name}
-      userEmail={userData.email}
-      userRole="super_admin"
-    >
-      <NavBar items={navItems}/>
-    </DashboardLayout>
+    
+    <div style={{height:'100svh'}}>
+      <DashboardLayout
+        userName={userData.name}
+        userEmail={userData.email}
+        userRole="super_admin"
+      >
+        <div className={styles.innerDashboardContainer}>
+          <NavBar items={navItems} onUpdate={updateUX} />
+          <DashboardContent activeView={displayUX} />
+        </div>
+      </DashboardLayout>
+    </div>
+
   )
 }
