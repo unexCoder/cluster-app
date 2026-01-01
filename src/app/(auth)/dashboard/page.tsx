@@ -1,38 +1,51 @@
 "use client"
 
-import { useSession, signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { getToken, isAuthenticated } from "@/lib/auth-client"
+import { useAuthHeader } from "@/hooks/useAuthHeader"
 
-export default function DashboardPage() {
-  const { data: session, status } = useSession()
+export default function DashboardRedirect() {
   const router = useRouter()
+  useAuthHeader()
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (status === "unauthenticated") {
+    if (!isAuthenticated()) {
+      router.push("/login")
+      return
+    }
+
+    const token = getToken()
+    if (token) {
+      try {
+        const parts = token.split(".")
+        if (parts.length === 3) {
+          const decoded = JSON.parse(
+            Buffer.from(parts[1], "base64").toString("utf-8")
+          )
+          const role = decoded.role || "customer"
+          
+          // Redirect to role-specific dashboard
+          router.replace(`/dashboard/${role}`)
+        }
+      } catch (err) {
+        console.error("Failed to decode token:", err)
+        router.push("/login")
+      }
+    } else {
       router.push("/login")
     }
-  }, [status, router])
-
-  if (status === "loading") return <p>Loading...</p>
+  }, [router])
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Dashboard</h1>
-      <p>Welcome, {session?.user?.email}!</p>
-      
-      <button
-        onClick={() => signOut({ redirect: true, redirectTo: "/login" })}
-        style={{
-          padding: "10px 20px",
-          backgroundColor: "#c30f45",
-          color: "white",
-          border: "none",
-          cursor: "pointer"
-        }}
-      >
-        Sign Out
-      </button>
+    <div style={{ 
+      display: "flex", 
+      justifyContent: "center", 
+      alignItems: "center", 
+      height: "100vh" 
+    }}>
+      <p>Loading dashboard...</p>
     </div>
   )
 }
