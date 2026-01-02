@@ -33,17 +33,17 @@ export async function GET(request: NextRequest) {
   const title: string | null = searchParams.get('title');
   const titleColor: string = searchParams.get('titleColor') || 'ffffff';
   const titleSize: number = parseInt(searchParams.get('titleSize') || '200');
-  const titlePosition: string = searchParams.get('titlePos') || 'center';
+  const titlePosition: number = parseFloat(searchParams.get('titlePos') || '0.1');
 
   const content: string | null = searchParams.get('content');
   const contentColor: string = searchParams.get('contentColor') || 'ffffff';
   const contentSize: number = parseInt(searchParams.get('contentSize') || '200');
-  const contentPosition: string = searchParams.get('contentPos') || 'center';
+  const contentPosition: number = parseFloat(searchParams.get('contentPos') || '0.85');
 
   const date: string | null = searchParams.get('date');
   const dateColor: string = searchParams.get('dateColor') || 'ffffff';
   const dateSize: number = parseInt(searchParams.get('dateSize') || '200');
-  const datePosition: string = searchParams.get('datePos') || 'center';
+  const datePosition: number = parseFloat(searchParams.get('datePos') || '0.95');
 
   // Parse cluster color ONCE before the loop
   const clusterRGB = parseColor(color);
@@ -246,7 +246,7 @@ export async function GET(request: NextRequest) {
 
   // Draw text AFTER cluster rendering complete
   title && formatTxt(ctx, title, titleColor, titleSize, titlePosition, width, height, 0.9, 1.2);
-  content && formatTxt(ctx, content, contentColor, contentSize, contentPosition, width, height, 0.95, 1.0, -120);
+  content && formatTxt(ctx, content, contentColor, contentSize, contentPosition, width, height, 0.95, 1.0);
   date &&  formatTxt(ctx, date, dateColor, dateSize, datePosition, width, height, 0.95, 0.9);
 
 
@@ -305,29 +305,14 @@ function formatTxt(
   text: string,
   textColor: string,
   textSize: number,
-  textPosition: string,
+  textPosition: number, // 0-1 float representing Y position proportion
   width: number,
   height: number,
   maxWidthPercent: number = 0.95,
-  lineHeightMultiplier: number = 0.9,
-  offsetY: number = 0
+  lineHeightMultiplier: number = 0.9
 ): void {
-  let textY: number;
-  switch (textPosition) {
-    case 'top':
-      textY = height * 0.08;
-      break;
-    case 'bottom':
-      textY = height * 0.87;
-      break;
-    case 'center':
-    default:
-      textY = 3 * height / 4;
-      break;
-  }
-
+  const textY = height * textPosition;
   const textX = width / 2;
-  textY += offsetY;
 
   // Set font
   ctx.font = `bold ${textSize}px Montreal`;
@@ -364,11 +349,10 @@ function formatTxt(
   ctx.shadowOffsetX = 0;
   ctx.shadowOffsetY = 0;
 }
-
 // Example:
-// /api/postcard?title=CLUSTER&titleColor=c30f45&titleSize=620&titlePos=top
-// /api/postcard?title=CLUSTER&titleColor=c30f45&titleSize=620&titlePos=top&content=VROMB%20-%20MICAELA%20TROMBINI%20-%20XXX%20-%20RENICK%20BELL%20-%20AUTECHRE%20-%20UNEXCODER%20-%20APHEX%20TWIN%20-%20THE%20SPECTRE%20-%20ORPHX%20-%20SOMATIC%20RESPONSES%20-%20OVAL%20-%20%20-%20SWARM%20INTELIGENCE&contentColor=2EC4B6&contentSize=160&contentPos=center
-// /api/postcard?title=CLUSTER&titleColor=c30f45&titleSize=620&titlePos=top&content=VROMB%20-%20MICAELA%20TROMBINI%20-%20XXX%20-%20RENICK%20BELL%20-%20AUTECHRE%20-%20UNEXCODER%20-%20APHEX%20TWIN%20-%20THE%20SPECTRE%20-%20ORPHX%20-%20SOMATIC%20RESPONSES%20-%20OVAL%20-%20%20-%20SWARM%20INTELIGENCE&contentColor=2EC4B6&contentSize=160&contentPos=center&date=19__23%20NOV%202026%20-%20GALPON%20CULTURAL%20-%20FUNES%20(Sta%20Fe)&dateSize=100&datePos=bottom
+// /api/postcard?title=CLUSTER&titleColor=c30f45&titleSize=620&titlePos=0.075&content=VROMB%20-%20MICAELA%20TROMBINI%20-%20XXX%20-%20RENICK%20BELL%20-%20AUTECHRE%20-%20UNEXCODER%20-%20APHEX%20TWIN%20-%20THE%20SPECTRE%20-%20ORPHX%20-%20SOMATIC%20RESPONSES%20-%20OVAL%20-%20SWARM%20INTELIGENCE&contentColor=2EC4B6&contentSize=160&contentPos=0.75&date=19__23%20NOV%202026%20-%20GALPON%20CULTURAL%20-%20FUNES&dateSize=120&datePos=0.97
+// /api/postcard?title=CLUSTER&titleColor=c30f45&titleSize=620&titlePos=0.1
+// /api/postcard?title=CLUSTER&titleColor=c30f45&titleSize=620&titlePos=0.1&content=VROMB%20-%20MICAELA%20TROMBINI%20-%20XXX%20-%20RENICK%20BELL%20-%20AUTECHRE%20-%20UNEXCODER%20-%20APHEX%20TWIN%20-%20THE%20SPECTRE%20-%20ORPHX%20-%20SOMATIC%20RESPONSES%20-%20OVAL%20-%20%20-%20SWARM%20INTELIGENCE&contentColor=2EC4B6&contentSize=160&contentPos=0.7
 
 //////////////////////////////////////////////////////////////////////
 // legacy development code
