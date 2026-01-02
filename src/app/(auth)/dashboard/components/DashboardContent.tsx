@@ -1,6 +1,7 @@
 // components/DashboardContent.tsx
 import React from 'react';
 import BrowseUsers from './views/BrowseUsers';
+import MailingList from './views/MailingList';
 // import SystemSettings from './views/SystemSettings';
 // import UserManagement from './views/UserManagement';
 // ... import other view components
@@ -15,7 +16,7 @@ const viewComponents: Record<string, React.ComponentType> = {
   'System Settings': () => <div>System Settings</div>,
   'User Managment': () => <div>User Managment</div>,
   'Browse Users': BrowseUsers,
-  'Mailing List': () => <div>Mailing list</div>,
+  'Mailing List': MailingList,
   'Cluster Managment': () => <div>Cluster Management</div>,
   'Financial Control': () => <div>Financial Control</div>,
   'Analitics': () => <div>Analytics</div>,
