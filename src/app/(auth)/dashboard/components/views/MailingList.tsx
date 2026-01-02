@@ -10,6 +10,7 @@ interface MailingListRow {
     name: string
     status: string
     suscribed_at?: string
+    confirmed_at?: string
     ip_address?: string
     user_agent?: string
 }
@@ -79,11 +80,8 @@ export default function BrowseUsers() {
                         <thead>
                             <tr>
                                 <th>Email</th>
-
-                                {/* <th>Status</th>
-                                <th>Last Login At</th> */}
-                                <th>Status</th>
                                 <th>Suscribed At</th>
+                                <th>Status</th>
                                 <th>IP Address</th>
                                 <th>User Agent</th>
                                 <th>Actions</th>
@@ -93,35 +91,20 @@ export default function BrowseUsers() {
                             {mailingList.map((mail) => (
                                 <tr key={mail.id}>
                                     <td>{mail.email}</td>
-                                    {/* <td>
-                                        <span
-                                            className={styles.roleBadge}
-                                            style={{ backgroundColor: getRoleBadgeColor(user.role) }}
-                                        >{user.role}</span>
-                                    </td>
+
                                     <td>
-                                    {user.last_login_at
-                                    ? new Date(user.last_login_at).toLocaleDateString()
-                                    : 'N/A'}
-                                    </td> */}
+                                        {mail.confirmed_at
+                                            ? new Date(mail.confirmed_at).toLocaleDateString()
+                                            : 'N/A'}
+                                    </td>
                                     <td
                                         style={{ color: mail.status === 'active' ? '#44ef44' : '#ef4444' }}
                                     >{mail.status}</td>
-                                    <td>
-                                        {mail.suscribed_at
-                                            ? new Date(mail.suscribed_at).toLocaleDateString()
-                                            : 'N/A'}
-                                    </td>
+
                                     <td>{mail.ip_address}</td>
-                                    <td style={{fontSize:'12px'}}>{mail.user_agent}</td>
+                                    <td style={{ fontSize: '12px' }}>{mail.user_agent}</td>
 
                                     <td>
-                                        {/* <button
-                                            className={styles.actionButton}
-                                            onClick={() => console.log('Edit user:', mail.id)}
-                                        >
-                                            Edit
-                                        </button> */}
                                         <button
                                             className={styles.actionButton}
                                             onClick={() => console.log('Delete user:', mail.id)}

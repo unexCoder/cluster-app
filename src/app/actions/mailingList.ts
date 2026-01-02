@@ -9,6 +9,7 @@ interface MailingListRow extends RowDataPacket {
   name: string
   status: string
   suscribed_at?: string
+  confirmed_at?: string
   ip_address?: string
   user_agent?: string
 }
