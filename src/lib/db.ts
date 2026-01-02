@@ -8,6 +8,27 @@ let pool: Pool | null = null;
 
 export function getPool(): Pool {
   if (!pool) {
+
+    // // 🔍 COMPREHENSIVE DEBUG
+    // console.log('==========================================');
+    // console.log('🔍 FULL ENVIRONMENT DEBUG:');
+    // console.log('==========================================');
+    // console.log('DB_HOST:', process.env.DB_HOST);
+    // console.log('DB_PORT:', process.env.DB_PORT);
+    // console.log('DB_USER:', process.env.DB_USER);
+    // console.log('DB_NAME:', process.env.DB_NAME);
+    // console.log('DB_PASSWORD (first 3 chars):', process.env.DB_PASSWORD?.substring(0, 3) + '***');
+    // console.log('DB_PASSWORD length:', process.env.DB_PASSWORD?.length);
+    // console.log('==========================================');
+    // console.log('DB_PASSWORD BUFFER',Buffer.from(process.env.DB_PASSWORD || '').toString('hex'));
+    // console.log('App sees:', Buffer.from(process.env.DB_PASSWORD || '').toString('hex'));
+    // console.log('==========================================');
+    // // Check for undefined values
+    // if (!process.env.DB_HOST || !process.env.DB_USER || !process.env.DB_PASSWORD || !process.env.DB_NAME) {
+    //   console.error('❌ MISSING ENVIRONMENT VARIABLES!');
+    //   console.error('This will cause connection to fail!');
+    // }
+    
     pool = mysql.createPool({
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT || '3306'),
@@ -43,9 +64,20 @@ export async function query<T extends RowDataPacket[] | RowDataPacket[][] | Resu
   sql: string, 
   params?: any[]
 ): Promise<T> {
-  const pool = getPool();
-  const [rows] = await pool.execute<T>(sql, params);
-  return rows;
+  try {
+    const pool = getPool();
+    const [rows] = await pool.execute<T>(sql, params);
+    return rows;
+  } catch (error: any) {
+    console.error('Database query error:', {
+      message: error.message,
+      code: error.code,
+      errno: error.errno,
+      sql: error.sql,
+      sqlState: error.sqlState,
+    });
+    throw error;
+  }
 }
 
 export async function transaction<T>(

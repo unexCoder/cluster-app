@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { loginSchema, LoginInput } from "@/lib/validations/auth";
+import { login, setToken } from "@/lib/auth-client";
+import styles from './registerForm.module.css'
 
 export default function LoginForm() {
   const router = useRouter();
@@ -21,36 +22,35 @@ export default function LoginForm() {
     try {
       const validatedData = loginSchema.parse(formData);
 
-      const result = await signIn("credentials", {
+      // Call login function from auth utilities
+      const response = await login({
         email: validatedData.email,
         password: validatedData.password,
-        redirect: false,
       });
-
-      if (result?.error) {
-        setError("Invalid email or password");
-        return;
+      
+      // Store token
+      if (response?.token) {
+        setToken(response.token);
+        // Redirect to dashboard
+        router.push("/dashboard");
+        router.refresh();
+      } else {
+        setError("No token received from server");
+        setLoading(false);
       }
-
-      router.push("/dashboard");
-      router.refresh();
     } catch (err: any) {
-      setError(err.message || "Something went wrong");
-    } finally {
+      const errorMsg = err.message || err?.response?.data?.error || "Something went wrong";
+      setError(errorMsg);
       setLoading(false);
+      console.error("Login error:", err);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {error && (
-        <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">
-          {error}
-        </div>
-      )}
+    <form onSubmit={handleSubmit}>
 
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium mb-2">
+      <div className={styles.formGroup}>
+        <label htmlFor="email">
           Email
         </label>
         <input
@@ -58,13 +58,12 @@ export default function LoginForm() {
           type="email"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className="w-full px-3 py-2 border rounded-md"
           required
         />
       </div>
 
-      <div>
-        <label htmlFor="password" className="block text-sm font-medium mb-2">
+      <div className={styles.formGroup}>
+        <label htmlFor="password">
           Password
         </label>
         <input
@@ -74,15 +73,16 @@ export default function LoginForm() {
           onChange={(e) =>
             setFormData({ ...formData, password: e.target.value })
           }
-          className="w-full px-3 py-2 border rounded-md"
           required
         />
       </div>
 
+      {error && <p className={styles.error}>{error}</p>}
+
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
+        className={styles.submitButton}
       >
         {loading ? "Signing in..." : "Sign In"}
       </button>

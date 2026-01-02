@@ -1,57 +1,28 @@
-import NextAuth from "next-auth"
-import Credentials from "next-auth/providers/credentials"
- 
-// In-memory user storage (for demo/local use only)
-// In production, this would be a database
-const VALID_USERS = [
-  { id: "1", email: "admin@festivalcluster.org", password: "clusteradmin" },
-  { id: "2", email: "bosca.music@gmail.com", password: "@unexcoder101" }
-]
+/**
+ * Authentication Configuration
+ * 
+ * This project uses API-based authentication:
+ * - POST /api/auth/login - User login (returns JWT token)
+ * - POST /api/register - User registration
+ * 
+ * DO NOT import from this file in client components.
+ * Use the API endpoints directly via fetch().
+ * 
+ * Token Flow:
+ * 1. Client submits credentials to /api/auth/login or /api/register
+ * 2. API validates and returns JWT token
+ * 3. Client stores token in httpOnly cookie (via server Set-Cookie header)
+ * 4. Client includes token in Authorization header for protected endpoints
+ * 5. Middleware validates token on protected routes
+ * 
+ * DEPRECATED: NextAuth configuration removed.
+ * The application now uses pure JWT-based API authentication.
+ */
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [
-    Credentials({
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
-      },
-      async authorize(credentials) {
-        
-        if (!credentials?.email || !credentials?.password) {
-          return null
-        }
-         // Find user in memory
-        const user = VALID_USERS.find(u => u.email === credentials.email)
-        
-        if (!user) return null
-        
-        // Simple password check (in production: use bcrypt)
-        if (user.password !== credentials.password) {
-          return null
-        }
-
-        // Return user object (password won't be exposed)
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.email.split("@")[0]
-        }
-      }
-    })
-  ],
-  pages: {
-    signIn: "/login" // Custom login page
-  },
-  callbacks: {
-    jwt({ token, user }) {
-      if (user) {
-        token.id = user.id
-      }
-      return token
-    },
-    session({ session, token }) {
-      session.user.id = token.id as string
-      return session
-    }
-  }
-})
+export const authConfig = {
+  // API-based auth configuration
+  loginEndpoint: "/api/auth/login",
+  registerEndpoint: "/api/register",
+  tokenExpiresIn: "7d",
+  tokenAlgorithm: "HS256",
+} as const;

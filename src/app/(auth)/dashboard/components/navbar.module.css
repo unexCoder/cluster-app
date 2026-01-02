@@ -1,0 +1,27 @@
+.container {
+    width: 170px;
+    height: auto;
+}
+
+/* Only show border on level 0 */
+.topLevel {
+    border-right: 2px solid #fff;
+    height: 60svh;
+}
+
+.navbar {
+    font-weight: 700;
+}
+
+.navbar .navbar {
+    font-weight: 400;
+}
+
+.navbar li {
+    padding: 4px;
+    cursor:pointer;
+}
+
+.arrow {
+    padding-left: 8px;
+}

@@ -5,7 +5,7 @@ import { useNavigation } from '../../context/NavigationContext'
 
 export default function Contact() {
   const { previousPath } = useNavigation()
-  console.log(previousPath);
+  // console.log(previousPath);
 
   return (
 
