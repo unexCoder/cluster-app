@@ -40,6 +40,11 @@ export async function GET(request: NextRequest) {
   const contentSize: number = parseInt(searchParams.get('contentSize') || '200');
   const contentPosition: string = searchParams.get('contentPos') || 'center';
 
+  const date: string | null = searchParams.get('date');
+  const dateColor: string = searchParams.get('dateColor') || 'ffffff';
+  const dateSize: number = parseInt(searchParams.get('dateSize') || '200');
+  const datePosition: string = searchParams.get('datePos') || 'center';
+
   // Parse cluster color ONCE before the loop
   const clusterRGB = parseColor(color);
   // console.log('Cluster RGB:', clusterRGB); // DEBUG
@@ -240,116 +245,10 @@ export async function GET(request: NextRequest) {
   });
 
   // Draw text AFTER cluster rendering complete
-  if (title) {
-    // console.log('Drawing text:', text, 'color:', textColor, 'size:', textSize); // DEBUG
+  title && formatTxt(ctx, title, titleColor, titleSize, titlePosition, width, height, 0.9, 1.2);
+  content && formatTxt(ctx, content, contentColor, contentSize, contentPosition, width, height, 0.95, 1.0, -120);
+  date &&  formatTxt(ctx, date, dateColor, dateSize, datePosition, width, height, 0.95, 0.9);
 
-    let textY: number;
-    switch (titlePosition) {
-      case 'top':
-        textY = height * 0.08;
-        break;
-      case 'bottom':
-        textY = height * 0.85;
-        break;
-      case 'center':
-      default:
-        textY = height / 2;
-        break;
-    }
-
-    const textX = width / 2;
-
-    // Use custom font
-    ctx.font = `bold ${titleSize}px Montreal`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.lineJoin = 'round';
-    ctx.miterLimit = 2;
-
-    // Draw VERY thick black outline in multiple passes
-    // ctx.strokeStyle = '#000000';
-    // ctx.lineWidth = textSize / 4; // Very thick
-    // ctx.strokeText(text, textX, textY);
-
-    // ctx.lineWidth = textSize / 5;
-    // ctx.strokeText(text, textX, textY);
-
-    // ctx.lineWidth = textSize / 6;
-    // ctx.strokeText(text, textX, textY);
-
-    // Set shadow properties before drawing text
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.3)'; // Black with 30% opacity
-    ctx.shadowBlur = 8;
-    ctx.shadowOffsetX = 9;
-    ctx.shadowOffsetY = 9;
-
-    // Fill with bright color on top
-    const finalTextColor = titleColor.startsWith('#') ? titleColor : `#${titleColor}`;
-    ctx.fillStyle = finalTextColor;
-    ctx.fillText(title, textX, textY);
-
-    // Reset shadow to avoid affecting other drawings
-    ctx.shadowColor = 'transparent';
-    ctx.shadowBlur = 0;
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
-    // console.log('Text drawn at:', textX, textY, 'with color:', finalTextColor); // DEBUG
-  }
-
-  if (content) {
-    // console.log('Drawing text:', text, 'color:', textColor, 'size:', textSize); // DEBUG
-
-    let textY: number;
-    switch (contentPosition) {
-      case 'top':
-        textY = height * 0.08;
-        break;
-      case 'bottom':
-        textY = height * 0.85;
-        break;
-      case 'center':
-      default:
-        textY = 3 * height / 4;
-        break;
-    }
-
-    const textX = width / 2;
-
-    // Use custom font
-    ctx.font = `bold ${contentSize}px Montreal`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.lineJoin = 'round';
-    ctx.miterLimit = 2;
-
-    // Set shadow properties before drawing text
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.3)'; // Black with 30% opacity
-    ctx.shadowBlur = 8;
-    ctx.shadowOffsetX = 9;
-    ctx.shadowOffsetY = 9;
-
-    const maxWidth = width * 0.95;
-    const lines = wrapText(ctx, content, maxWidth);
-    const lineHeight = contentSize * 0.9;
-    const totalHeight = lines.length * lineHeight;
-    let startY = textY - (totalHeight / 2) + (lineHeight / 2);
-
-
-    // Fill with bright color on top
-    const finalTextColor = contentColor.startsWith('#') ? contentColor : `#${contentColor}`;
-    ctx.fillStyle = finalTextColor;
-
-    lines.forEach((line, index) => {
-      ctx.fillText(line, textX, startY + (index * lineHeight));
-    });
-
-    // Reset shadow to avoid affecting other drawings
-    ctx.shadowColor = 'transparent';
-    ctx.shadowBlur = 0;
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
-    // console.log('Text drawn at:', textX, textY, 'with color:', finalTextColor); // DEBUG
-  }
 
   const buffer: Buffer = canvas.toBuffer('image/png');
 
@@ -400,9 +299,76 @@ function wrapText(
   lines.push(currentLine);
   return lines;
 }
+
+function formatTxt(
+  ctx: any,
+  text: string,
+  textColor: string,
+  textSize: number,
+  textPosition: string,
+  width: number,
+  height: number,
+  maxWidthPercent: number = 0.95,
+  lineHeightMultiplier: number = 0.9,
+  offsetY: number = 0
+): void {
+  let textY: number;
+  switch (textPosition) {
+    case 'top':
+      textY = height * 0.08;
+      break;
+    case 'bottom':
+      textY = height * 0.87;
+      break;
+    case 'center':
+    default:
+      textY = 3 * height / 4;
+      break;
+  }
+
+  const textX = width / 2;
+  textY += offsetY;
+
+  // Set font
+  ctx.font = `bold ${textSize}px Montreal`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.lineJoin = 'round';
+  ctx.miterLimit = 2;
+
+  // Set shadow properties
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+  ctx.shadowBlur = 8;
+  ctx.shadowOffsetX = 9;
+  ctx.shadowOffsetY = 9;
+
+  // Wrap text and calculate positioning
+  const maxWidth = width * maxWidthPercent;
+  const lines = wrapText(ctx, text, maxWidth);
+  const lineHeight = textSize * lineHeightMultiplier;
+  const totalHeight = lines.length * lineHeight;
+  let startY = textY - (totalHeight / 2) + (lineHeight / 2);
+
+  // Set fill color
+  const finalTextColor = textColor.startsWith('#') ? textColor : `#${textColor}`;
+  ctx.fillStyle = finalTextColor;
+
+  // Draw each line
+  lines.forEach((line, index) => {
+    ctx.fillText(line, textX, startY + (index * lineHeight));
+  });
+
+  // Reset shadow
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+}
+
 // Example:
 // /api/postcard?title=CLUSTER&titleColor=c30f45&titleSize=620&titlePos=top
-// api/postcard?title=CLUSTER&titleColor=c30f45&titleSize=620&titlePos=top&content=VROMB%20-%20MICAELA%20TROMBINI%20-%20XXX%20-%20RENICK%20BELL%20-%20AUTECHRE%20-%20UNEXCODER%20-%20APHEX%20TWIN%20-%20THE%20SPECTRE%20-%20ORPHX%20-%20SOMATIC%20RESPONSES%20-%20OVAL%20-%20%20-%20SWARM%20INTELIGENCE&contentColor=2EC4B6&contentSize=160&contentPos=center
+// /api/postcard?title=CLUSTER&titleColor=c30f45&titleSize=620&titlePos=top&content=VROMB%20-%20MICAELA%20TROMBINI%20-%20XXX%20-%20RENICK%20BELL%20-%20AUTECHRE%20-%20UNEXCODER%20-%20APHEX%20TWIN%20-%20THE%20SPECTRE%20-%20ORPHX%20-%20SOMATIC%20RESPONSES%20-%20OVAL%20-%20%20-%20SWARM%20INTELIGENCE&contentColor=2EC4B6&contentSize=160&contentPos=center
+// /api/postcard?title=CLUSTER&titleColor=c30f45&titleSize=620&titlePos=top&content=VROMB%20-%20MICAELA%20TROMBINI%20-%20XXX%20-%20RENICK%20BELL%20-%20AUTECHRE%20-%20UNEXCODER%20-%20APHEX%20TWIN%20-%20THE%20SPECTRE%20-%20ORPHX%20-%20SOMATIC%20RESPONSES%20-%20OVAL%20-%20%20-%20SWARM%20INTELIGENCE&contentColor=2EC4B6&contentSize=160&contentPos=center&date=19__23%20NOV%202026%20-%20GALPON%20CULTURAL%20-%20FUNES%20(Sta%20Fe)&dateSize=100&datePos=bottom
 
 //////////////////////////////////////////////////////////////////////
 // legacy development code
