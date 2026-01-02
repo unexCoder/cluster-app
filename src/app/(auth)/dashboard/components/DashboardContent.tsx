@@ -15,6 +15,7 @@ const viewComponents: Record<string, React.ComponentType> = {
   'System Settings': () => <div>System Settings</div>,
   'User Managment': () => <div>User Managment</div>,
   'Browse Users': BrowseUsers,
+  'Mailing List': () => <div>Mailing list</div>,
   'Cluster Managment': () => <div>Cluster Management</div>,
   'Financial Control': () => <div>Financial Control</div>,
   'Analitics': () => <div>Analytics</div>,

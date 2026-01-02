@@ -83,7 +83,8 @@ export default function AdminDashboard() {
   const navItems = [
     { label: 'System Settings' },
     { label: 'User Managment' , children: [
-      {label:'Browse Users'}
+      {label:'Browse Users'},
+      {label:'Mailing List'}
     ]},
     { label: 'Cluster Managment' },
     { label: 'Financial Control' },
