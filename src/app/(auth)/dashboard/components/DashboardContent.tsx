@@ -22,6 +22,8 @@ const viewComponents: Record<string, React.ComponentType> = {
   'Analitics': () => <div>Analytics</div>,
   'Security Logs': () => <div>Security Logs</div>,
   'Profile': () => <div>Profile</div>,
+  'Update Profile': () => <div>Update Profile</div>,
+  'Change Password': () => <div>Change Password</div>,
 };
 
 export default function DashboardContent({ activeView }: DashboardContentProps) {
