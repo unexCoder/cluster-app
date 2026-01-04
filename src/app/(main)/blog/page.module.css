@@ -1,0 +1,16 @@
+.page {
+  --background: #2EC4B6;
+  /* --text-primary: #2C1320; */
+  --text-primary: #CFCBCA;
+  --text-secondary: #213321;
+
+  /* --text-primary: #D8DDDE;
+  --text-secondary: #CFCBCA; */
+
+  --button-primary-hover: #383838;
+  --button-secondary-hover: #f2f2f2;
+  --button-secondary-border: #ebebeb;
+
+  min-height: 100vh;
+  font-family: var(--font-montreal);
+}
