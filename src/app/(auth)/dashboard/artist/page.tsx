@@ -106,7 +106,7 @@ export default function AdminDashboard() {
       >
         <div className={styles.innerDashboardContainer}>
           <NavBar items={navItems} onUpdate={updateUX}/>
-        <DashboardContent activeView={displayUX} />
+        <DashboardContent activeView={displayUX} onNavigate={updateUX} />
         </div>
       </DashboardLayout>
     </div>
