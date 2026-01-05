@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { fetchUsersAction } from '@/app/actions/users'
-import styles from './browseUsers.module.css'
+import { fetchUsersAction, updateUserRoleAction, updateUserStatusAction } from '@/app/actions/users'
+import styles from './dashboardViews.module.css'
 
 interface User {
   id: string
@@ -14,6 +14,9 @@ interface User {
   created_at?: string
   last_login_at?: string
 }
+
+const ROLE_ROTATION = ['customer', 'artist', 'staff', 'admin'] as const;
+const STATUS_ROTATION = ['active', 'inactive', 'suspended', 'banned'] as const;
 
 export default function BrowseUsers() {
   const [users, setUsers] = useState<User[]>([])
@@ -42,6 +45,54 @@ export default function BrowseUsers() {
       setLoading(false)
     }
   }
+
+  // Función para obtener el siguiente rol
+  const getNextRole = (currentRole: string): string => {
+    const currentIndex = ROLE_ROTATION.indexOf(currentRole as any);
+    const nextIndex = (currentIndex + 1) % ROLE_ROTATION.length;
+    return ROLE_ROTATION[nextIndex];
+  }
+
+  // Función para obtener el siguiente status
+  const getNextStatus = (currentStatus: string): string => {
+    const currentIndex = STATUS_ROTATION.indexOf(currentStatus as any);
+    const nextIndex = (currentIndex + 1) % STATUS_ROTATION.length;
+    return STATUS_ROTATION[nextIndex];
+  }
+
+  // handler para cambiar el rol
+  const handleRoleClick = async (userId: string, currentRole: string) => {
+    const nextRole = getNextRole(currentRole);
+
+    // Confirmación
+    const confirmed = window.confirm(
+      `Change role from "${currentRole}" to "${nextRole}"?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      // Actualizar estado local optimistamente
+      setUsers(prevUsers =>
+        prevUsers.map(user =>
+          user.id === userId ? { ...user, role: nextRole } : user
+        )
+      );
+
+      // llamar a una acción del servidor para actualizar en la DB
+      const result = await updateUserRoleAction(userId, nextRole);
+      if (!result.success) throw new Error(result.error);
+
+      console.log(`Updated user ${userId} role to ${nextRole}`);
+
+    } catch (err) {
+      console.error('Failed to update role:', err);
+      // Revertir cambio en caso de error
+      fetchUsers();
+      alert('Failed to update role. Please try again.');
+    }
+  }
+
   if (loading) {
     return (
       <div className={styles.container}>
@@ -63,8 +114,8 @@ export default function BrowseUsers() {
     )
   }
 
-  
-  const getRoleBadgeColor = (role:string) => {
+
+  const getRoleBadgeColor = (role: string) => {
     switch (role) {
       case "super_admin":
         return "#c30f45"
@@ -79,6 +130,56 @@ export default function BrowseUsers() {
         return "#059669"
     }
   }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "active":
+        return "#10b981" // verde
+      case "inactive":
+        return "#6b7280" // gris
+      case "suspended":
+        return "#f59e0b" // naranja
+      case "banned":
+        return "#ef4444" // rojo
+      default:
+        return "#6b7280"
+    }
+  }
+
+  // handler para cambiar el status
+  const handleStatusClick = async (userId: string, currentStatus: string) => {
+    const nextStatus = getNextStatus(currentStatus);
+    
+    const confirmed = window.confirm(
+      `Change status from "${currentStatus}" to "${nextStatus}"?`
+    );
+    
+    if (!confirmed) return;
+
+    try {
+      // Actualizar estado local optimistamente
+      setUsers(prevUsers => 
+        prevUsers.map(user => 
+          user.id === userId ? { ...user, status: nextStatus } : user
+        )
+      );
+
+      const result = await updateUserStatusAction(userId, nextStatus);
+      
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+
+      console.log(`Updated user ${userId} status to ${nextStatus}`);
+      
+    } catch (err) {
+      console.error('Failed to update status:', err);
+      fetchUsers();
+      alert('Failed to update status. Please try again.');
+    }
+  }
+
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -98,7 +199,7 @@ export default function BrowseUsers() {
                 <th>Name</th>
                 <th>Last name</th>
                 <th>Email</th>
-                <th style={{paddingLeft:'28px'}}>Role</th>
+                <th style={{ paddingLeft: '28px' }}>Role</th>
                 <th>Status</th>
                 <th>Created At</th>
                 <th>Last Login At</th>
@@ -112,13 +213,47 @@ export default function BrowseUsers() {
                   <td>{user.last_name}</td>
                   <td>{user.email}</td>
                   <td>
-                    <span 
+                    <span
                       className={styles.roleBadge}
-                      style={{ backgroundColor: getRoleBadgeColor(user.role)}}
+                      style={{
+                        backgroundColor: getRoleBadgeColor(user.role), cursor: 'pointer',
+                        transition: 'transform 0.2s, opacity 0.2s'
+                      }}
+                      onClick={() => {
+                        if (user.role !== 'super_admin') {
+                          handleRoleClick(user.id, user.role)
+                        }
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scale(1.05)';
+                        e.currentTarget.style.opacity = '0.8';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.opacity = '1';
+                      }}
+                      title={`Click to change role (current: ${user.role})`}
                     >{user.role}</span>
                   </td>
                   <td
-                     style={{ color: user.status === 'active' ? '#44ef44' : '#ef4444' }}
+                     style={{ 
+                        color: getStatusColor(user.status),
+                        cursor: 'pointer',
+                        // padding: '4px 12px',
+                        // backgroundColor: `${getStatusColor(user.status)}15`,
+                        display: 'inline-block',
+                        transition: 'transform 0.2s, opacity 0.2s'
+                      }}
+                      onClick={() => handleStatusClick(user.id, user.status)}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scale(1.05)';
+                        e.currentTarget.style.opacity = '0.8';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.opacity = '1';
+                      }}
+                      title={`Click to change status (current: ${user.status})`}
                   >{user.status}</td>
                   <td>
                     {user.created_at
@@ -131,18 +266,20 @@ export default function BrowseUsers() {
                       : 'N/A'}
                   </td>
                   <td>
-                    <button
+                    {/* <button
                       className={styles.actionButton}
                       onClick={() => console.log('Edit user:', user.id)}
                     >
                       Edit
-                    </button>
-                    <button
-                      className={styles.actionButton}
-                      onClick={() => console.log('Delete user:', user.id)}
-                    >
-                      Delete
-                    </button>
+                    </button> */}
+
+                    {user.role !== 'super_admin' &&
+                      <button
+                        className={styles.actionButton}
+                        onClick={() => console.log('Delete user:', user.id)}
+                      >
+                        Delete
+                      </button>}
                   </td>
                 </tr>
               ))}

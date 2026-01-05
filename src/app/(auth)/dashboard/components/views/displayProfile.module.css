@@ -1,0 +1,10 @@
+.profileSection {
+    padding: 0 0 20px 0;
+}
+
+.profileField label {
+    padding-right: 10px;
+}
+.profileField span {
+    font-weight: 700;
+}

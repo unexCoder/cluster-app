@@ -82,25 +82,30 @@ export default function AdminDashboard() {
 
   const navItems = [
     { label: 'System Settings' },
-    { label: 'User Managment' , children: [
-      {label:'Browse Users'},
-      {label:'Mailing List'}
-    ]},
-    { label: 'Cluster Managment' },
+    {
+      label: 'User Managment',
+      children: [
+        { label: 'Browse Users' },
+        { label: 'Browse Artists' },
+        { label: 'Mailing List' }
+      ]
+    },
+    {
+      label: 'Cluster Managment',
+      children: [
+        { label: 'Event List' },
+        { label: 'Venues' }
+      ]
+    },
     { label: 'Financial Control' },
     { label: 'Analitics' },
     { label: 'Security Logs' },
-    { label: 'Profile',
-      children: [
-        {label:'Update Profile'},
-        {label:'Change Password'}
-      ]
-     }
+    { label: 'Profile' }
   ]
 
   return (
-    
-    <div style={{height:'100svh'}}>
+
+    <div style={{ height: '100svh' }}>
       <DashboardLayout
         userName={userData.name}
         userEmail={userData.email}
@@ -108,7 +113,11 @@ export default function AdminDashboard() {
       >
         <div className={styles.innerDashboardContainer}>
           <NavBar items={navItems} onUpdate={updateUX} />
-          <DashboardContent activeView={displayUX} />
+          <DashboardContent
+            activeView={displayUX}
+            userId={userData.userId}
+            onNavigate={updateUX}
+          />
         </div>
       </DashboardLayout>
     </div>

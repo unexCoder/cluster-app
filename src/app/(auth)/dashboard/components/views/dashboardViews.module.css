@@ -107,11 +107,11 @@
   margin-right: 8px;
   /* background-color: #f3f4f6; */
   border: 1px solid #d1d5db;
-  /* border-radius: 4px; */
+  border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
 }
 
 .actionButton:hover {
-  background-color: #e5e7eb;
+  background-color: #c30f45;
 }

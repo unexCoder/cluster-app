@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { fetchMailingListAction } from '@/app/actions/mailingList'
-import styles from './browseUsers.module.css'
+import styles from './dashboardViews.module.css'
 
 interface MailingListRow {
     id: string
