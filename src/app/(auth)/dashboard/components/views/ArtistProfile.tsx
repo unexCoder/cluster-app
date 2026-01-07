@@ -136,8 +136,8 @@ export default function ArtistProfile({ userId }: ArtistProfileProps) {
           {/* Profile Picture */}
           <div className={styles_local.imgContainer} >
             {artist.picture_url ? (
-              <img 
-                src={artist.picture_url} 
+              <img
+                src={artist.picture_url}
                 alt={artist.name}
                 className={styles_local.profileImg}
               />
@@ -171,10 +171,10 @@ export default function ArtistProfile({ userId }: ArtistProfileProps) {
             {Array.isArray(genres) && genres.length > 0 && (
               <div className={styles_local.tagsContainer}>
                 {genres.map((genre: string, index: number) => (
-                  <span 
+                  <span
                     key={index}
                     className={styles_local.tags}
-                    >
+                  >
                     {genre}
                   </span>
                 ))}
@@ -236,12 +236,12 @@ export default function ArtistProfile({ userId }: ArtistProfileProps) {
             <h3 className={styles_local.sectionTitle}>Social Media</h3>
             <div className={styles_local.socialMedia}>
               {socialLinks.website && (
-                <Link href={socialLinks.website} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className={styles.socialLink}
-                      >
-                    Website
+                <Link href={socialLinks.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialLink}
+                >
+                  Website
                 </Link>
                 // <a href={socialLinks.website} target="_blank" rel="noopener noreferrer" 
                 //   className={styles.socialLink}>
@@ -304,13 +304,13 @@ export default function ArtistProfile({ userId }: ArtistProfileProps) {
             <div className={styles_local.documents}>
               {artist.rider_url && (
                 <a href={artist.rider_url} target="_blank" rel="noopener noreferrer"
-                   className={styles.documentLink}>
+                  className={styles.documentLink}>
                   📄 Technical Rider
                 </a>
               )}
               {artist.presskit_url && (
                 <a href={artist.presskit_url} target="_blank" rel="noopener noreferrer"
-                   className={styles.documentLink}>
+                  className={styles.documentLink}>
                   📦 Press Kit
                 </a>
               )}
@@ -332,7 +332,7 @@ export default function ArtistProfile({ userId }: ArtistProfileProps) {
               <div className={styles.infoGroup}>
                 <label>Verified:</label>
                 <span>
-                  {artist.verified_at 
+                  {artist.verified_at
                     ? new Date(artist.verified_at).toLocaleDateString()
                     : 'Yes'
                   } ({artist.verification_method})
@@ -342,7 +342,7 @@ export default function ArtistProfile({ userId }: ArtistProfileProps) {
             <div className={styles.infoGroup}>
               <label>Created:</label>
               <span>
-                {artist.created_at 
+                {artist.created_at
                   ? new Date(artist.created_at).toLocaleDateString()
                   : 'N/A'}
               </span>
@@ -350,7 +350,7 @@ export default function ArtistProfile({ userId }: ArtistProfileProps) {
             <div className={styles.infoGroup}>
               <label>Last Updated:</label>
               <span>
-                {artist.updated_at 
+                {artist.updated_at
                   ? new Date(artist.updated_at).toLocaleDateString()
                   : 'N/A'}
               </span>

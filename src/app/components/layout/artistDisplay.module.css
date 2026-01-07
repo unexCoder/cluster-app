@@ -70,3 +70,16 @@
     margin-right: 0;
     padding-left: 50px;
 }
+
+.colorA {
+    background-color: #2C1320;
+    color: #2EC4B6;
+}
+.colorB {
+    background-color: #2EC4B6;
+    color: #2C1320;
+}
+.colorC {
+    color: #2C1320;
+    background-color: #CCFF66;
+}

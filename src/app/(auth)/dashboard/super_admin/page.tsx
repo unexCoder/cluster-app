@@ -100,7 +100,8 @@ export default function AdminDashboard() {
     { label: 'Financial Control' },
     { label: 'Analitics' },
     { label: 'Security Logs' },
-    { label: 'Profile' }
+    { label: 'Profile' },
+    { label: 'Artist Profile' }
   ]
 
   return (

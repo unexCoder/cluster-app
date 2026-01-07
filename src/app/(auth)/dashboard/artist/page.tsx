@@ -89,7 +89,7 @@ export default function ArtistDashboard() {
   ]
 
   return (
-    <div style={{ height: '100svh' }}>
+    <div style={{ height: '100%' }}>
       <DashboardLayout
         userName={userData.name}
         userEmail={userData.email}
