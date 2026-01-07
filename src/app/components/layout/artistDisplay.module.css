@@ -83,3 +83,36 @@
     color: #2C1320;
     background-color: #CCFF66;
 }
+
+@media (max-width: 768px) {
+    .container {
+        min-height: 100svh;
+    }
+
+    .profileCard {
+        flex-direction: column;
+    }
+
+    .imgContainer {
+        height: auto;
+        min-width: 100%;
+        transform: none;
+        /* remove Y shift */
+    }
+
+    .profile {
+        width: 100%;
+        height: auto;
+        margin: 0;
+        transform: none;
+        padding: 10px 20px;
+    }
+
+    .profileImage {
+        width: 100%;
+        height: auto;
+        /* keep aspect ratio */
+        object-fit: contain;
+        /* no cropping */
+    }
+}

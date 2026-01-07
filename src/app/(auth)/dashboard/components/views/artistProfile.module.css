@@ -148,3 +148,25 @@
 .sectionTitle {
     padding: 0 0 10px 0;
 }
+
+@media (max-width: 768px) {
+    .contactInfo, 
+    .profileInformationContainer,
+    .artistInfoHeader {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .verified,
+    .tags  {
+        font-size: 8px;
+    }
+
+    .stageName {
+        font-size:14px;
+    }
+
+    .scoreLabel {
+    font-size: 8px;
+    }
+}

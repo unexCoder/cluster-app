@@ -52,3 +52,9 @@
     font-weight: 500;
     transition: background-color 0.2s;
 }
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+}

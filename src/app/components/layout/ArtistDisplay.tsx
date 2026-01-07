@@ -1,9 +1,10 @@
 'use client'
 
 import { fetchArtistBySlugAction } from '@/app/actions/artists'
-import React, { useEffect, useState, use } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './artistDisplay.module.css'
 import { Globe, Instagram, Music, Youtube, Facebook, Twitter } from 'lucide-react'
+import Image from 'next/image'
 
 interface ArtistDisplayProps {
   slug: string
@@ -118,12 +119,14 @@ export default function ArtistDisplay( { slug }: ArtistDisplayProps ) {
         {/* Profile Picture */}
         {artist.picture_url && (
         <div className={`${styles.imgContainer} ${altLayout ? styles.imgContainerAlt : null} ${switchLayout ? styles.imgContainerSwitch : null}`}>
-            <img 
+            <Image
               src={artist.picture_url} 
+              width={700}
+              height={0} // ignored
               alt={artist.name}
               className={styles.profileImage}
-              width={700}
-            />
+              style={{ height: 'auto'}}
+             />
         </div>
         )}
 

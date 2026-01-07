@@ -25,3 +25,14 @@
 .arrow {
     padding-left: 8px;
 }
+
+@media (max-width: 768px) {
+    .container {
+        display: flex;
+        flex-direction: row;
+        width: 100svw;
+        height: auto;
+        padding-bottom: 20px;
+    }
+
+}

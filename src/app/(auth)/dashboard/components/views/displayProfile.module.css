@@ -8,3 +8,13 @@
 .profileField span {
     font-weight: 700;
 }
+
+@media (max-width: 768px) {
+    .profileSection {
+        padding: 10px 0;
+    }
+    
+    .profileSection h3 {
+        padding: 10px 0;
+    }
+}

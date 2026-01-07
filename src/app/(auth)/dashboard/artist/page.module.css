@@ -1,3 +1,12 @@
 .innerDashboardContainer {
     display: flex;
 }
+
+@media (max-width: 768px) {
+    .innerDashboardContainer {
+        flex-direction: column;
+        width: 100svw;
+    }    
+}
+
+

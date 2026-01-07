@@ -33,3 +33,17 @@
 .required {
     color: #c30f45;
 }
+
+
+@media (max-width: 768px) {
+    
+    .formSection h3 {
+       margin: 10px 0;
+    }
+    
+    .formSection input {
+        margin: 5px 0;
+        height: 30px;
+        width: 80svw;
+    }
+}
