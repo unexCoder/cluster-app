@@ -4,8 +4,10 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { getToken, isAuthenticated } from "@/lib/auth-client"
 import { useAuthHeader } from "@/hooks/useAuthHeader"
+import styles from './page.module.css'
 import DashboardLayout from "../components/DashboardLayout"
 import NavBar from "../components/NavBar"
+import DashboardContent from "../components/DashboardContent"
 
 interface UserData {
   userId: string
@@ -79,9 +81,9 @@ export default function StaffDashboard() {
   }
 
   const navItems = [
-    { label: 'Managment', href: '/managment' },
-    { label: 'Task Control', href: '/task-control' },
-    { label: 'Profile', href: '/profile' }
+    { label: 'Managment' },
+    { label: 'Task Control' },
+    { label: 'Profile' }
   ];
 
   return (
@@ -90,7 +92,14 @@ export default function StaffDashboard() {
       userEmail={userData.email}
       userRole="staff"
     >
-      <NavBar items={navItems} onUpdate={updateUX}/>
+      <div className={styles.innerDashboardContainer}>
+          <NavBar items={navItems} onUpdate={updateUX} />
+          <DashboardContent
+            activeView={displayUX}
+            userId={userData.userId}
+            onNavigate={updateUX}
+          />
+        </div>
     </DashboardLayout>
   )
 }

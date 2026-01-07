@@ -3,9 +3,11 @@
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { getToken, isAuthenticated } from "@/lib/auth-client"
+import styles from './page.module.css'
 import { useAuthHeader } from "@/hooks/useAuthHeader"
 import DashboardLayout from "../components/DashboardLayout"
 import NavBar from "../components/NavBar"
+import DashboardContent from "../components/DashboardContent"
 
 interface UserData {
   userId: string
@@ -89,7 +91,10 @@ export default function AdminDashboard() {
         userEmail={userData.email}
         userRole="admin"
       >
-        <NavBar items={navItems} onUpdate={updateUX} />
+        <div className={styles.innerDashboardContainer}>
+          <NavBar items={navItems} onUpdate={updateUX} />
+          <DashboardContent activeView={displayUX} onNavigate={updateUX} />
+        </div>
       </DashboardLayout>
     </div>
   )

@@ -16,14 +16,14 @@ interface UserData {
   role: string
 }
 
-export default function AdminDashboard() {
+export default function ArtistDashboard() {
   const router = useRouter()
   useAuthHeader()
-  
+
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<UserData | null>(null)
-  
-  const [displayUX, setDisplayUX] = useState('');
+
+  const [displayUX, setDisplayUX] = useState('Artist Profile');
   const updateUX = (value: string) => {
     setDisplayUX(value);
     console.log(value)
@@ -37,6 +37,7 @@ export default function AdminDashboard() {
 
     const token = getToken()
     if (token) {
+      
       try {
         const parts = token.split(".")
         if (parts.length === 3) {
@@ -63,17 +64,17 @@ export default function AdminDashboard() {
         return
       }
     }
-
+    
     setLoading(false)
   }, [router])
 
   if (loading || !userData) {
     return (
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "center", 
-        alignItems: "center", 
-        height: "100vh" 
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh"
       }}>
         <p>Loading...</p>
       </div>
@@ -81,32 +82,26 @@ export default function AdminDashboard() {
   }
 
   const navItems = [
-    { label: 'Artist Managment',
-      children:[
-        {label:'Password'},
-        {label:'Picture Profile'},
-      ]
-     },
+    { label: 'Artist Profile'},
     { label: 'Gig Managment' },
     { label: 'Fee Control' },
-    { label: 'Profile',
-      children:[
-        {label:'Password'},
-        {label:'Picture Profile'},
-      ]
-    }
+    { label: 'Profile'}
   ]
 
   return (
-    <div style={{height:'100svh'}}>
+    <div style={{ height: '100svh' }}>
       <DashboardLayout
         userName={userData.name}
         userEmail={userData.email}
         userRole="artist"
       >
         <div className={styles.innerDashboardContainer}>
-          <NavBar items={navItems} onUpdate={updateUX}/>
-        <DashboardContent activeView={displayUX} onNavigate={updateUX} />
+          <NavBar items={navItems} onUpdate={updateUX} />
+          <DashboardContent 
+            activeView={displayUX} 
+            userId={userData.userId}
+            onNavigate={updateUX} 
+            />
         </div>
       </DashboardLayout>
     </div>

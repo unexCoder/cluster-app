@@ -1,0 +1,48 @@
+.container {
+    height: 100svh;
+}
+.profileCard {
+    display: flex;
+    flex-direction: row;
+}
+
+.imgContainer {
+    display: flex;
+    height: 100svh;
+    min-width: 55vw;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    
+} 
+
+.profile {
+    display: flex;
+    flex-direction: column;
+    width: 45vw;
+    height: 100svh;
+    margin-right: 10%;
+    /* align-items: center; */
+    justify-content: center;
+    align-content: center;
+}
+
+.bioSection p {
+    font-size: 1.5rem;
+    font-weight: 400;
+    padding-bottom: 20px;
+}
+
+.genres {
+    margin-bottom: 10px;
+}
+
+.genreBadge {
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0 5px 0 0 ;
+}
+
+.socialLinks a {
+    padding-right: 10px;
+}

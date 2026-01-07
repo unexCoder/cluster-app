@@ -35,3 +35,23 @@ export async function fetchArtistsAction() {
     return { success: false, error: 'Failed to fetch artists', artists: [] };
   }
 }
+
+export async function fetchArtistByUserIdAction(id: string) {
+  try {
+    const profile = await query('SELECT * FROM artist WHERE user_id = ?', [id]) as ArtistRow[];
+    return { success: true, profile: profile[0] || null };
+  } catch (error) {
+    console.error('Database error:', error);
+    return { success: false, error: 'Failed to fetch artist', profile: null };
+  }
+}
+
+export async function fetchArtistBySlugAction(slug: string) {
+  try {
+    const profile = await query('SELECT * FROM artist WHERE slug = ?', [slug]) as ArtistRow[];
+    return { success: true, profile: profile[0] || null };
+  } catch (error) {
+    console.error('Database error:', error);
+    return { success: false, error: 'Failed to fetch artist', profile: null };
+  }
+}

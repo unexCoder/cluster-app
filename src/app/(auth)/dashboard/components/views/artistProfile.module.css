@@ -1,0 +1,150 @@
+/* .profileCard {
+
+} */
+
+.cardHeader { 
+    display: flex;
+    gap: 24px; 
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid #DADEE5
+}
+
+.imgContainer { 
+    flex-shrink: 0;
+ }
+
+.profileImg {
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 1px solid #A3ACBC;
+}
+
+.imgNotLoaded {
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+    background-color: #A3ACBC;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: #9ca3af;
+}
+
+.artistInfoContainer { 
+    flex: 1;
+}
+
+.artistInfoHeader{ 
+    display: flex; 
+    align-items: center;
+    gap: 12px; 
+    margin-bottom: 8px;
+}
+
+.artistInfoName { 
+    font-size:
+    28px;
+    font-weight: 600;
+    margin: 0; 
+    color:#A3ACBC; 
+}
+
+.verified {
+    /* background-color: #3b82f6; */
+    background-color: #12e66e;
+    color: #000;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.stageName {
+    font-size:18px;
+    /* color:#6b7280;  */
+    color:#A3ACBC; 
+    margin: 0 0 12px 0;
+}
+
+.tagsContainer { 
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 8px; 
+    margin-bottom: 16px;
+}
+
+.tags {
+    background-color: #374151;
+    color: #A3ACBC;
+    padding: 4px 6px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.scoreContainer { 
+    display: flex;
+    align-items: center; 
+    gap: 8px;
+}
+
+.scoreLabel {
+    font-size: 14px;
+    color: #A3ACBC;
+}
+
+.score{
+    background-color: #374151;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #A3ACBC;
+}
+
+.bio { 
+    color: #A3ACBC; 
+    line-height: 1.6; 
+    white-space: pre-wrap; 
+    font-size: 18px;
+}
+
+.contactInfo { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr;
+    gap: 16px; 
+}
+
+.socialMedia { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+    gap: 12px; 
+}
+
+.technicalRequirements { 
+    color: #A3ACBC; 
+    line-height: 1.6; 
+    white-space: pre-wrap;
+}
+
+.documents { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr;
+     gap: 12px;
+}
+
+.profileInformationContainer { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 16px;
+}
+
+.formSection {
+    padding: 0 0 10px 0;
+}
+.sectionTitle {
+    padding: 0 0 10px 0;
+}

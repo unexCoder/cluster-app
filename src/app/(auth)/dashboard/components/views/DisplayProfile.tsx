@@ -38,11 +38,11 @@ export default function DisplayProfile({ userId, onNavigate }: DisplayProfilePro
       case "super_admin":
         return "#c30f45"
       case "admin":
-        return "#c30f45"
+        return "#c34545"
       case "staff":
-        return "#2563eb"
+        return "#250fc3"
       case "artist":
-        return "#2EC4B6"
+        return "#450fc3"
       case "customer":
       default:
         return "#059669"

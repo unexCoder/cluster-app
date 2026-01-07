@@ -8,6 +8,7 @@ import BrowseVenues from './views/BrowseVenues';
 import DisplayProfile from './views/DisplayProfile';
 import UpdateProfile from './views/UpdateProfile';
 import ChangePassword from './views/ChangePassword';
+import ArtistProfile from './views/ArtistProfile';
 
 interface DashboardContentProps {
   activeView: string;
@@ -49,7 +50,6 @@ export default function DashboardContent({ activeView, userId, onNavigate }: Das
         ) : (
           <div>User ID not available</div>
         );
-        
       case 'Change Password':
         return userId ? (
           <ChangePassword userId={userId} onNavigate={onNavigate} />
@@ -57,6 +57,13 @@ export default function DashboardContent({ activeView, userId, onNavigate }: Das
           <div>User ID not available</div>
         );
         
+      // artist dashboard
+      case 'Artist Profile':
+        return userId ? (
+          <ArtistProfile userId={userId} />
+        ) : (
+          <div>User ID not available</div>
+        );
       default:
         return <div>Select an option from the menu</div>;
     }

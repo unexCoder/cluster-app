@@ -1,6 +1,7 @@
 .container {
   padding: 0 20px;
   min-width: 85svw;
+  color: #DADEE5;
 }
 
 .header {
@@ -114,4 +115,8 @@
 
 .actionButton:hover {
   background-color: #c30f45;
+}
+
+.infoGroup label {
+  padding-right: 6px;
 }
