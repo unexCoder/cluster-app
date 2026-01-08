@@ -31,9 +31,10 @@ interface Artist {
 
 interface ArtistProfileProps {
   userId?: string
+  onNavigate?: (view: string) => void
 }
 
-export default function ArtistProfile({ userId }: ArtistProfileProps) {
+export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps) {
   const [artist, setArtist] = useState<Artist | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -104,13 +105,37 @@ export default function ArtistProfile({ userId }: ArtistProfileProps) {
           <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '8px' }}>
             Create your artist profile to get started
           </p>
-          <button className={styles.actionButton} style={{ marginTop: '16px' }}>
+          <button 
+            className={styles.actionButton} 
+            style={{ marginTop: '16px' }}
+            onClick={() => {
+              // setShowCreateForm(true)
+              onNavigate?.('Create Artist Profile')
+            }}
+          >
             Create Artist Profile
           </button>
         </div>
       </div>
     )
   }
+  // if (!artist) {
+  //   return (
+  //     <div className={styles.container}>
+  //       <div className={styles.empty}>
+  //         <p>No artist profile found</p>
+  //         <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '8px' }}
+  //           onClick={() => onNavigate?.('Create Artist Profile')}
+  //           >
+  //           Create your artist profile to get started
+  //         </p>
+  //         <button className={styles.actionButton} style={{ marginTop: '16px' }}>
+  //           Create Artist Profile
+  //         </button>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   // Usar directamente, ya vienen parseados desde MySQL
   const genres = artist.genres || []

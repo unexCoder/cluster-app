@@ -9,11 +9,12 @@ import DisplayProfile from './views/DisplayProfile';
 import UpdateProfile from './views/UpdateProfile';
 import ChangePassword from './views/ChangePassword';
 import ArtistProfile from './views/ArtistProfile';
+import ArtistProfileCreate from './views/ArtistProfileCreate';
 
 interface DashboardContentProps {
   activeView: string;
   userId?: string; // Añadir userId como prop
-  onNavigate (view: string) : void; // Añadir prop: string
+  onNavigate(view: string): void; // Añadir prop: string
 }
 
 export default function DashboardContent({ activeView, userId, onNavigate }: DashboardContentProps) {
@@ -56,14 +57,31 @@ export default function DashboardContent({ activeView, userId, onNavigate }: Das
         ) : (
           <div>User ID not available</div>
         );
-        
+
       // artist dashboard
       case 'Artist Profile':
         return userId ? (
-          <ArtistProfile userId={userId} />
+          <ArtistProfile userId={userId} onNavigate={onNavigate} />
         ) : (
           <div>User ID not available</div>
         );
+
+      case 'Create Artist Profile':
+        return userId ? (
+          <ArtistProfileCreate
+            userId={userId}
+            onNavigate={onNavigate}
+            // onSuccess={() => {
+            //   onNavigate('Artist Profile')
+            // }}
+            // onCancel={() => {
+            //   onNavigate('Artist Profile')
+            // }}
+          />
+        ) : (
+          <div>User ID not available</div>
+        );
+
       default:
         return <div>Select an option from the menu</div>;
     }

@@ -126,4 +126,9 @@
     .container {
         padding: 0;
     }
+
+    .header {
+      width: 100svw;
+      padding: 0;
+    }
 }

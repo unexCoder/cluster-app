@@ -80,8 +80,8 @@ export default function BrowseArtists() {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2>Browse Artists</h2>
-        <button onClick={fetchArtists} className={styles.refreshButton}> {/* ✓ Corregido: era "fetchUsers" */}
-          Refresh
+        <button className={styles.refreshButton}> {/* ✓ Corregido: era "fetchUsers" */}
+          Create
         </button>
       </div>
 

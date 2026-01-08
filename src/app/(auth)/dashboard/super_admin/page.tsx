@@ -106,7 +106,7 @@ export default function AdminDashboard() {
 
   return (
 
-    <div style={{ height: '100svh' }}>
+    <div style={{ height: 'auto' }}>
       <DashboardLayout
         userName={userData.name}
         userEmail={userData.email}
