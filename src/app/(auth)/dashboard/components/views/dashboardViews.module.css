@@ -1,8 +1,10 @@
 .container {
   padding: 0 20px;
-  max-width: 85svw;
-  min-width: 85svw;
+  width: 100%;
   color: #DADEE5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .header {
@@ -39,9 +41,7 @@
 }
 
 .error {
-  text-align: center;
-  padding: 40px;
-  color: #ef4444;
+  color: #f00;
 }
 
 .retryButton {
@@ -125,6 +125,7 @@
 @media (max-width: 768px) {
     .container {
         padding: 0;
+        margin-left: 10px;
     }
 
     .header {

@@ -5,6 +5,7 @@ import React, { useState } from 'react'
 import { changePasswordAction } from '@/app/actions/profile'
 import styles from './dashboardViews.module.css'
 import styles_local from './changePassword.module.css'
+import { FormField } from '../components/FormField'
 
 interface ChangePasswordProps {
   userId: string
@@ -32,7 +33,7 @@ export default function ChangePassword({ userId, onNavigate }: ChangePasswordPro
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
-    
+
     if (validationErrors[name]) {
       setValidationErrors(prev => {
         const newErrors = { ...prev }
@@ -40,7 +41,7 @@ export default function ChangePassword({ userId, onNavigate }: ChangePasswordPro
         return newErrors
       })
     }
-    
+
     setSuccess(null)
     setError(null)
   }
@@ -64,8 +65,8 @@ export default function ChangePassword({ userId, onNavigate }: ChangePasswordPro
       errors.confirmPassword = 'Passwords do not match'
     }
 
-    if (formData.currentPassword && formData.newPassword && 
-        formData.currentPassword === formData.newPassword) {
+    if (formData.currentPassword && formData.newPassword &&
+      formData.currentPassword === formData.newPassword) {
       errors.newPassword = 'New password must be different from current password'
     }
 
@@ -93,7 +94,7 @@ export default function ChangePassword({ userId, onNavigate }: ChangePasswordPro
 
       if (result.success) {
         setSuccess('Password changed successfully!')
-        
+
         // Limpiar el formulario
         setFormData({
           currentPassword: '',
@@ -107,7 +108,7 @@ export default function ChangePassword({ userId, onNavigate }: ChangePasswordPro
             onNavigate('Profile')
           }
         }, 2000)
-        
+
       } else {
         throw new Error(result.error || 'Failed to change password')
       }
@@ -143,82 +144,68 @@ export default function ChangePassword({ userId, onNavigate }: ChangePasswordPro
 
   return (
     <div className={styles.container}>
-      {/* {onNavigate && (
-        <div className={styles.breadcrumb}>
-          <span 
-            onClick={() => onNavigate('Profile')}
-            style={{ cursor: 'pointer', color: '#3b82f6', textDecoration: 'underline' }}
-          >
-            ← Back to Profile
-          </span>
-        </div>
-      )} */}
-
-      <div className={styles.header}>
-        <h2>Change Password</h2>
-      </div>
-
-      {error && (
-        <div className={styles.errorMessage}>
-          {error}
-        </div>
-      )}
-
-      {success && (
-        <div className={styles.successMessage}>
-          {success}
-        </div>
-      )}
-
       <form onSubmit={handleSubmit} className={styles_local.form}>
-        <div className={styles.formSection}>
+        <div className={styles.header}>
+          <h2>Change Password</h2>
+        </div>
+        <div className={styles.formSection} style={{ width: '300px' }}>
           <h3>Password Information</h3>
           <p style={{ color: '#6b7280', fontSize: '14px', marginBottom: '20px' }}>
             Choose a strong password with at least 8 characters.
           </p>
-
-          <div className={styles_local.formGroup}>
-            <label htmlFor="currentPassword">
-              Current Password <span className={styles_local.required}>*</span>
-            </label>
-            <div style={{ position: 'relative' }}>
-              <input
-                type={showPasswords.current ? 'text' : 'password'}
-                id="currentPassword"
-                name="currentPassword"
-                value={formData.currentPassword}
-                onChange={handleInputChange}
-                className={validationErrors.currentPassword ? styles.inputError : ''}
-                disabled={loading}
-                autoComplete="current-password"
-              />
-              <button
-                type="button"
-                onClick={() => togglePasswordVisibility('current')}
-                className={styles_local.visibility}
-              >
-                {showPasswords.current ? '👁️' : '👁️‍🗨️'}
-              </button>
-            </div>
-            {validationErrors.currentPassword && (
-              <span className={styles.errorText}>{validationErrors.currentPassword}</span>
-            )}
+          <div style={{ position: 'relative', display: 'flex', paddingBottom: '20px' }}>
+            <FormField
+              label="Current Password"
+              name="currentPassword"
+              value={formData.currentPassword}
+              required
+              onChange={(name, value) => {
+                setFormData(prev => ({ ...prev, [name]: value }))
+                if (validationErrors[name]) {
+                  setValidationErrors(prev => {
+                    const newErrors = { ...prev }
+                    delete newErrors[name]
+                    return newErrors
+                  })
+                }
+                setSuccess(null)
+                setError(null)
+              }}
+              placeholder="Current Password"
+              type={showPasswords.current ? 'text' : 'password'}
+              error={validationErrors.currentPassword}
+            />
+            <button
+              type="button"
+              onClick={() => togglePasswordVisibility('current')}
+              className={styles_local.visibility}
+            >
+              {showPasswords.current ? '👁️' : '👁️‍🗨️'}
+            </button>
           </div>
 
           <div className={styles_local.formGroup}>
-            <label htmlFor="newPassword">
-              New Password <span className={styles_local.required}>*</span>
-            </label>
-            <div style={{ position: 'relative' }}>
-              <input
-                type={showPasswords.new ? 'text' : 'password'}
-                id="newPassword"
+            <div style={{ position: 'relative', display: 'flex' }}>
+              <FormField
+                label="New Password"
                 name="newPassword"
                 value={formData.newPassword}
-                onChange={handleInputChange}
-                className={validationErrors.newPassword ? styles.inputError : ''}
-                disabled={loading}
-                autoComplete="new-password"
+                required
+                onChange={(name, value) => {
+                  setFormData(prev => ({ ...prev, [name]: value }))
+                  if (validationErrors[name]) {
+                    setValidationErrors(prev => {
+                      const newErrors = { ...prev }
+                      delete newErrors[name]
+                      return newErrors
+                    })
+                  }
+                  setSuccess(null)
+                  setError(null)
+                }}
+                placeholder="New Password"
+                type={showPasswords.new ? 'text' : 'password'}
+                error={validationErrors.newPassword}
               />
               <button
                 type="button"
@@ -228,39 +215,52 @@ export default function ChangePassword({ userId, onNavigate }: ChangePasswordPro
                 {showPasswords.new ? '👁️' : '👁️‍🗨️'}
               </button>
             </div>
-            {validationErrors.newPassword && (
-              <span className={styles.errorText}>{validationErrors.newPassword}</span>
-            )}
           </div>
 
           <div className={styles_local.formGroup}>
-            <label htmlFor="confirmPassword">
-              Confirm New Password <span className={styles_local.required}>*</span>
-            </label>
-            <div style={{ position: 'relative' }}>
-              <input
-                type={showPasswords.confirm ? 'text' : 'password'}
-                id="confirmPassword"
+            <div style={{ position: 'relative', display: 'flex' }}>
+              <FormField
+                label="Confirm Password"
                 name="confirmPassword"
                 value={formData.confirmPassword}
-                onChange={handleInputChange}
-                className={validationErrors.confirmPassword ? styles.inputError : ''}
-                disabled={loading}
-                autoComplete="new-password"
+                required
+                onChange={(name, value) => {
+                  setFormData(prev => ({ ...prev, [name]: value }))
+                  if (validationErrors[name]) {
+                    setValidationErrors(prev => {
+                      const newErrors = { ...prev }
+                      delete newErrors[name]
+                      return newErrors
+                    })
+                  }
+                  setSuccess(null)
+                  setError(null)
+                }}
+                placeholder="Confirm Password"
+                type={showPasswords.confirm ? 'text' : 'password'}
+                error={validationErrors.confirmPassword}
               />
               <button
                 type="button"
                 onClick={() => togglePasswordVisibility('confirm')}
                 className={styles_local.visibility}
               >
-                {showPasswords.confirm ? '👁️' : '👁️‍🗨️'}
+                {showPasswords.current ? '👁️' : '👁️‍🗨️'}
               </button>
             </div>
-            {validationErrors.confirmPassword && (
-              <span className={styles.errorText}>{validationErrors.confirmPassword}</span>
-            )}
           </div>
         </div>
+
+        {error && (
+          <div className={styles.error}>
+            {error}
+          </div>
+        )}
+        {success && (
+          <div className={styles.error}>
+            {success}
+          </div>
+        )}
 
         <div className={styles_local.formActions}>
           <button

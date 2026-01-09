@@ -101,7 +101,7 @@ export default function AdminDashboard() {
     { label: 'Analitics' },
     { label: 'Security Logs' },
     { label: 'Profile' },
-    { label: 'Artist Profile' }
+    // { label: 'Artist Profile'}
   ]
 
   return (

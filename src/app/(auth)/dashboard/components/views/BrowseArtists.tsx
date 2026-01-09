@@ -27,7 +27,11 @@ interface Artist {
   deleted_at?: string
 }
 
-export default function BrowseArtists() {
+interface BrowseArtistsProps {
+  onNavigate: (view: string) => void
+}
+
+export default function BrowseArtists({ onNavigate }: BrowseArtistsProps) {
   const [artists, setArtists] = useState<Artist[]>([]) // ✓ Corregido: era "artist"
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -78,9 +82,12 @@ export default function BrowseArtists() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
+      <div className={styles.header} style={{width:'100%'}}>
         <h2>Browse Artists</h2>
-        <button className={styles.refreshButton}> {/* ✓ Corregido: era "fetchUsers" */}
+        <button 
+          className={styles.refreshButton}
+          onClick={() => onNavigate('Create Artist Profile')}
+        >
           Create
         </button>
       </div>
@@ -88,7 +95,7 @@ export default function BrowseArtists() {
       {artists.length === 0 ? (
         <div className={styles.empty}>No artists found</div>
       ) : (
-        <div className={styles.tableContainer}>
+        <div className={styles.tableContainer} style={{width:'100%'}}>
           <table className={styles.table}>
             <thead>
               <tr>

@@ -65,7 +65,7 @@ export default function BrowseUsers() {
 
     return (
         <div className={styles.container}>
-            <div className={styles.header}>
+            <div className={styles.header} style={{width:'100%'}}>
                 <h2>Mailing List</h2>
                 <button onClick={fetchMailingList} className={styles.refreshButton}>
                     Refresh
@@ -75,7 +75,7 @@ export default function BrowseUsers() {
             {mailingList.length === 0 ? (
                 <div className={styles.empty}>No users found</div>
             ) : (
-                <div className={styles.tableContainer}>
+                <div className={styles.tableContainer} style={{width:'100%'}}>
                     <table className={styles.table}>
                         <thead>
                             <tr>

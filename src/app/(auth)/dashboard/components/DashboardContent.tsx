@@ -28,7 +28,7 @@ export default function DashboardContent({ activeView, userId, onNavigate }: Das
       case 'Browse Users':
         return <BrowseUsers />;
       case 'Browse Artists':
-        return <BrowseArtists />;
+        return <BrowseArtists onNavigate={onNavigate}/>;
       case 'Mailing List':
         return <MailingList />;
       case 'Cluster Managment':
@@ -71,12 +71,6 @@ export default function DashboardContent({ activeView, userId, onNavigate }: Das
           <ArtistProfileCreate
             userId={userId}
             onNavigate={onNavigate}
-            // onSuccess={() => {
-            //   onNavigate('Artist Profile')
-            // }}
-            // onCancel={() => {
-            //   onNavigate('Artist Profile')
-            // }}
           />
         ) : (
           <div>User ID not available</div>

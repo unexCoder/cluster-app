@@ -142,7 +142,7 @@ export default function UpdateProfile({ userId, onNavigate }: UpdateProfileProps
       if (result.success && result.profile) {
         setSuccess('Profile updated successfully!')
         setProfile(result.profile as Profile)
-        
+
         // ✅ Redirigir después de 1.5 segundos
         setTimeout(() => {
           onNavigate?.('Profile')
@@ -192,26 +192,12 @@ export default function UpdateProfile({ userId, onNavigate }: UpdateProfileProps
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h2>Edit Profile</h2>
-      </div>
-
-      {error && (
-        <div className={styles.errorMessage}>
-          {error}
-        </div>
-      )}
-
-      {success && (
-        <div className={styles.successMessage}>
-          {success}
-        </div>
-      )}
-
       <form onSubmit={handleSubmit} className={styles_local.form}>
+        <div className={styles.header}>
+          <h2>Edit Profile</h2>
+        </div>
         <div className={styles_local.formSection}>
           <h3>Personal Information</h3>
-
           <div className={styles.formGroup}>
             <label htmlFor="first_name">
               First Name <span className={styles_local.required}>*</span>
@@ -292,24 +278,37 @@ export default function UpdateProfile({ userId, onNavigate }: UpdateProfileProps
           <h3>Account Information</h3>
           <div className={styles.infoGroup}>
             <label>Role:</label>
-            <span 
+            <span
               className={styles.readOnly}
-              style={{color:getRoleBadgeColor()}}
-              >
-                {profile.role}
+              style={{ color: getRoleBadgeColor() }}
+            >
+              {profile.role}
             </span>
           </div>
           <div className={styles.infoGroup}>
             <label>Status:</label>
-            <span 
+            <span
               className={styles.readOnly}
               style={{ color: profile.status === 'active' ? '#44ef44' : '#ef4444' }}
-              >
-                {profile.status}
-              </span>
+            >
+              {profile.status}
+            </span>
           </div>
         </div>
 
+        {error && (
+          <div className={styles.errorMessage}>
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className={styles.successMessage}>
+            {success}
+          </div>
+        )}
+
+        
         <div className={styles_local.formActions}>
           <button
             type="button"

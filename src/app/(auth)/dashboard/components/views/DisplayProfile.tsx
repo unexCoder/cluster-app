@@ -103,11 +103,10 @@ export default function DisplayProfile({ userId, onNavigate }: DisplayProfilePro
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h2>User Profile</h2>
-      </div>
-
       <div className={styles.profileCard}>
+        <div className={styles.header} >
+          <h2>User Profile</h2>
+        </div>
         <div className={styles_local.profileSection}>
           <h3>Personal Information</h3>
           <div className={styles_local.profileField}>
