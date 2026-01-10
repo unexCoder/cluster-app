@@ -1,7 +1,7 @@
 'use client'
 
 import { useArtistForm } from '@/hooks/useArtistForm'
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import styles from './artistProfileCreate.module.css'
 import { StepIndicator } from '../components/StepIndicator'
 import { Step1BasicInfo } from '../steps/Step1BasicInfo'
@@ -10,6 +10,8 @@ import { Step3socialLinks } from '../steps/Step3SocialLinks'
 import { Step4TechInfo } from '../steps/Step4TechInfo'
 import { createArtistProfileAction } from '@/app/actions/artists'
 import { ValidationErrors } from '../../../../../../types/types'
+import { artistInfoSchema } from '@/lib/validations/artistProfile'
+import { z } from 'zod'
 
 interface ArtistProfileCreateProps {
   userId: string
@@ -36,7 +38,6 @@ export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfil
     setValidationErrors(prev => ({ ...prev, [field]: error }))
   }
 
-  // Clear error
   const clearFieldError = (field: string) => {
     setValidationErrors(prev => {
       const newErrors = { ...prev }
@@ -45,30 +46,88 @@ export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfil
     })
   }
 
+  const clearAllErrors = () => {
+    setValidationErrors({})
+  }
+
+  // Validate Step 1 (Basic Info)
+  const validateStep1 = (): boolean => {
+    try {
+      const dataToValidate = {
+        name: formData.name,
+        stage_name: formData.stageName,
+        bio: formData.bio,
+        picture_url: formData.pictureUrl,
+        genres: formData.genres
+      }
+
+      artistInfoSchema.parse(dataToValidate)
+      clearAllErrors()
+      return true
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        error.issues.forEach(issue => {
+          const field = issue.path[0] as string
+          // Map snake_case back to camelCase for error display
+          const displayField = field === 'stage_name' ? 'stageName'
+            : field === 'picture_url' ? 'pictureUrl'
+            : field
+          setValidationError(displayField, issue.message)
+        })
+      }
+      return false
+    }
+  }
+
+  // Add validation for other steps as needed
+  const validateCurrentStep = (): boolean => {
+    switch (currentStep) {
+      case 1:
+        return validateStep1()
+      case 2:
+        // Add Step 2 validation here
+        return validateStep(currentStep)
+      case 3:
+        // Add Step 3 validation here
+        return validateStep(currentStep)
+      case 4:
+        // Add Step 4 validation here
+        return validateStep(currentStep)
+      default:
+        return true
+    }
+  }
+
   const handleNext = () => {
-    if (validateStep(currentStep)) {
+    if (validateCurrentStep()) {
       setCurrentStep(currentStep + 1)
     }
   }
 
   const handlePrevious = () => {
+    // Clear errors when going back
+    clearAllErrors()
     setCurrentStep(currentStep - 1)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!validateStep(currentStep)) return
+    
+    // Validate all steps before submission
+    if (!validateCurrentStep()) {
+      return
+    }
 
     try {
       setCreating(true)
 
-      // ✅ Transform to match database schema
+      // Transform to match database schema
       const artistData = {
         user_id: userId,
         name: formData.name,
-        stage_name: formData.stageName,        // ← camelCase to snake_case
+        stage_name: formData.stageName,
         bio: formData.bio,
-        picture_url: formData.pictureUrl,      // ← camelCase to snake_case
+        picture_url: formData.pictureUrl,
         genres: formData.genres,
         contact_info: JSON.stringify(formData.contactInfo),
         social_links: JSON.stringify(formData.socialLinks),
@@ -76,11 +135,15 @@ export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfil
         rider_url: formData.technical.riderUrl,
         presskit_url: formData.technical.presskitUrl
       }
-      // Call your API
+
       await createArtistProfileAction(artistData)
-      console.log('Submitting:', formData)
+      console.log('Profile created successfully:', formData)
+      
+      // Navigate back or show success message
+      onNavigate?.('Artist Profile')
     } catch (err) {
-      console.error(err)
+      console.error('Error creating profile:', err)
+      setValidationError('submit', 'Failed to create profile. Please try again.')
     } finally {
       setCreating(false)
     }
@@ -116,6 +179,20 @@ export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfil
       <div style={{ background: '#ff00ff66', borderRadius: '12px', padding: '32px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
         <StepIndicator currentStep={currentStep} />
 
+        {/* Show general submission errors */}
+        {validationErrors.submit && (
+          <div style={{
+            padding: '12px',
+            marginBottom: '16px',
+            background: '#fee2e2',
+            color: '#991b1b',
+            borderRadius: '6px',
+            fontSize: '14px'
+          }}>
+            {validationErrors.submit}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           {currentStep === 1 && (
             <Step1BasicInfo
@@ -125,6 +202,7 @@ export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfil
               clearFieldError={clearFieldError}
               addGenre={addGenre}
               removeGenre={removeGenre}
+              setValidationError={setValidationError}
             />
           )}
 
@@ -221,4 +299,3 @@ export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfil
     </div>
   )
 }
-

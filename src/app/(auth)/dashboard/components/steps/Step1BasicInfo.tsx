@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { FormField } from '../components/FormField'
 import type { ArtistFormData, ValidationErrors } from '../../../../../../types/types'
-import Image from 'next/image';
-import { artistInfoSchema } from '@/lib/validations/artistProfile';
-import z from 'zod';
+import Image from 'next/image'
+import { artistInfoSchema } from '@/lib/validations/artistProfile'
+import { z } from 'zod'
 
 interface Step1Props {
   formData: ArtistFormData
@@ -13,6 +13,15 @@ interface Step1Props {
   addGenre: (genre: string) => void
   removeGenre: (genre: string) => void
   setValidationError?: (field: string, error: string) => void
+}
+
+// Map component field names (camelCase) to schema field names (snake_case)
+const fieldNameMap: Record<string, keyof typeof artistInfoSchema.shape> = {
+  name: 'name',
+  stageName: 'stage_name',
+  pictureUrl: 'picture_url',
+  bio: 'bio',
+  genres: 'genres'
 }
 
 export const Step1BasicInfo: React.FC<Step1Props> = ({
@@ -26,12 +35,17 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
 }) => {
   const [genreInput, setGenreInput] = useState('')
 
-
   // Validate individual field
   const validateField = (fieldName: string, value: any) => {
     try {
-      // Use shape to access the schema fields
-      const fieldSchema = artistInfoSchema.shape[fieldName as keyof typeof artistInfoSchema.shape]
+      // Map camelCase field name to snake_case schema field
+      const schemaFieldName = fieldNameMap[fieldName]
+      if (!schemaFieldName) {
+        console.warn(`No schema mapping found for field: ${fieldName}`)
+        return false
+      }
+
+      const fieldSchema = artistInfoSchema.shape[schemaFieldName]
       if (fieldSchema) {
         fieldSchema.parse(value)
         clearFieldError(fieldName)
@@ -51,104 +65,8 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
   // Enhanced updateField with validation
   const handleFieldChange = (field: string, value: any) => {
     updateField(field, value)
-
-    // Validate on blur or after typing stops
-    if (field in artistInfoSchema) {
-      // Clear error immediately when user starts typing
-      clearFieldError(field)
-    }
-  }
-
-  // Validate on blur
-  // const handleFieldBlur = (field: keyof typeof artistInfoSchema) => {
-  //   let value: any
-
-  //   switch (field) {
-  //     case 'name':
-  //       value = formData.name
-  //       break
-  //     case 'stageName':
-  //       value = formData.stageName
-  //       break
-  //     case 'pictureUrl':
-  //       value = formData.pictureUrl
-  //       break
-  //     case 'bio':
-  //       value = formData.bio
-  //       break
-  //     case 'genres':
-  //       value = formData.genres
-  //       break
-  //     default:
-  //       return
-  //   }
-
-  //   validateField(field, value)
-  // }
-
-  const handleAddGenre = () => {
-    if (!genreInput.trim()) {
-      setValidationError?.('genres', 'Genre cannot be empty')
-      return
-    }
-
-    if (formData.genres.includes(genreInput.trim())) {
-      setValidationError?.('genres', 'Genre already added')
-      return
-    }
-
-    if (formData.genres.length >= 5) {
-      setValidationError?.('genres', 'Maximum 5 genres allowed')
-      return
-    }
-
-    addGenre(genreInput.trim())
-    setGenreInput('')
-    clearFieldError('genres')
-  }
-  // const handleAddGenre = () => {
-  //   addGenre(genreInput)
-  //   setGenreInput('')
-  // }
-
-
-
-  const handleRemoveGenre = (genre: string) => {
-    removeGenre(genre)
-    // Re-validate genres after removal
-    setTimeout(() => {
-      validateField('genres', formData.genres.filter(g => g !== genre))
-    }, 0)
-  }
-
-  // Validate all fields (can be called from parent)
-  const validateAll = () => {
-    try {
-      // Map camelCase to snake_case for schema validation
-      const dataToValidate = {
-        name: formData.name,
-        stage_name: formData.stageName,
-        bio: formData.bio,
-        picture_url: formData.pictureUrl,
-        genres: formData.genres
-      }
-      
-      // Use imported artistInfoSchema from your types
-      // artistInfoSchema.parse(dataToValidate)
-      return true
-    } catch (error) {
-      if (error instanceof z.ZodError && setValidationError) {
-        error.issues.forEach(err => {
-          const field = err.path[0] as string
-          // Map snake_case back to camelCase for error display
-          const displayField = field === 'stage_name' ? 'stageName' 
-            : field === 'picture_url' ? 'pictureUrl' 
-            : field
-          setValidationError(displayField, err.message)
-        })
-      }
-      return false
-    }
+    // Clear error immediately when user starts typing
+    clearFieldError(field)
   }
 
   // Validate on blur
@@ -177,6 +95,65 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
 
     validateField(field, value)
   }
+
+  const handleAddGenre = () => {
+    if (!genreInput.trim()) {
+      setValidationError?.('genres', 'Genre cannot be empty')
+      return
+    }
+
+    if (formData.genres.includes(genreInput.trim())) {
+      setValidationError?.('genres', 'Genre already added')
+      return
+    }
+
+    if (formData.genres.length >= 5) {
+      setValidationError?.('genres', 'Maximum 5 genres allowed')
+      return
+    }
+
+    addGenre(genreInput.trim())
+    setGenreInput('')
+    clearFieldError('genres')
+  }
+
+  const handleRemoveGenre = (genre: string) => {
+    removeGenre(genre)
+    // Re-validate genres after removal
+    setTimeout(() => {
+      validateField('genres', formData.genres.filter(g => g !== genre))
+    }, 0)
+  }
+
+  // Validate all fields (can be called from parent)
+  const validateAll = () => {
+    try {
+      // Map camelCase to snake_case for schema validation
+      const dataToValidate = {
+        name: formData.name,
+        stage_name: formData.stageName,
+        bio: formData.bio,
+        picture_url: formData.pictureUrl,
+        genres: formData.genres
+      }
+
+      artistInfoSchema.parse(dataToValidate)
+      return true
+    } catch (error) {
+      if (error instanceof z.ZodError && setValidationError) {
+        error.issues.forEach(issue => {
+          const field = issue.path[0] as string
+          // Map snake_case back to camelCase for error display
+          const displayField = field === 'stage_name' ? 'stageName'
+            : field === 'picture_url' ? 'pictureUrl'
+            : field
+          setValidationError(displayField, issue.message)
+        })
+      }
+      return false
+    }
+  }
+
   const isValidHttpUrl = (value: string) => {
     try {
       const url = new URL(value)
@@ -186,11 +163,13 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
     }
   }
 
-  const fieldClassName = 'infoGroup' // Replace with your actual class
+  const fieldClassName = 'infoGroup'
 
   return (
     <div>
-      <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>Basic Information</h3>
+      <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>
+        Basic Information
+      </h3>
       <p style={{ color: '#6b7280', fontSize: '14px', marginBottom: '24px' }}>
         Tell us about yourself and your music
       </p>
@@ -238,7 +217,6 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
 
         {isValidHttpUrl(formData.pictureUrl) && (
           <div>
-
             <Image
               src={formData.pictureUrl}
               width={500}
@@ -254,8 +232,6 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
                 objectFit: 'cover'
               }}
             />
-
-
             <button
               type="button"
               onClick={() => updateField('pictureUrl', '')}
@@ -296,7 +272,12 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
               type="text"
               value={genreInput}
               onChange={(e) => setGenreInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddGenre())}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  handleAddGenre()
+                }
+              }}
               onFocus={() => clearFieldError('genres')}
               placeholder="Add a genre (e.g., Rock, Jazz)"
               style={{
@@ -349,7 +330,7 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
                 {genre}
                 <button
                   type="button"
-                  onClick={() => removeGenre(genre)}
+                  onClick={() => handleRemoveGenre(genre)}
                   style={{
                     background: 'none',
                     border: 'none',
