@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { fetchArtistsAction } from '@/app/actions/artists'
 import styles from './dashboardViews.module.css'
+import Link from 'next/link'
 
 interface Artist {
   id: string
@@ -18,10 +19,10 @@ interface Artist {
   rider_url: string
   presskit_url: string
   technical_requirements: string
-  popularity_score: number
-  is_verified: number
+  popularity_score?: number
+  is_verified?: number
   verified_at?: string
-  verification_method: string
+  verification_method?: string
   created_at?: string
   updated_at?: string
   deleted_at?: string
@@ -109,11 +110,11 @@ export default function BrowseArtists({ onNavigate }: BrowseArtistsProps) {
               </tr>
             </thead>
             <tbody>
-              {artists.map((artist) => ( // ✓ Corregido: era "user"
+              {artists.map((artist) => (
                 <tr key={artist.id}>
                   <td>{artist.name}</td>
                   <td>{artist.stage_name || 'N/A'}</td>
-                  <td>{artist.slug}</td>
+                  <td><Link href={`/artist/${artist.slug}`}>{artist.slug}</Link></td>
                   <td>{artist.is_verified ? '✓' : '✗'}</td>
                   <td>{artist.popularity_score}</td>
                   <td>

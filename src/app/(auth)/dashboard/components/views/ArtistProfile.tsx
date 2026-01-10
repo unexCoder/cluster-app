@@ -20,10 +20,10 @@ interface Artist {
   rider_url: string
   presskit_url: string
   technical_requirements: string
-  popularity_score: number
-  is_verified: number
+  popularity_score?: number
+  is_verified?: number
   verified_at?: string
-  verification_method: string
+  verification_method?: string
   created_at?: string
   updated_at?: string
   deleted_at?: string
@@ -35,7 +35,7 @@ interface ArtistProfileProps {
 }
 
 export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps) {
-  const [artist, setArtist] = useState<Artist | null>(null)
+  const [artist, setArtist] = useState<Artist[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -55,6 +55,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
       const result = await fetchArtistByUserIdAction(userId)
 
       if (result.success && result.profile) {
+        console.log(result.profile)
         setArtist(result.profile)
       } else if (result.success && !result.profile) {
         // No hay perfil de artista
@@ -97,7 +98,8 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
     )
   }
 
-  if (!artist) {
+  // if (!artist) {
+  if (!artist?.length) {
     return (
       <div className={styles.container}>
         <div className={styles.empty}>
@@ -105,11 +107,10 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
           <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '8px' }}>
             Create your artist profile to get started
           </p>
-          <button 
-            className={styles.actionButton} 
+          <button
+            className={styles.actionButton}
             style={{ marginTop: '16px' }}
             onClick={() => {
-              // setShowCreateForm(true)
               onNavigate?.('Create Artist Profile')
             }}
           >
@@ -119,270 +120,277 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
       </div>
     )
   }
-  // if (!artist) {
-  //   return (
-  //     <div className={styles.container}>
-  //       <div className={styles.empty}>
-  //         <p>No artist profile found</p>
-  //         <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '8px' }}
-  //           onClick={() => onNavigate?.('Create Artist Profile')}
-  //           >
-  //           Create your artist profile to get started
-  //         </p>
-  //         <button className={styles.actionButton} style={{ marginTop: '16px' }}>
-  //           Create Artist Profile
-  //         </button>
-  //       </div>
-  //     </div>
-  //   )
-  // }
-
-  // Usar directamente, ya vienen parseados desde MySQL
-  const genres = artist.genres || []
-  const contactInfo = artist.contact_info || {}
-  const socialLinks = artist.social_links || {}
 
   return (
-    <div className={styles.container}>
-      {/* Header */}
-      <div className={styles.header}>
-        <h2>Artist Profile</h2>
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <button className={styles.actionButton}>
-            Edit Profile
-          </button>
-        </div>
-      </div>
+    <div>
+      {artist.map((profile) => {
+        console.log(profile)
+        const genres = profile.genres || []
+        const contactInfo = profile.contact_info || {}
+        const socialLinks = profile.social_links || {}
 
-      {/* Main Profile Card */}
-      <div className={styles_local.profileCard}>
-        {/* Artist Header with Image */}
-        <div className={styles_local.cardHeader}>
-          {/* Profile Picture */}
-          <div className={styles_local.imgContainer} >
-            {artist.picture_url ? (
-              <img
-                src={artist.picture_url}
-                alt={artist.name}
-                className={styles_local.profileImg}
-              />
-            ) : (
-              <div className={styles_local.imgNotLoaded}>
-                🎵
+        return (
+          <div
+            key={profile.id} 
+            className={styles_local.container}
+            >
+            {/* Header */}
+            <div className={styles_local.profileCard} style={{ marginBottom:'50px' }}>
+              <div className={styles.header} style={{ display: 'flex' }}>
+                <h2>Artist Profile</h2>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <button className={styles.actionButton}>
+                    Edit Profile
+                  </button>
+                </div>
               </div>
-            )}
-          </div>
 
-          {/* Artist Info */}
-          <div className={styles_local.artistInfoContainer}>
-            <div className={styles_local.artistInfoHeader}>
-              <h1 className={styles_local.artistInfoName}>
-                {artist.name}
-              </h1>
-              {artist.is_verified === 1 && (
-                <span className={styles_local.verified}>
-                  ✓ Verified
-                </span>
-              )}
-            </div>
+              {/* Main Profile Card */}
+              {/* Artist Header with Image */}
+              <div className={styles_local.cardHeader}>
+                {/* Profile Picture */}
+                <div className={styles_local.imgContainer} >
+                  {profile.picture_url ? (
+                    <img
+                      src={profile.picture_url}
+                      alt={profile.name}
+                      className={styles_local.profileImg}
+                    />
+                  ) : (
+                    <div className={styles_local.imgNotLoaded}>
+                      🎵
+                    </div>
+                  )}
+                </div>
 
-            {artist.stage_name && (
-              <p className={styles_local.stageName}>
-                Stage Name: {artist.stage_name}
-              </p>
-            )}
+                {/* Artist Info */}
+                <div className={styles_local.artistInfoContainer}>
+                  <div className={styles_local.artistInfoHeader}>
+                    <h1 className={styles_local.artistInfoName}>
+                      {profile.name}
+                    </h1>
+                    {profile.is_verified === 1 && (
+                      <span className={styles_local.verified}>
+                        ✓ Verified
+                      </span>
+                    )}
+                  </div>
 
-            {/* Genres */}
-            {Array.isArray(genres) && genres.length > 0 && (
-              <div className={styles_local.tagsContainer}>
-                {genres.map((genre: string, index: number) => (
-                  <span
-                    key={index}
-                    className={styles_local.tags}
-                  >
-                    {genre}
-                  </span>
-                ))}
+                  {profile.stage_name && (
+                    <p className={styles_local.stageName}>
+                      Stage Name: {profile.stage_name}
+                    </p>
+                  )}
+
+                  {/* Genres */}
+                  {Array.isArray(genres) && genres.length > 0 && (
+                    <div className={styles_local.tagsContainer}>
+                      {genres.map((genre: string, index: number) => (
+                        <span
+                          key={index}
+                          className={styles_local.tags}
+                        >
+                          {genre}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Popularity Score */}
+                  <div className={styles_local.scoreContainer}>
+                    <span className={styles_local.scoreLabel}>Popularity:</span>
+                    <div className={styles_local.score}>
+                      {profile.popularity_score && profile.popularity_score.toLocaleString()}
+                    </div>
+                  </div>
+                </div>
               </div>
-            )}
 
-            {/* Popularity Score */}
-            <div className={styles_local.scoreContainer}>
-              <span className={styles_local.scoreLabel}>Popularity:</span>
-              <div className={styles_local.score}>
-                {artist.popularity_score.toLocaleString()}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bio Section */}
-        {artist.bio && (
-          <div className={styles_local.formSection}>
-            <h3 className={styles_local.sectionTitle}>Biography</h3>
-            <p className={styles_local.bio}>
-              {artist.bio}
-            </p>
-          </div>
-        )}
-
-        {/* Contact Information */}
-        {(contactInfo?.name || contactInfo?.email || contactInfo?.phone) && (
-          <div className={styles_local.formSection}>
-            <h3 className={styles_local.sectionTitle}>Contact Information</h3>
-            <div className={styles_local.contactInfo}>
-              {contactInfo.name && (
-                <div className={styles.infoGroup}>
-                  <label>Name:</label>
-                  <span>{contactInfo.name} {contactInfo.last_name || ''}</span>
+              {/* Bio Section */}
+              {profile.bio && (
+                <div className={styles_local.formSection}>
+                  <h3 className={styles_local.sectionTitle}>Biography</h3>
+                  <p className={styles_local.bio}>
+                    {profile.bio}
+                  </p>
                 </div>
               )}
-              {contactInfo.email && (
-                <div className={styles.infoGroup}>
-                  <label>Email:</label>
-                  <a href={`mailto:${contactInfo.email}`} style={{ color: '#3b82f6' }}>
-                    {contactInfo.email}
-                  </a>
+
+              {/* Contact Information */}
+              {(contactInfo?.name || contactInfo?.email || contactInfo?.phone) && (
+                <div className={styles_local.formSection}>
+                  <h3 className={styles_local.sectionTitle}>Contact Information</h3>
+                  <div className={styles_local.contactInfo}>
+                    {contactInfo.name && (
+                      <div className={styles.infoGroup}>
+                        <label>Name:</label>
+                        <span>{contactInfo.name} {contactInfo.last_name || ''}</span>
+                      </div>
+                    )}
+                    {contactInfo.email && (
+                      <div className={styles.infoGroup}>
+                        <label>Email:</label>
+                        <a href={`mailto:${contactInfo.email}`} style={{ color: '#3b82f6' }}>
+                          {contactInfo.email}
+                        </a>
+                      </div>
+                    )}
+                    {contactInfo.phone && (
+                      <div className={styles.infoGroup}>
+                        <label>Phone:</label>
+                        <span>{contactInfo.phone}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
-              {contactInfo.phone && (
-                <div className={styles.infoGroup}>
-                  <label>Phone:</label>
-                  <span>{contactInfo.phone}</span>
+
+              {/* Social Links */}
+              {socialLinks && Object.values(socialLinks).some(link => link) && (
+                <div className={styles_local.formSection}>
+                  <h3 className={styles_local.sectionTitle}>Social Media</h3>
+                  <div className={styles_local.socialMedia}>
+                    {socialLinks.website && (
+                      <Link href={'http://' + socialLinks.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.socialLink}
+                      >
+                        Website
+                      </Link>
+                    )}
+                    {socialLinks.instagram && (
+                      <Link href={'http://' + socialLinks.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.socialLink}
+                      >
+                        Instagram
+                      </Link>
+                    )}
+                    {socialLinks.facebook && (
+                      <Link href={'http://' + socialLinks.facebook}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.socialLink}
+                      >
+                        Facebook
+                      </Link>
+                    )}
+                    {socialLinks.twitter && (
+                      <Link href={'http://' + socialLinks.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.socialLink}
+                      >
+                        Twitter
+                      </Link>                      
+                    )}
+                    {socialLinks.spotify && (
+                      <Link href={'http://' + socialLinks.spotify}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.socialLink}
+                      >
+                        Spotify
+                      </Link>
+                    )}
+                    {socialLinks.youtube && (
+                      <Link href={'http://' + socialLinks.youtube}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.socialLink}
+                      >
+                        Youtube
+                      </Link>
+                    )}
+                    {socialLinks.tiktok && (
+                      <Link href={'http://' + socialLinks.tiktok}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.socialLink}
+                      >
+                        Tiktok
+                      </Link>
+                    )}
+                  </div>
                 </div>
               )}
-            </div>
-          </div>
-        )}
 
-        {/* Social Links */}
-        {socialLinks && Object.values(socialLinks).some(link => link) && (
-          <div className={styles_local.formSection}>
-            <h3 className={styles_local.sectionTitle}>Social Media</h3>
-            <div className={styles_local.socialMedia}>
-              {socialLinks.website && (
-                <Link href={socialLinks.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.socialLink}
-                >
-                  Website
-                </Link>
-                // <a href={socialLinks.website} target="_blank" rel="noopener noreferrer" 
-                //   className={styles.socialLink}>
-                // </a>
+              {/* Technical Requirements */}
+              {profile.technical_requirements && (
+                <div className={styles_local.formSection}>
+                  <h3 className={styles_local.sectionTitle}>Technical Requirements</h3>
+                  <p className={styles_local.technicalRequirements}>
+                    {profile.technical_requirements}
+                  </p>
+                </div>
               )}
-              {socialLinks.instagram && (
-                <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer"
-                  className={styles.socialLink}>
-                  Instagram
-                </a>
-              )}
-              {socialLinks.facebook && (
-                <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer"
-                  className={styles.socialLink}>
-                  Facebook
-                </a>
-              )}
-              {socialLinks.twitter && (
-                <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer"
-                  className={styles.socialLink}>
-                  Twitter
-                </a>
-              )}
-              {socialLinks.spotify && (
-                <a href={socialLinks.spotify} target="_blank" rel="noopener noreferrer"
-                  className={styles.socialLink}>
-                  Spotify
-                </a>
-              )}
-              {socialLinks.youtube && (
-                <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer"
-                  className={styles.socialLink}>
-                  YouTube
-                </a>
-              )}
-              {socialLinks.tiktok && (
-                <a href={socialLinks.tiktok} target="_blank" rel="noopener noreferrer"
-                  className={styles.socialLink}>
-                  TikTok
-                </a>
-              )}
-            </div>
-          </div>
-        )}
 
-        {/* Technical Requirements */}
-        {artist.technical_requirements && (
-          <div className={styles_local.formSection}>
-            <h3 className={styles_local.sectionTitle}>Technical Requirements</h3>
-            <p className={styles_local.technicalRequirements}>
-              {artist.technical_requirements}
-            </p>
-          </div>
-        )}
-
-        {/* Documents */}
-        {(artist.rider_url || artist.presskit_url) && (
-          <div className={styles_local.formSection}>
-            <h3 className={styles_local.sectionTitle}>Documents & Media</h3>
-            <div className={styles_local.documents}>
-              {artist.rider_url && (
-                <a href={artist.rider_url} target="_blank" rel="noopener noreferrer"
-                  className={styles.documentLink}>
-                  📄 Technical Rider
-                </a>
+              {/* Documents */}
+              {(profile.rider_url || profile.presskit_url) && (
+                <div className={styles_local.formSection}>
+                  <h3 className={styles_local.sectionTitle}>Documents & Media</h3>
+                  <div className={styles_local.documents}>
+                    {profile.rider_url && (
+                      <a href={profile.rider_url} target="_blank" rel="noopener noreferrer"
+                        className={styles.documentLink}>
+                        📄 Technical Rider
+                      </a>
+                    )}
+                    {profile.presskit_url && (
+                      <a href={profile.presskit_url} target="_blank" rel="noopener noreferrer"
+                        className={styles.documentLink}>
+                        📦 Press Kit
+                      </a>
+                    )}
+                  </div>
+                </div>
               )}
-              {artist.presskit_url && (
-                <a href={artist.presskit_url} target="_blank" rel="noopener noreferrer"
-                  className={styles.documentLink}>
-                  📦 Press Kit
-                </a>
-              )}
-            </div>
-          </div>
-        )}
 
-        {/* Metadata */}
-        <div className={styles_local.formSection}>
-          <h3 className={styles_local.sectionTitle}>Profile Information</h3>
-          <div className={styles_local.profileInformationContainer}>
-            <div className={styles.infoGroup}>
-              <label>Profile URL:</label>
-              <span style={{ color: '#3b82f6', fontFamily: 'monospace', fontSize: '13px' }}>
-                <Link href={`/artist/${artist.slug}`}>/artist/{artist.slug}</Link>
-              </span>
-            </div>
-            {artist.is_verified === 1 && (
-              <div className={styles.infoGroup}>
-                <label>Verified:</label>
-                <span>
-                  {artist.verified_at
-                    ? new Date(artist.verified_at).toLocaleDateString()
-                    : 'Yes'
-                  } ({artist.verification_method})
-                </span>
+              {/* Metadata */}
+              <div className={styles_local.formSection}>
+                <h3 className={styles_local.sectionTitle}>Profile Information</h3>
+                <div className={styles_local.profileInformationContainer}>
+                  <div className={styles.infoGroup}>
+                    <label>Profile URL:</label>
+                    <span style={{ color: '#3b82f6', fontFamily: 'monospace', fontSize: '13px' }}>
+                      <Link href={`/artist/${profile.slug}`}>/artist/{profile.slug}</Link>
+                    </span>
+                  </div>
+                  {profile.is_verified === 1 && (
+                    <div className={styles.infoGroup}>
+                      <label>Verified:</label>
+                      <span>
+                        {profile.verified_at
+                          ? new Date(profile.verified_at).toLocaleDateString()
+                          : 'Yes'
+                        } ({profile.verification_method})
+                      </span>
+                    </div>
+                  )}
+                  <div className={styles.infoGroup}>
+                    <label>Created:</label>
+                    <span>
+                      {profile.created_at
+                        ? new Date(profile.created_at).toLocaleDateString()
+                        : 'N/A'}
+                    </span>
+                  </div>
+                  <div className={styles.infoGroup}>
+                    <label>Last Updated:</label>
+                    <span>
+                      {profile.updated_at
+                        ? new Date(profile.updated_at).toLocaleDateString()
+                        : 'N/A'}
+                    </span>
+                  </div>
+                </div>
               </div>
-            )}
-            <div className={styles.infoGroup}>
-              <label>Created:</label>
-              <span>
-                {artist.created_at
-                  ? new Date(artist.created_at).toLocaleDateString()
-                  : 'N/A'}
-              </span>
-            </div>
-            <div className={styles.infoGroup}>
-              <label>Last Updated:</label>
-              <span>
-                {artist.updated_at
-                  ? new Date(artist.updated_at).toLocaleDateString()
-                  : 'N/A'}
-              </span>
             </div>
           </div>
-        </div>
-      </div>
+        )
+      })}
     </div>
   )
 }

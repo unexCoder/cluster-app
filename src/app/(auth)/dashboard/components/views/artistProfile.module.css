@@ -1,6 +1,7 @@
-/* .profileCard {
-
-} */
+.container {
+    width:800px;
+    padding-left:50px;
+}
 
 .cardHeader { 
     display: flex;
@@ -150,23 +151,30 @@
 }
 
 @media (max-width: 768px) {
+    .container {
+        max-width:80%;
+        padding: 0;
+    }
+    
     .contactInfo, 
     .profileInformationContainer,
     .artistInfoHeader {
         display: flex;
         flex-direction: column;
+        max-width:80%;
+        justify-self: flex-start;
     }
 
     .verified,
     .tags  {
-        font-size: 8px;
+        font-size: 12px;
     }
 
     .stageName {
-        font-size:14px;
+        font-size:16px;
     }
 
     .scoreLabel {
-    font-size: 8px;
+    font-size: 12px;
     }
 }

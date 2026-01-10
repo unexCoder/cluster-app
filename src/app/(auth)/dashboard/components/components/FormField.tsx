@@ -6,6 +6,7 @@ interface FormFieldProps {
   value: string
   onChange: (name: string, value: string) => void
   onFocus?: (name: string) => void
+  onBlur?: (field: string, value: any) => void
   type?: string
   required?: boolean
   placeholder?: string

@@ -3,6 +3,8 @@ import React from 'react'
 import { FormField } from '../components/FormField'
 import type { ArtistFormData, ValidationErrors } from '../../../../../../types/types'
 import styles from './steps.module.css'
+import { contactInfoSchema } from '@/lib/validations/artistProfile';
+
 
 interface Step2Props {
   formData: ArtistFormData  // ✅ Use full form data
@@ -18,6 +20,39 @@ export const Step2ContactInfo: React.FC<Step2Props> = ({
   clearFieldError
 }) => {
   const fieldClassName = 'infoGroup'
+
+
+  // test validators 
+  // Usage examples
+  const validData = {
+    name: '  John  ',
+    last_name: 'Doe',
+    email: ' JOHN.DOE@EXAMPLE.COM ',
+    phone: '+1 (555) 123-4567',
+  };
+
+  console.log(contactInfoSchema.parse(validData));
+  // Output: { name: 'John', last_name: 'Doe', email: 'john.doe@example.com', phone: '+1 (555) 123-4567' }
+
+  // Empty/optional fields
+  const partialData = {
+    name: 'Jane',
+    last_name: '',
+    email: '',
+    phone: undefined,
+  };
+
+  console.log(contactInfoSchema.parse(partialData));
+
+  console.log(contactInfoSchema.parse({ phone: undefined }));      // { phone: '' } ✓
+  console.log(contactInfoSchema.parse({ phone: '' }));             // { phone: '' } ✓
+  console.log(contactInfoSchema.parse({ phone: '+1 555 123 4567' })); // { phone: '+1 555 123 4567' } ✓
+  console.log(contactInfoSchema.parse({ phone: '(555) 123-4567' }));  // { phone: '(555) 123-4567' } ✓
+  console.log(contactInfoSchema.parse({ phone: '555-1234' }));        // { phone: '555-1234' } ✓
+  // console.log(contactInfoSchema.parse({ phone: '123' }));             // ❌ Error (too short)
+  // console.log(contactInfoSchema.parse({ phone: 'not-a-number' }));    // ❌ Error
+
+  //
 
   return (
     <div>

@@ -111,7 +111,8 @@ export const useArtistForm = () => {
       setError(Object.values(errors)[0])
       return false
     }
-
+    
+    setValidationErrors(errors)
     return true
   }
 
@@ -128,6 +129,8 @@ export const useArtistForm = () => {
     validateStep,
     setCurrentStep,
     setError,
-    setCreating
+    setCreating,
+    setValidationErrors,
+    // setError
   }
 }

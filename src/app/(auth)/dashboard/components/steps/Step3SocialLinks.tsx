@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { FormField } from '../components/FormField'
 import type { ArtistFormData, ValidationErrors } from '../../../../../../types/types'
 import styles from './steps.module.css'
+import { socialLinksSchema } from '@/lib/validations/artistProfile'
 
 interface Step3Props {
     formData: ArtistFormData  // ✅ Use full form data
@@ -19,6 +20,16 @@ export const Step3socialLinks: React.FC<Step3Props> = ({
 }) => {
     const fieldClassName = 'infoGroup'
 
+    // test validator
+    console.log(socialLinksSchema.parse({
+        website: 'https://example.com',
+        instagram: '@username',
+        youtube: 'https://youtube.com/@channel',
+        twitter: '',
+        facebook: undefined,
+    }));
+    // 
+
     return (
         <div>
             <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>
@@ -30,7 +41,7 @@ export const Step3socialLinks: React.FC<Step3Props> = ({
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 {/* Two-column grid for names */}
-                <div 
+                <div
                     className={styles.innerFormContainer}
                 >
                     <FormField

@@ -5,28 +5,29 @@ import React, { useEffect, useState } from 'react'
 import styles from './artistDisplay.module.css'
 import { Globe, Instagram, Music, Youtube, Facebook, Twitter } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 interface ArtistDisplayProps {
   slug: string
 }
 
 interface Artist {
-    id: string
-    name: string
-    slug: string
-    picture_url: string
-    bio: string
-    genres: any
-    social_links: any
+  id: string
+  name: string
+  slug: string
+  picture_url: string
+  bio: string
+  genres: any
+  social_links: any
 }
 
 
-export default function ArtistDisplay( { slug }: ArtistDisplayProps ) {
-    const [artist, setArtist] = useState<Artist | null>(null)
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
+export default function ArtistDisplay({ slug }: ArtistDisplayProps) {
+  const [artist, setArtist] = useState<Artist | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-   useEffect(() => {
+  useEffect(() => {
     if (slug) {
       fetchArtistProfile()
     }
@@ -99,35 +100,35 @@ export default function ArtistDisplay( { slug }: ArtistDisplayProps ) {
   const colorRand = Math.random();
 
   const colorLayout = (() => {
-  switch (true) {
-    case colorRand < 0.33:
-      return styles.colorB
+    switch (true) {
+      case colorRand < 0.33:
+        return styles.colorB
 
-    case colorRand < 0.66:
-      return styles.colorA
+      case colorRand < 0.66:
+        return styles.colorA
 
-    default:
-      return styles.colorC
-  }
-})()
-  
+      default:
+        return styles.colorC
+    }
+  })()
+
   return (
-    <div className={ `${styles.container} ${ colorLayout}` }>
-      
+    <div className={`${styles.container} ${colorLayout}`}>
+
       {/* Artist Info */}
       <div className={styles.profileCard}>
         {/* Profile Picture */}
         {artist.picture_url && (
-        <div className={`${styles.imgContainer} ${altLayout ? styles.imgContainerAlt : null} ${switchLayout ? styles.imgContainerSwitch : null}`}>
+          <div className={`${styles.imgContainer} ${altLayout ? styles.imgContainerAlt : null} ${switchLayout ? styles.imgContainerSwitch : null}`}>
             <Image
-              src={artist.picture_url} 
+              src={artist.picture_url}
               width={700}
               height={0} // ignored
               alt={artist.name}
               className={styles.profileImage}
-              style={{ height: 'auto'}}
-             />
-        </div>
+              style={{ height: 'auto' }}
+            />
+          </div>
         )}
 
         {/* <div className={styles.profile}> */}
@@ -157,40 +158,30 @@ export default function ArtistDisplay( { slug }: ArtistDisplayProps ) {
           )}
 
           {/* Social Links */}
+          {console.log(socialLinks)}
           {socialLinks && Object.values(socialLinks).some(link => link) && (
             <div className={styles.socialSection}>
               {/* <h2>Social Media</h2> */}
               <div className={styles.socialLinks}>
                 {socialLinks.website && (
-                  <a href={socialLinks.website} target="_blank" rel="noopener noreferrer">
-                    <Globe size={20} />
-                  </a>
+                  <Link href={'http://' + socialLinks.website} target='_blank' rel="noopener noreferrer"><Globe size={20} /></Link>
                 )}
                 {socialLinks.instagram && (
-                  <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer">
-                    <Instagram size={20} />
-                  </a>
+                  <Link href={'http://' + socialLinks.instagram} target='_blank' rel="noopener noreferrer"><Instagram size={20} /></Link>
                 )}
                 {socialLinks.spotify && (
-                  <a href={socialLinks.spotify} target="_blank" rel="noopener noreferrer">
-                    <Music size={20} />
-                  </a>
+                  <Link href={'http://' + socialLinks.spotify} target='_blank' rel="noopener noreferrer"><Music size={20} /></Link>
                 )}
                 {socialLinks.youtube && (
-                  <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer">
-                    <Youtube size={20} />
-                  </a>
+                  <Link href={'http://' + socialLinks.youtube} target='_blank' rel="noopener noreferrer"><Youtube size={20} /></Link>
                 )}
                 {socialLinks.facebook && (
-                  <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer">
-                    <Facebook size={20} />
-                  </a>
+                  <Link href={'http://' + socialLinks.facebook} target='_blank' rel="noopener noreferrer"><Facebook size={20} /></Link>
                 )}
                 {socialLinks.twitter && (
-                  <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer">
-                    <Twitter size={20} />
-                  </a>
+                  <Link href={'http://' + socialLinks.twitter} target='_blank' rel="noopener noreferrer"><Twitter size={20} /></Link>
                 )}
+
               </div>
             </div>
           )}

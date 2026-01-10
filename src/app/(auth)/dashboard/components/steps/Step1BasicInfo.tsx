@@ -27,7 +27,32 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
     setGenreInput('')
   }
 
+
+
   const fieldClassName = 'infoGroup' // Replace with your actual class
+
+  // test validators
+  const validData = {
+    name: '  The Beatles  ',
+    stage_name: 'Fab Four',
+    bio: 'English rock band formed in Liverpool in 1960.',
+    picture_url: 'https://example.com/beatles.jpg',
+    genres: ['Rock', 'Pop'],
+  };
+
+  // console.log(artistInfoSchema.parse(validData));
+  // 
+
+  //img url handler
+  const isValidHttpUrl = (value: string) => {
+    try {
+      const url = new URL(value)
+      return url.protocol === 'http:' || url.protocol === 'https:'
+    } catch {
+      return false
+    }
+  }
+
 
   return (
     <div>
@@ -74,7 +99,8 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
           className={fieldClassName}
         />
 
-        {formData.pictureUrl && (
+
+        {isValidHttpUrl(formData.pictureUrl) && (
           <div>
 
             <Image

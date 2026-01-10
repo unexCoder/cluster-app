@@ -3,6 +3,7 @@
 import { query } from '@/lib/db';
 import { RowDataPacket } from 'mysql2';
 import { revalidatePath } from 'next/cache';
+import { ArtistProfileCreateDTO } from '../../../types/artists'; 
 
 interface ArtistRow extends RowDataPacket {
   id: string
@@ -18,10 +19,10 @@ interface ArtistRow extends RowDataPacket {
   rider_url: string
   presskit_url: string
   technical_requirements: string
-  popularity_score: number
-  is_verified: number
+  popularity_score?: number
+  is_verified?: number
   verified_at?: string
-  verification_method: string
+  verification_method?: string
   created_at?: string
   updated_at?: string
   deleted_at?: string
@@ -40,7 +41,7 @@ export async function fetchArtistsAction() {
 export async function fetchArtistByUserIdAction(id: string) {
   try {
     const profile = await query('SELECT * FROM artist WHERE user_id = ?', [id]) as ArtistRow[];
-    return { success: true, profile: profile[0] || null };
+    return { success: true, profile: profile || null };
   } catch (error) {
     console.error('Database error:', error);
     return { success: false, error: 'Failed to fetch artist', profile: null };
@@ -64,17 +65,26 @@ interface ActionResult {
 }
 
 export async function createArtistProfileAction(
-  formData: ArtistRow
+  formData: ArtistProfileCreateDTO
 ): Promise<ActionResult> {
   try {
     // Check if user already has a profile
+    // const existingProfile:[] = await query(
+    //   'SELECT id FROM artist WHERE user_id = ? AND deleted_at IS NULL',
+    //   [formData.user_id]
+    // )
+
+    // if (existingProfile && existingProfile.length > 0) {
+    //   return { success: false, error: 'Artist profile already exists' }
+    // }
+
     const existingProfile:[] = await query(
-      'SELECT id FROM artist WHERE user_id = ? AND deleted_at IS NULL',
-      [formData.user_id]
+      'SELECT id FROM artist WHERE name = ? AND deleted_at IS NULL',
+      [formData.name]
     )
 
     if (existingProfile && existingProfile.length > 0) {
-      return { success: false, error: 'Artist profile already exists' }
+      return { success: false, error: 'Artist name already exists' }
     }
 
     // Generate unique slug
