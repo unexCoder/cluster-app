@@ -1,7 +1,7 @@
 'use client'
 
 import { useArtistForm } from '@/hooks/useArtistForm'
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './artistProfileCreate.module.css'
 import { StepIndicator } from '../components/StepIndicator'
 import { Step1BasicInfo } from '../steps/Step1BasicInfo'
@@ -9,6 +9,7 @@ import { Step2ContactInfo } from '../steps/Step2ContactInfo'
 import { Step3socialLinks } from '../steps/Step3SocialLinks'
 import { Step4TechInfo } from '../steps/Step4TechInfo'
 import { createArtistProfileAction } from '@/app/actions/artists'
+import { ValidationErrors } from '../../../../../../types/types'
 
 interface ArtistProfileCreateProps {
   userId: string
@@ -18,18 +19,31 @@ interface ArtistProfileCreateProps {
 export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfileCreateProps) {
   const {
     formData,
-    validationErrors,
     currentStep,
     error,
     creating,
     updateField,
     addGenre,
     removeGenre,
-    clearFieldError,
     validateStep,
     setCurrentStep,
     setCreating
   } = useArtistForm()
+
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({})
+
+  const setValidationError = (field: string, error: string) => {
+    setValidationErrors(prev => ({ ...prev, [field]: error }))
+  }
+
+  // Clear error
+  const clearFieldError = (field: string) => {
+    setValidationErrors(prev => {
+      const newErrors = { ...prev }
+      delete newErrors[field]
+      return newErrors
+    })
+  }
 
   const handleNext = () => {
     if (validateStep(currentStep)) {

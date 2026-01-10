@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { FormField } from '../components/FormField'
 import type { ArtistFormData, ValidationErrors } from '../../../../../../types/types'
 import Image from 'next/image';
+import { artistInfoSchema } from '@/lib/validations/artistProfile';
+import z from 'zod';
 
 interface Step1Props {
   formData: ArtistFormData
@@ -10,6 +12,7 @@ interface Step1Props {
   clearFieldError: (field: string) => void
   addGenre: (genre: string) => void
   removeGenre: (genre: string) => void
+  setValidationError?: (field: string, error: string) => void
 }
 
 export const Step1BasicInfo: React.FC<Step1Props> = ({
@@ -18,32 +21,162 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
   updateField,
   clearFieldError,
   addGenre,
-  removeGenre
+  removeGenre,
+  setValidationError
 }) => {
   const [genreInput, setGenreInput] = useState('')
 
-  const handleAddGenre = () => {
-    addGenre(genreInput)
-    setGenreInput('')
+
+  // Validate individual field
+  const validateField = (fieldName: string, value: any) => {
+    try {
+      // Use shape to access the schema fields
+      const fieldSchema = artistInfoSchema.shape[fieldName as keyof typeof artistInfoSchema.shape]
+      if (fieldSchema) {
+        fieldSchema.parse(value)
+        clearFieldError(fieldName)
+        return true
+      }
+      return false
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        if (setValidationError && error.issues.length > 0) {
+          setValidationError(fieldName, error.issues[0].message)
+        }
+      }
+      return false
+    }
   }
 
+  // Enhanced updateField with validation
+  const handleFieldChange = (field: string, value: any) => {
+    updateField(field, value)
+
+    // Validate on blur or after typing stops
+    if (field in artistInfoSchema) {
+      // Clear error immediately when user starts typing
+      clearFieldError(field)
+    }
+  }
+
+  // Validate on blur
+  // const handleFieldBlur = (field: keyof typeof artistInfoSchema) => {
+  //   let value: any
+
+  //   switch (field) {
+  //     case 'name':
+  //       value = formData.name
+  //       break
+  //     case 'stageName':
+  //       value = formData.stageName
+  //       break
+  //     case 'pictureUrl':
+  //       value = formData.pictureUrl
+  //       break
+  //     case 'bio':
+  //       value = formData.bio
+  //       break
+  //     case 'genres':
+  //       value = formData.genres
+  //       break
+  //     default:
+  //       return
+  //   }
+
+  //   validateField(field, value)
+  // }
+
+  const handleAddGenre = () => {
+    if (!genreInput.trim()) {
+      setValidationError?.('genres', 'Genre cannot be empty')
+      return
+    }
+
+    if (formData.genres.includes(genreInput.trim())) {
+      setValidationError?.('genres', 'Genre already added')
+      return
+    }
+
+    if (formData.genres.length >= 5) {
+      setValidationError?.('genres', 'Maximum 5 genres allowed')
+      return
+    }
+
+    addGenre(genreInput.trim())
+    setGenreInput('')
+    clearFieldError('genres')
+  }
+  // const handleAddGenre = () => {
+  //   addGenre(genreInput)
+  //   setGenreInput('')
+  // }
 
 
-  const fieldClassName = 'infoGroup' // Replace with your actual class
 
-  // test validators
-  const validData = {
-    name: '  The Beatles  ',
-    stage_name: 'Fab Four',
-    bio: 'English rock band formed in Liverpool in 1960.',
-    picture_url: 'https://example.com/beatles.jpg',
-    genres: ['Rock', 'Pop'],
-  };
+  const handleRemoveGenre = (genre: string) => {
+    removeGenre(genre)
+    // Re-validate genres after removal
+    setTimeout(() => {
+      validateField('genres', formData.genres.filter(g => g !== genre))
+    }, 0)
+  }
 
-  // console.log(artistInfoSchema.parse(validData));
-  // 
+  // Validate all fields (can be called from parent)
+  const validateAll = () => {
+    try {
+      // Map camelCase to snake_case for schema validation
+      const dataToValidate = {
+        name: formData.name,
+        stage_name: formData.stageName,
+        bio: formData.bio,
+        picture_url: formData.pictureUrl,
+        genres: formData.genres
+      }
+      
+      // Use imported artistInfoSchema from your types
+      // artistInfoSchema.parse(dataToValidate)
+      return true
+    } catch (error) {
+      if (error instanceof z.ZodError && setValidationError) {
+        error.issues.forEach(err => {
+          const field = err.path[0] as string
+          // Map snake_case back to camelCase for error display
+          const displayField = field === 'stage_name' ? 'stageName' 
+            : field === 'picture_url' ? 'pictureUrl' 
+            : field
+          setValidationError(displayField, err.message)
+        })
+      }
+      return false
+    }
+  }
 
-  //img url handler
+  // Validate on blur
+  const handleFieldBlur = (field: string) => {
+    let value: any
+
+    switch (field) {
+      case 'name':
+        value = formData.name
+        break
+      case 'stageName':
+        value = formData.stageName
+        break
+      case 'pictureUrl':
+        value = formData.pictureUrl
+        break
+      case 'bio':
+        value = formData.bio
+        break
+      case 'genres':
+        value = formData.genres
+        break
+      default:
+        return
+    }
+
+    validateField(field, value)
+  }
   const isValidHttpUrl = (value: string) => {
     try {
       const url = new URL(value)
@@ -53,6 +186,7 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
     }
   }
 
+  const fieldClassName = 'infoGroup' // Replace with your actual class
 
   return (
     <div>
@@ -66,8 +200,9 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
           label="Artist Name"
           name="name"
           value={formData.name}
-          onChange={updateField}
+          onChange={handleFieldChange}
           onFocus={clearFieldError}
+          onBlur={() => handleFieldBlur('name')}
           required
           placeholder="Enter your artist name"
           error={validationErrors.name}
@@ -78,8 +213,9 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
           label="Stage Name"
           name="stageName"
           value={formData.stageName}
-          onChange={updateField}
+          onChange={handleFieldChange}
           onFocus={clearFieldError}
+          onBlur={() => handleFieldBlur('stageName')}
           required
           placeholder="Enter your stage name"
           error={validationErrors.stageName}
@@ -91,14 +227,14 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
           name="pictureUrl"
           type="url"
           value={formData.pictureUrl}
-          onChange={updateField}
+          onChange={handleFieldChange}
           onFocus={clearFieldError}
+          onBlur={() => handleFieldBlur('pictureUrl')}
           required
           placeholder="https://example.com/image.jpg"
           error={validationErrors.pictureUrl}
           className={fieldClassName}
         />
-
 
         {isValidHttpUrl(formData.pictureUrl) && (
           <div>
@@ -140,8 +276,9 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
           label="Biography"
           name="bio"
           value={formData.bio}
-          onChange={updateField}
+          onChange={handleFieldChange}
           onFocus={clearFieldError}
+          onBlur={() => handleFieldBlur('bio')}
           required
           placeholder="Tell us about yourself, your music style, and your journey..."
           rows={5}
