@@ -176,7 +176,135 @@ export async function createArtistProfileAction(
   }
 }
 
+export async function updateArtistProfileAction(
+  formData: ArtistProfileCreateDTO & { id: string }
+): Promise<ActionResult> {
+  try {
+    // Verify the artist exists and belongs to the user
+    const existingArtist = await query(
+      'SELECT id, user_id, name, slug FROM artist WHERE id = ? AND deleted_at IS NULL',
+      [formData.id]
+    ) as ArtistRow[]
 
+    if (!existingArtist || existingArtist.length === 0) {
+      return { success: false, error: 'Artist profile not found' }
+    }
+
+    // Verify ownership
+    if (existingArtist[0].user_id !== formData.user_id) {
+      return { success: false, error: 'Unauthorized to update this profile' }
+    }
+
+    // Check if name is being changed and if new name already exists
+    if (existingArtist[0].name !== formData.name) {
+      const nameExists = await query(
+        'SELECT id FROM artist WHERE name = ? AND id != ? AND deleted_at IS NULL',
+        [formData.name, formData.id]
+      ) as ArtistRow[]
+
+      if (nameExists && nameExists.length > 0) {
+        return { success: false, error: 'Artist name already exists' }
+      }
+
+      // Generate new slug if name changed
+      const baseSlug = generateSlug(formData.name)
+      let slug = baseSlug
+      let counter = 0
+
+      while (true) {
+        const slugExists = await query(
+          'SELECT id FROM artist WHERE slug = ? AND id != ? AND deleted_at IS NULL',
+          [slug, formData.id]
+        ) as ArtistRow[]
+        
+        if (!slugExists || slugExists.length === 0) break
+        counter++
+        slug = `${baseSlug}-${counter}`
+      }
+
+      // Update with new slug
+      formData.slug = slug
+    } else {
+      // Keep existing slug
+      formData.slug = existingArtist[0].slug
+    }
+
+    // Prepare JSON fields
+    const genres = typeof formData.genres === 'string' 
+      ? formData.genres 
+      : JSON.stringify(formData.genres)
+    
+    const contactInfo = typeof formData.contact_info === 'string'
+      ? formData.contact_info
+      : JSON.stringify(formData.contact_info)
+    
+    const socialLinks = typeof formData.social_links === 'string'
+      ? formData.social_links
+      : JSON.stringify(formData.social_links)
+
+    // Update artist profile
+    await query(
+      `UPDATE artist SET
+        name = ?,
+        slug = ?,
+        stage_name = ?,
+        picture_url = ?,
+        bio = ?,
+        genres = ?,
+        contact_info = ?,
+        social_links = ?,
+        technical_requirements = ?,
+        rider_url = ?,
+        presskit_url = ?,
+        updated_at = NOW()
+      WHERE id = ? AND deleted_at IS NULL`,
+      [
+        formData.name,
+        formData.slug,
+        formData.stage_name || null,
+        formData.picture_url || null,
+        formData.bio || null,
+        genres,
+        contactInfo,
+        socialLinks,
+        formData.technical_requirements || null,
+        formData.rider_url || null,
+        formData.presskit_url || null,
+        formData.id
+      ]
+    )
+
+    // Get updated profile
+    const updatedProfile = await query(
+      'SELECT * FROM artist WHERE id = ? AND deleted_at IS NULL',
+      [formData.id]
+    ) as ArtistRow[]
+
+    if (!updatedProfile || updatedProfile.length === 0) {
+      throw new Error('Failed to retrieve updated profile')
+    }
+
+    // Create audit log (optional - uncomment if you have audit table)
+    // await query(
+    //   `INSERT INTO artist_profiles_audit (
+    //     artist_id, user_id, action, changed_fields, created_at
+    //   ) VALUES (?, ?, 'UPDATE', ?, NOW())`,
+    //   [formData.id, formData.user_id, JSON.stringify({ updated_data: formData })]
+    // )
+
+    revalidatePath('/dashboard')
+    revalidatePath('/artist-profile')
+    revalidatePath(`/artist/${formData.slug}`)
+
+    return { success: true, data: updatedProfile[0] }
+  } catch (error) {
+    console.error('Database error:', error)
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Failed to update profile' 
+    }
+  }
+}
 
 // utils
 function generateSlug(name: string): string {

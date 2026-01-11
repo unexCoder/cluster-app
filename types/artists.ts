@@ -3,6 +3,7 @@ export interface ArtistProfileCreateDTO {
   user_id: string
   name: string
   stage_name: string
+  slug?:string
   bio: string
   picture_url: string
   genres: string[]

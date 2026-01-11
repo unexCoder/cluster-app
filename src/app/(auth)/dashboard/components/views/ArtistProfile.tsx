@@ -139,7 +139,10 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
               <div className={styles.header} style={{ display: 'flex' }}>
                 <h2>Artist Profile</h2>
                 <div style={{ display: 'flex', gap: '12px' }}>
-                  <button className={styles.actionButton}>
+                  <button 
+                    className={styles.actionButton}
+                    onClick={() => onNavigate?.('Update Artist Profile')}
+                  >
                     Edit Profile
                   </button>
                 </div>

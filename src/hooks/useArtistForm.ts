@@ -131,6 +131,7 @@ export const useArtistForm = () => {
     setError,
     setCreating,
     setValidationErrors,
+    setFormData
     // setError
   }
 }

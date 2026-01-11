@@ -125,7 +125,7 @@ export default function BrowseArtists({ onNavigate }: BrowseArtistsProps) {
                   <td>
                     <button
                       className={styles.actionButton}
-                      onClick={() => console.log('Edit artist:', artist.id)}
+                      onClick={() => onNavigate('Update Artist Profile')}
                     >
                       Edit
                     </button>
