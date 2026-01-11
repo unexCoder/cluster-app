@@ -30,7 +30,7 @@ interface ArtistRow extends RowDataPacket {
 
 export async function fetchArtistsAction() {
   try {
-    const artists = await query('SELECT * FROM artist') as ArtistRow[];
+    const artists = await query('SELECT * FROM artist WHERE deleted_at = NULL') as ArtistRow[];
     return { success: true, artists };
   } catch (error) {
     console.error('Database error:', error);
@@ -40,7 +40,7 @@ export async function fetchArtistsAction() {
 
 export async function fetchArtistByUserIdAction(id: string) {
   try {
-    const profile = await query('SELECT * FROM artist WHERE user_id = ?', [id]) as ArtistRow[];
+    const profile = await query('SELECT * FROM artist WHERE user_id = ? AND deleted_at = NULL', [id]) as ArtistRow[];
     return { success: true, profile: profile || null };
   } catch (error) {
     console.error('Database error:', error);
@@ -69,15 +69,6 @@ export async function createArtistProfileAction(
 ): Promise<ActionResult> {
   try {
     // Check if user already has a profile
-    // const existingProfile:[] = await query(
-    //   'SELECT id FROM artist WHERE user_id = ? AND deleted_at IS NULL',
-    //   [formData.user_id]
-    // )
-
-    // if (existingProfile && existingProfile.length > 0) {
-    //   return { success: false, error: 'Artist profile already exists' }
-    // }
-
     const existingProfile:[] = await query(
       'SELECT id FROM artist WHERE name = ? AND deleted_at IS NULL',
       [formData.name]
@@ -305,6 +296,29 @@ export async function updateArtistProfileAction(
     }
   }
 }
+
+
+export async function deleteArtistProfileAction(artistId: string): Promise<ActionResult> {
+  try {
+    // Soft delete - set deleted_at timestamp
+    await query(
+      'UPDATE artist SET deleted_at = NOW() WHERE id = ?',
+      [artistId]
+    )
+
+    revalidatePath('/dashboard')
+    revalidatePath('/artist-profile')
+
+    return { success: true }
+  } catch (error) {
+    console.error('Database error:', error)
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Failed to delete profile' 
+    }
+  }
+}
+
 
 // utils
 function generateSlug(name: string): string {

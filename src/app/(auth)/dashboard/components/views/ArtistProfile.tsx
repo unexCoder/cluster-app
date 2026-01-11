@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { fetchArtistByUserIdAction } from '@/app/actions/artists'
+import { deleteArtistProfileAction, fetchArtistByUserIdAction } from '@/app/actions/artists'
 import styles from './dashboardViews.module.css'
 import styles_local from './artistProfile.module.css'
 import Link from 'next/link'
@@ -38,6 +38,8 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
   const [artist, setArtist] = useState<Artist[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     if (userId) {
@@ -121,6 +123,30 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
     )
   }
 
+  const handleDeleteProfile = async () => {
+    if (!artist || artist.length === 0) return
+
+    try {
+      setDeleting(true)
+      // Call your delete action here
+      const result = await deleteArtistProfileAction(artist[0].id)
+
+      if (result.success) {
+        setShowDeleteModal(false)
+        // Refresh the profile view or navigate back
+        // fetchArtistProfile()
+      } else {
+        alert(result.error || 'Failed to delete profile')
+      }
+    } catch (err) {
+      alert('Error deleting profile')
+      console.error(err)
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+
   return (
     <div>
       {artist.map((profile) => {
@@ -131,15 +157,15 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
 
         return (
           <div
-            key={profile.id} 
+            key={profile.id}
             className={styles_local.container}
-            >
+          >
             {/* Header */}
-            <div className={styles_local.profileCard} style={{ marginBottom:'50px' }}>
+            <div className={styles_local.profileCard} style={{ marginBottom: '50px' }}>
               <div className={styles.header} style={{ display: 'flex' }}>
                 <h2>Artist Profile</h2>
                 <div style={{ display: 'flex', gap: '12px' }}>
-                  <button 
+                  <button
                     className={styles.actionButton}
                     onClick={() => onNavigate?.('Update Artist Profile')}
                   >
@@ -263,7 +289,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                       </Link>
                     )}
                     {socialLinks.instagram && (
-                      <Link href={ normalizeInstagramUrl('http://instagram.com/' + socialLinks.instagram)}
+                      <Link href={normalizeInstagramUrl('http://instagram.com/' + socialLinks.instagram)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={styles.socialLink}
@@ -287,7 +313,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                         className={styles.socialLink}
                       >
                         Twitter
-                      </Link>                      
+                      </Link>
                     )}
                     {socialLinks.spotify && (
                       <Link href={'https://open.spotify.com/intl-es/artist/' + socialLinks.spotify}
@@ -336,18 +362,18 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                   <h3 className={styles_local.sectionTitle}>Documents & Media</h3>
                   <div className={styles_local.documents}>
                     {profile.rider_url && (
-                      <Link 
-                          href={'http://'+profile.rider_url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className={styles.documentLink}>Technical Rider</Link>
+                      <Link
+                        href={'http://' + profile.rider_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.documentLink}>Technical Rider</Link>
                     )}
                     {profile.presskit_url && (
-                      <Link 
-                          href={'http://'+profile.presskit_url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className={styles.documentLink}>Press kit</Link>
+                      <Link
+                        href={'http://' + profile.presskit_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.documentLink}>Press kit</Link>
                     )}
                   </div>
                 </div>
@@ -392,6 +418,85 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                   </div>
                 </div>
               </div>
+
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button
+                  className={styles.actionButton}
+                  onClick={() => setShowDeleteModal(true)}
+                >
+                  Delete Profile
+                </button>
+                {/* Delete Confirmation Modal */}
+                {showDeleteModal && (
+                  <div
+                    style={{
+                      position: 'fixed',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      zIndex: 1000
+                    }}
+                    onClick={() => setShowDeleteModal(false)}
+                  >
+                    <div
+                      style={{
+                        background: 'white',
+                        borderRadius: '12px',
+                        padding: '24px',
+                        maxWidth: '400px',
+                        width: '90%',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px' }}>
+                        Delete Artist Profile
+                      </h3>
+                      <p style={{ color: '#6b7280', marginBottom: '24px' }}>
+                        Are you sure you want to delete this artist profile? This action cannot be undone.
+                      </p>
+                      <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+                        <button
+                          onClick={() => setShowDeleteModal(false)}
+                          disabled={deleting}
+                          style={{
+                            padding: '10px 24px',
+                            background: '#6b7280',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: deleting ? 'not-allowed' : 'pointer',
+                            fontSize: '14px'
+                          }}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={handleDeleteProfile}
+                          disabled={deleting}
+                          style={{
+                            padding: '10px 24px',
+                            background: deleting ? '#fca5a5' : '#dc2626',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: deleting ? 'not-allowed' : 'pointer',
+                            fontSize: '14px'
+                          }}
+                        >
+                          {deleting ? 'Deleting...' : 'Delete Profile'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
             </div>
           </div>
         )
