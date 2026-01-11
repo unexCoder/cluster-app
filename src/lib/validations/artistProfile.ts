@@ -52,14 +52,27 @@ export const contactInfoSchema = z.object({
 export type ContactInfo = z.infer<typeof contactInfoSchema>;
 
 export const socialLinksSchema = z.object({
+  // website: z
+  //   .string()
+  //   .optional()
+  //   .transform((val) => val?.trim() || '')
+  //   .refine(
+  //     (val) => !val || z.string().url().safeParse(val).success,
+  //     { message: 'Must be a valid URL or empty' }
+  //   ),
   website: z
-    .string()
-    .optional()
-    .transform((val) => val?.trim() || '')
-    .refine(
-      (val) => !val || z.string().url().safeParse(val).success,
-      { message: 'Must be a valid URL or empty' }
-    ),
+  .string()
+  .optional()
+  .transform((val) => val?.trim() || '')
+  .transform((val) => {
+    if (!val) return ''
+    if (/^www\./i.test(val)) return `https://${val}`
+    return val
+  })
+  .refine(
+    (val) => !val || z.string().url().safeParse(val).success,
+    { message: 'Must be a valid URL or empty' }
+  ),
 
   instagram: createSocialSchema(
     /^https?:\/\/(www\.)?(instagram\.com|instagr\.am)\/[\w.]+\/?$/,
@@ -164,27 +177,47 @@ export type ArtistInfo = z.infer<typeof artistInfoSchema>;
 export const techInfoSchema = z.object({
   technical_requirements: z
     .string()
+
+    .min(50, 'Technical requirements must be at less 50 characters or more')
     .max(5000, 'Technical requirements must be less than 5000 characters')
     .optional()
     .transform((val) => val?.trim() || ''),
 
+  // rider_url: z
+  //   .string()
+  //   .optional()
+  //   .transform((val) => val?.trim() || '')
+  //   .refine(
+  //     (val) => !val || z.string().url().safeParse(val).success,
+  //     { message: 'Rider URL must be a valid URL' }
+  //   ),
   rider_url: z
-    .string()
-    .optional()
-    .transform((val) => val?.trim() || '')
-    .refine(
-      (val) => !val || z.string().url().safeParse(val).success,
-      { message: 'Rider URL must be a valid URL' }
-    ),
+  .string()
+  .optional()
+  .transform((val) => val?.trim() || '')
+  .transform((val) => {
+    if (!val) return ''
+    if (/^www\./i.test(val)) return `https://${val}`
+    return val
+  })
+  .refine(
+    (val) => !val || z.string().url().safeParse(val).success,
+    { message: 'Rider url must be a valid URL or empty' }
+  ),
 
   presskit_url: z
-    .string()
-    .optional()
-    .transform((val) => val?.trim() || '')
-    .refine(
-      (val) => !val || z.string().url().safeParse(val).success,
-      { message: 'Press kit URL must be a valid URL' }
-    )
+  .string()
+  .optional()
+  .transform((val) => val?.trim() || '')
+  .transform((val) => {
+    if (!val) return ''
+    if (/^www\./i.test(val)) return `https://${val}`
+    return val
+  })
+  .refine(
+    (val) => !val || z.string().url().safeParse(val).success,
+    { message: 'Presskit url must be a valid URL or empty' }
+  )
 }).refine(
   (data) => !!(data.technical_requirements || data.rider_url),
   {

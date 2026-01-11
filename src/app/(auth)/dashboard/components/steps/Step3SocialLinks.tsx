@@ -1,34 +1,108 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FormField } from '../components/FormField'
-import type { ArtistFormData, ValidationErrors } from '../../../../../../types/types'
+import type { SocialLinks, ValidationErrors } from '../../../../../../types/types'
 import styles from './steps.module.css'
 import { socialLinksSchema } from '@/lib/validations/artistProfile'
+import { z } from 'zod'
 
 interface Step3Props {
-    formData: ArtistFormData  // ✅ Use full form data
+    formData: SocialLinks
     validationErrors: ValidationErrors
     updateField: (field: string, value: any) => void
     clearFieldError: (field: string) => void
+    setValidationError?: (field: string, error: string) => void
 }
 
+// Map component field names (camelCase) to schema field names (snake_case)
+const fieldNameMap: Record<string, keyof typeof socialLinksSchema.shape> = {
+    website: 'website',
+    instagram: 'instagram',
+    facebook: 'facebook',
+    tiktok: 'tiktok',
+    spotify: 'spotify',
+    twitter: 'twitter',
+    youtube: 'youtube',
+}
 
 export const Step3socialLinks: React.FC<Step3Props> = ({
     formData,
     validationErrors,
     updateField,
-    clearFieldError
+    clearFieldError,
+    setValidationError
 }) => {
-    const fieldClassName = 'infoGroup'
 
-    // test validator
-    console.log(socialLinksSchema.parse({
-        website: 'https://example.com',
-        instagram: '@username',
-        youtube: 'https://youtube.com/@channel',
-        twitter: '',
-        facebook: undefined,
-    }));
-    // 
+    // validation logic
+    // Validate individual field
+    const validateField = (fieldName: string, value: any) => {
+        try {
+            // Map camelCase field name to snake_case schema field
+            const schemaFieldName = fieldNameMap[fieldName]
+            if (!schemaFieldName) {
+                console.warn(`No schema mapping found for field: ${fieldName}`)
+                return false
+            }
+
+            const fieldSchema = socialLinksSchema.shape[schemaFieldName]
+            if (fieldSchema) {
+                fieldSchema.parse(value)
+                clearFieldError(fieldName)
+                return true
+            }
+            return false
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                if (setValidationError && error.issues.length > 0) {
+                    setValidationError(fieldName, error.issues[0].message)
+                }
+            }
+            return false
+        }
+    }
+
+    // Enhanced updateField with validation
+    const handleFieldChange = (field: string, value: any) => {
+        updateField(field, value)
+        // Clear error immediately when user starts typing
+        clearFieldError(field)
+    }
+
+    // Validate on blur
+    const handleFieldBlur = (field: string) => {
+        let value: any
+
+        switch (field) {
+            case 'website':
+                value = formData.website
+                break
+            case 'instagram':
+                value = formData.instagram
+                break
+            case 'facebook':
+                value = formData.facebook
+                break
+            case 'youtube':
+                value = formData.youtube
+                break
+            case 'twitter':
+                value = formData.twitter
+                break
+            case 'spotify':
+                value = formData.spotify
+                break
+            case 'tiktok':
+                value = formData.tiktok
+                break
+            default:
+                return
+        }
+
+        validateField(field, value)
+    }
+
+
+    // style
+    const fieldClassName = 'infoGroup'
 
     return (
         <div>
@@ -47,77 +121,84 @@ export const Step3socialLinks: React.FC<Step3Props> = ({
                     <FormField
                         label="Website"
                         name="socialLinks.website"
-                        value={formData.socialLinks.website}
-                        onChange={updateField}
+                        value={formData.website}
+                        onChange={handleFieldChange}
                         onFocus={clearFieldError}
+                        onBlur={() => handleFieldBlur('website')}
                         placeholder="Website"
-                        error={validationErrors['socialLinks.website']}
+                        error={validationErrors['website']}
                         className={fieldClassName}
                     />
 
                     <FormField
                         label="Instagram"
                         name="socialLinks.instagram"
-                        value={formData.socialLinks.instagram}
-                        onChange={updateField}
+                        value={formData.instagram}
+                        onChange={handleFieldChange}
                         onFocus={clearFieldError}
-                        placeholder="Instagram"
-                        error={validationErrors['socialLinks.instagram']}
+                        onBlur={() => handleFieldBlur('instagram')}
+                        placeholder="@instagram"
+                        error={validationErrors['instagram']}
                         className={fieldClassName}
                     />
 
                     <FormField
                         label="Facebook"
                         name="socialLinks.facebook"
-                        value={formData.socialLinks.facebook}
-                        onChange={updateField}
+                        value={formData.facebook}
+                        onChange={handleFieldChange}
                         onFocus={clearFieldError}
-                        placeholder="Facebook"
-                        error={validationErrors['socialLinks.facebook']}
+                        onBlur={() => handleFieldBlur('facebook')}
+                        placeholder="@facebook"
+                        error={validationErrors['facebook']}
                         className={fieldClassName}
                     />
 
                     <FormField
                         label="Twitter"
                         name="socialLinks.twitter"
-                        value={formData.socialLinks.twitter}
-                        onChange={updateField}
+                        value={formData.twitter}
+                        onChange={handleFieldChange}
                         onFocus={clearFieldError}
-                        placeholder="Twitter"
-                        error={validationErrors['socialLinks.twitter']}
+                        onBlur={() => handleFieldBlur('twitter')}
+                        placeholder="@twitter"
+                        error={validationErrors['twitter']}
                         className={fieldClassName}
                     />
 
                     <FormField
                         label="Spotify"
                         name="socialLinks.spotify"
-                        value={formData.socialLinks.spotify}
-                        onChange={updateField}
+                        value={formData.spotify}
+                        onChange={handleFieldChange}
                         onFocus={clearFieldError}
+                        onBlur={() => handleFieldBlur('spotify')}
                         placeholder="Spotify"
-                        error={validationErrors['socialLinks.spotify']}
+                        error={validationErrors['spotify']}
                         className={fieldClassName}
                     />
 
                     <FormField
                         label="Youtube"
                         name="socialLinks.youtube"
-                        value={formData.socialLinks.youtube}
-                        onChange={updateField}
+                        value={formData.youtube}
+                        onChange={handleFieldChange}
                         onFocus={clearFieldError}
-                        placeholder="Youtube"
-                        error={validationErrors['socialLinks.youtube']}
+                        onBlur={() => handleFieldBlur('youtube')}
+                        placeholder="@youtube"
+                        error={validationErrors['youtube']}
                         className={fieldClassName}
                     />
 
                     <FormField
                         label="Tiktok"
                         name="socialLinks.tiktok"
-                        value={formData.socialLinks.tiktok}
-                        onChange={updateField}
+                        value={formData.tiktok}
+                        onChange={handleFieldChange}
                         onFocus={clearFieldError}
+                        onBlur={() => handleFieldBlur('tiktok')}
                         placeholder="Tiktok"
-                        error={validationErrors['socialLinks.tiktok']}
+                        error={validationErrors['tiktok']}
                         className={fieldClassName}
                     />
 

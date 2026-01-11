@@ -1,7 +1,7 @@
 'use client'
 
 import { useArtistForm } from '@/hooks/useArtistForm'
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import styles from './artistProfileCreate.module.css'
 import { StepIndicator } from '../components/StepIndicator'
 import { Step1BasicInfo } from '../steps/Step1BasicInfo'
@@ -10,7 +10,7 @@ import { Step3socialLinks } from '../steps/Step3SocialLinks'
 import { Step4TechInfo } from '../steps/Step4TechInfo'
 import { createArtistProfileAction } from '@/app/actions/artists'
 import { ValidationErrors } from '../../../../../../types/types'
-import { artistInfoSchema } from '@/lib/validations/artistProfile'
+import { artistInfoSchema, contactInfoSchema, socialLinksSchema, techInfoSchema } from '@/lib/validations/artistProfile'
 import { z } from 'zod'
 
 interface ArtistProfileCreateProps {
@@ -78,6 +78,78 @@ export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfil
       return false
     }
   }
+  // Validate Step 1 (Basic Info)
+  
+  const validateStep2 = (): boolean => {
+    try {
+      const dataToValidate = {
+        name: formData.contactInfo.name,
+        last_name: formData.contactInfo.lastName,
+        email: formData.contactInfo.email,
+        phone: formData.contactInfo.phone
+      }
+
+      contactInfoSchema.parse(dataToValidate)
+      clearAllErrors()
+      return true
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        error.issues.forEach(issue => {
+          const field = issue.path[0] as string
+          setValidationError(field, issue.message)
+        })
+      }
+      return false
+    }
+  }
+
+  const validateStep3 = (): boolean => {
+    try {
+      const dataToValidate = {
+        website: formData.socialLinks.website,
+        instagram: formData.socialLinks.instagram,
+        facebook: formData.socialLinks.facebook,
+        twitter: formData.socialLinks.twitter,
+        youtube: formData.socialLinks.youtube,
+        spotify: formData.socialLinks.spotify,
+        tiktok: formData.socialLinks.tiktok,
+      }
+
+      socialLinksSchema.parse(dataToValidate)
+      clearAllErrors()
+      return true
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        error.issues.forEach(issue => {
+          const field = issue.path[0] as string
+          setValidationError(field, issue.message)
+        })
+      }
+      return false
+    }
+  }
+
+  const validateStep4 = (): boolean => {
+    try {
+      const dataToValidate = {
+        technical_requirements: formData.technical.requirements,
+        rider_url: formData.technical.riderUrl,
+        presskit_url: formData.technical.presskitUrl,
+      }
+
+      techInfoSchema.parse(dataToValidate)
+      clearAllErrors()
+      return true
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        error.issues.forEach(issue => {
+          const field = issue.path[0] as string
+          setValidationError(field, issue.message)
+        })
+      }
+      return false
+    }
+  }
 
   // Add validation for other steps as needed
   const validateCurrentStep = (): boolean => {
@@ -86,13 +158,13 @@ export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfil
         return validateStep1()
       case 2:
         // Add Step 2 validation here
-        return validateStep(currentStep)
+        return validateStep2()
       case 3:
         // Add Step 3 validation here
-        return validateStep(currentStep)
+        return validateStep3()
       case 4:
         // Add Step 4 validation here
-        return validateStep(currentStep)
+        return validateStep4()
       default:
         return true
     }
@@ -203,33 +275,36 @@ export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfil
               addGenre={addGenre}
               removeGenre={removeGenre}
               setValidationError={setValidationError}
-            />
-          )}
+              />
+            )}
 
           {currentStep === 2 && (
             <Step2ContactInfo
-              formData={formData}
-              validationErrors={validationErrors}
-              updateField={updateField}
-              clearFieldError={clearFieldError}
+            formData={formData.contactInfo}
+            validationErrors={validationErrors}
+            updateField={updateField}
+            clearFieldError={clearFieldError}
+            setValidationError={setValidationError}
             />
           )}
 
           {currentStep === 3 && (
             <Step3socialLinks
-              formData={formData}
-              validationErrors={validationErrors}
-              updateField={updateField}
-              clearFieldError={clearFieldError}
+            formData={formData.socialLinks}
+            validationErrors={validationErrors}
+            updateField={updateField}
+            clearFieldError={clearFieldError}
+            setValidationError={setValidationError}
             />
           )}
 
           {currentStep === 4 && (
             <Step4TechInfo
-              formData={formData}
-              validationErrors={validationErrors}
-              updateField={updateField}
-              clearFieldError={clearFieldError}
+            formData={formData.technical}
+            validationErrors={validationErrors}
+            updateField={updateField}
+            clearFieldError={clearFieldError}
+            setValidationError={setValidationError}
             />
           )}
 

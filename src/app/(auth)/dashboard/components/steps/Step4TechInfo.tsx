@@ -1,57 +1,93 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FormField } from '../components/FormField'
-import type { ArtistFormData, ValidationErrors } from '../../../../../../types/types'
+import type { TechnicalInfo, ValidationErrors } from '../../../../../../types/types'
 import styles from './steps.module.css'
 import { techInfoSchema } from '@/lib/validations/artistProfile'
+import { z } from 'zod'
+
 
 interface Step4Props {
-    formData: ArtistFormData  // ✅ Use full form data
+    formData: TechnicalInfo
     validationErrors: ValidationErrors
     updateField: (field: string, value: any) => void
     clearFieldError: (field: string) => void
+    setValidationError?: (field: string, error: string) => void
+}
+
+// Map component field names (camelCase) to schema field names (snake_case)
+const fieldNameMap: Record<string, keyof typeof techInfoSchema.shape> = {
+    requirements: 'technical_requirements',
+    riderUrl: 'rider_url',
+    presskitUrl: 'presskit_url'
 }
 
 export const Step4TechInfo: React.FC<Step4Props> = ({
     formData,
     validationErrors,
     updateField,
-    clearFieldError
+    clearFieldError,
+    setValidationError
 }) => {
+
+
+    // validation logic
+    // Validate individual field
+    const validateField = (fieldName: string, value: any) => {
+        try {
+            // Map camelCase field name to snake_case schema field
+            const schemaFieldName = fieldNameMap[fieldName]
+            if (!schemaFieldName) {
+                console.warn(`No schema mapping found for field: ${fieldName}`)
+                return false
+            }
+
+            const fieldSchema = techInfoSchema.shape[schemaFieldName]
+            if (fieldSchema) {
+                fieldSchema.parse(value)
+                clearFieldError(fieldName)
+                return true
+            }
+            return false
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                if (setValidationError && error.issues.length > 0) {
+                    setValidationError(fieldName, error.issues[0].message)
+                }
+            }
+            return false
+        }
+    }
+
+    // Enhanced updateField with validation
+    const handleFieldChange = (field: string, value: any) => {
+        updateField(field, value)
+        // Clear error immediately when user starts typing
+        clearFieldError(field)
+    }
+
+    // Validate on blur
+    const handleFieldBlur = (field: string) => {
+        let value: any
+
+        switch (field) {
+            case 'requirements':
+                value = formData.requirements
+                break
+            case 'rider_url':
+                value = formData.riderUrl
+                break
+            case 'presskit_url':
+                value = formData.presskitUrl
+                break
+            default:
+                return
+        }
+
+        validateField(field, value)
+    }
+
+    // style
     const fieldClassName = 'infoGroup'
-
-
-
-    // TEST VALIDATORS 
-    // Usage examples - VALID cases
-    const validData1 = {
-        technical_requirements: 'Need 2 microphones and a mixer',
-        rider_url: '',
-        presskit_url: 'https://example.com/presskit.pdf',
-    };
-    console.log(techInfoSchema.parse(validData1)); // ✓ Has technical_requirements
-
-    const validData2 = {
-        technical_requirements: '',
-        rider_url: 'https://example.com/rider.pdf',
-        presskit_url: '',
-    };
-    console.log(techInfoSchema.parse(validData2)); // ✓ Has rider_url
-
-    const validData3 = {
-        technical_requirements: 'Stage setup requirements...',
-        rider_url: 'https://example.com/rider.pdf',
-        presskit_url: 'https://example.com/presskit.pdf',
-    };
-    console.log(techInfoSchema.parse(validData3)); // ✓ Has both
-
-    const validData4 = {
-        technical_requirements: 'Some requirements',
-        rider_url: '',
-        presskit_url: '',
-    };
-    console.log(techInfoSchema.parse(validData4));
-    // 
-
 
     return (
         <div>
@@ -68,37 +104,41 @@ export const Step4TechInfo: React.FC<Step4Props> = ({
                     <FormField
                         label="Technical Requirements"
                         name="technical.requirements"
-                        value={formData.technical.requirements}
+                        value={formData.requirements}
                         required
                         rows={5}
-                        onChange={updateField}
-                        onFocus={() => clearFieldError('technical')}
+                        onChange={handleFieldChange}
+                        onFocus={() => clearFieldError('requirements')}
+                        onBlur={() => handleFieldBlur('requirements')}
                         placeholder="What you and your setup need for the show"
-                        error={validationErrors['technical']}
+                        error={validationErrors['technical_requirements']}
                         className={fieldClassName}
                     />
 
                     <FormField
                         label="Tech Rider Url"
                         name="technical.riderUrl"
-                        value={formData.technical.riderUrl}
+                        value={formData.riderUrl}
                         required
-                        onChange={updateField}
-                        onFocus={() => clearFieldError('technical')}
+                        onChange={handleFieldChange}
+                        onFocus={() => clearFieldError('rider_url')}
+                        onBlur={() => handleFieldBlur('rider_url')}
                         placeholder="Tech Rider Url"
-                        error={validationErrors['technical']}
+                        error={validationErrors['rider_url']}
                         className={fieldClassName}
                     />
 
                     <FormField
                         label="Presskit Url"
                         name="technical.presskitUrl"
-                        value={formData.technical.presskitUrl}
-                        onChange={updateField}
+                        value={formData.presskitUrl}
+                        onChange={handleFieldChange}
+                        onFocus={() => clearFieldError('presskit_url')}
+                        onBlur={() => handleFieldBlur('presskit_url')}
                         placeholder="Press kit Url"
+                        error={validationErrors['presskit_url']}
                         className={fieldClassName}
                     />
-
 
                 </div>
             </div>

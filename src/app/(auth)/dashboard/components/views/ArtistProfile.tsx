@@ -260,7 +260,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                       </Link>
                     )}
                     {socialLinks.instagram && (
-                      <Link href={'http://' + socialLinks.instagram}
+                      <Link href={ normalizeInstagramUrl('http://instagram.com/' + socialLinks.instagram)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={styles.socialLink}
@@ -269,7 +269,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                       </Link>
                     )}
                     {socialLinks.facebook && (
-                      <Link href={'http://' + socialLinks.facebook}
+                      <Link href={'http://facebook.com/' + socialLinks.facebook}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={styles.socialLink}
@@ -278,7 +278,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                       </Link>
                     )}
                     {socialLinks.twitter && (
-                      <Link href={'http://' + socialLinks.twitter}
+                      <Link href={'http://x.com/' + socialLinks.twitter}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={styles.socialLink}
@@ -287,7 +287,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                       </Link>                      
                     )}
                     {socialLinks.spotify && (
-                      <Link href={'http://' + socialLinks.spotify}
+                      <Link href={'https://open.spotify.com/intl-es/artist/' + socialLinks.spotify}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={styles.socialLink}
@@ -296,7 +296,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                       </Link>
                     )}
                     {socialLinks.youtube && (
-                      <Link href={'http://' + socialLinks.youtube}
+                      <Link href={'http://youtube.com/' + socialLinks.youtube}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={styles.socialLink}
@@ -333,16 +333,18 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                   <h3 className={styles_local.sectionTitle}>Documents & Media</h3>
                   <div className={styles_local.documents}>
                     {profile.rider_url && (
-                      <a href={profile.rider_url} target="_blank" rel="noopener noreferrer"
-                        className={styles.documentLink}>
-                        📄 Technical Rider
-                      </a>
+                      <Link 
+                          href={'http://'+profile.rider_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className={styles.documentLink}>Technical Rider</Link>
                     )}
                     {profile.presskit_url && (
-                      <a href={profile.presskit_url} target="_blank" rel="noopener noreferrer"
-                        className={styles.documentLink}>
-                        📦 Press Kit
-                      </a>
+                      <Link 
+                          href={'http://'+profile.presskit_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className={styles.documentLink}>Press kit</Link>
                     )}
                   </div>
                 </div>
@@ -392,5 +394,12 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
         )
       })}
     </div>
+  )
+}
+
+function normalizeInstagramUrl(url: string): string {
+  return url.replace(
+    /^(https?:\/\/(www\.)?instagram\.com\/)@/,
+    '$1'
   )
 }

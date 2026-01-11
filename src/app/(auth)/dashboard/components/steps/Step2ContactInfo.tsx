@@ -1,58 +1,98 @@
 // components/steps/Step2ContactInfo.tsx
 import React from 'react'
 import { FormField } from '../components/FormField'
-import type { ArtistFormData, ValidationErrors } from '../../../../../../types/types'
+import type { ContactInfo, ValidationErrors } from '../../../../../../types/types'
 import styles from './steps.module.css'
 import { contactInfoSchema } from '@/lib/validations/artistProfile';
+import { z } from 'zod'
 
 
 interface Step2Props {
-  formData: ArtistFormData  // ✅ Use full form data
+  formData: ContactInfo
   validationErrors: ValidationErrors
   updateField: (field: string, value: any) => void
   clearFieldError: (field: string) => void
+  setValidationError?: (field: string, error: string) => void
+}
+
+// Map component field names (camelCase) to schema field names (snake_case)
+const fieldNameMap: Record<string, keyof typeof contactInfoSchema.shape> = {
+  name: 'name',
+  lastName: 'last_name',
+  email: 'email',
+  phone: 'phone'
 }
 
 export const Step2ContactInfo: React.FC<Step2Props> = ({
   formData,
   validationErrors,
   updateField,
-  clearFieldError
+  clearFieldError,
+  setValidationError
 }) => {
+
+  // validation logic
+  // Validate individual field
+  const validateField = (fieldName: string, value: any) => {
+    try {
+      // Map camelCase field name to snake_case schema field
+      const schemaFieldName = fieldNameMap[fieldName]
+      if (!schemaFieldName) {
+        console.warn(`No schema mapping found for field: ${fieldName}`)
+        return false
+      }
+
+      const fieldSchema = contactInfoSchema.shape[schemaFieldName]
+      if (fieldSchema) {
+        fieldSchema.parse(value)
+        clearFieldError(fieldName)
+        return true
+      }
+      return false
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        if (setValidationError && error.issues.length > 0) {
+          setValidationError(fieldName, error.issues[0].message)
+        }
+      }
+      return false
+    }
+  }
+
+  // Enhanced updateField with validation
+  const handleFieldChange = (field: string, value: any) => {
+    updateField(field, value)
+    // Clear error immediately when user starts typing
+    clearFieldError(field)
+  }
+
+  // Validate on blur
+  const handleFieldBlur = (field: string) => {
+    let value: any
+
+    switch (field) {
+      case 'name':
+        value = formData.name
+        break
+      case 'lastName':
+        value = formData.lastName
+        break
+      case 'email':
+        value = formData.email
+        break
+      case 'phone':
+        value = formData.phone
+        break
+      default:
+        return
+    }
+
+    validateField(field, value)
+  }
+
+
+  // style
   const fieldClassName = 'infoGroup'
-
-
-  // test validators 
-  // Usage examples
-  const validData = {
-    name: '  John  ',
-    last_name: 'Doe',
-    email: ' JOHN.DOE@EXAMPLE.COM ',
-    phone: '+1 (555) 123-4567',
-  };
-
-  console.log(contactInfoSchema.parse(validData));
-  // Output: { name: 'John', last_name: 'Doe', email: 'john.doe@example.com', phone: '+1 (555) 123-4567' }
-
-  // Empty/optional fields
-  const partialData = {
-    name: 'Jane',
-    last_name: '',
-    email: '',
-    phone: undefined,
-  };
-
-  console.log(contactInfoSchema.parse(partialData));
-
-  console.log(contactInfoSchema.parse({ phone: undefined }));      // { phone: '' } ✓
-  console.log(contactInfoSchema.parse({ phone: '' }));             // { phone: '' } ✓
-  console.log(contactInfoSchema.parse({ phone: '+1 555 123 4567' })); // { phone: '+1 555 123 4567' } ✓
-  console.log(contactInfoSchema.parse({ phone: '(555) 123-4567' }));  // { phone: '(555) 123-4567' } ✓
-  console.log(contactInfoSchema.parse({ phone: '555-1234' }));        // { phone: '555-1234' } ✓
-  // console.log(contactInfoSchema.parse({ phone: '123' }));             // ❌ Error (too short)
-  // console.log(contactInfoSchema.parse({ phone: 'not-a-number' }));    // ❌ Error
-
-  //
 
   return (
     <div>
@@ -69,22 +109,24 @@ export const Step2ContactInfo: React.FC<Step2Props> = ({
           <FormField
             label="First Name"
             name="contactInfo.name"
-            value={formData.contactInfo.name}
-            onChange={updateField}
+            value={formData.name}
+            onChange={handleFieldChange}
             onFocus={clearFieldError}
+            onBlur={() => handleFieldBlur('name')}
             placeholder="First name"
-            error={validationErrors['contactInfo.name']}
+            error={validationErrors['name']}
             className={fieldClassName}
           />
 
           <FormField
             label="Last Name"
             name="contactInfo.lastName"
-            value={formData.contactInfo.lastName}
-            onChange={updateField}
+            value={formData.lastName}
+            onChange={handleFieldChange}
             onFocus={clearFieldError}
+            onBlur={() => handleFieldBlur('lastName')}
             placeholder="Last name"
-            error={validationErrors['contactInfo.lastName']}
+            error={validationErrors['lastName']}
             className={fieldClassName}
           />
         </div>
@@ -93,12 +135,13 @@ export const Step2ContactInfo: React.FC<Step2Props> = ({
           label="Email"
           name="contactInfo.email"
           type="email"
-          value={formData.contactInfo.email}
-          onChange={updateField}
+          value={formData.email}
+          onChange={handleFieldChange}
           onFocus={clearFieldError}
+          onBlur={() => handleFieldBlur('email')}
           required
           placeholder="you@yourmail.com"
-          error={validationErrors['contactInfo.email']}
+          error={validationErrors['email']}
           className={fieldClassName}
         />
 
@@ -106,11 +149,12 @@ export const Step2ContactInfo: React.FC<Step2Props> = ({
           label="Phone"
           name="contactInfo.phone"
           type="tel"
-          value={formData.contactInfo.phone}
-          onChange={updateField}
+          value={formData.phone}
+          onChange={handleFieldChange}
           onFocus={clearFieldError}
+          onBlur={() => handleFieldBlur('phone')}
           placeholder="+54 (555) 123-4567"
-          error={validationErrors['contactInfo.phone']}
+          error={validationErrors['phone']}
           className={fieldClassName}
         />
       </div>

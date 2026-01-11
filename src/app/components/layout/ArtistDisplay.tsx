@@ -167,19 +167,19 @@ export default function ArtistDisplay({ slug }: ArtistDisplayProps) {
                   <Link href={'http://' + socialLinks.website} target='_blank' rel="noopener noreferrer"><Globe size={20} /></Link>
                 )}
                 {socialLinks.instagram && (
-                  <Link href={'http://' + socialLinks.instagram} target='_blank' rel="noopener noreferrer"><Instagram size={20} /></Link>
+                  <Link href={normalizeInstagramUrl( 'http://instagram.com/' + socialLinks.instagram)} target='_blank' rel="noopener noreferrer"><Instagram size={20} /></Link>
                 )}
                 {socialLinks.spotify && (
-                  <Link href={'http://' + socialLinks.spotify} target='_blank' rel="noopener noreferrer"><Music size={20} /></Link>
+                  <Link href={'https://open.spotify.com/intl-es/artist/' + socialLinks.spotify} target='_blank' rel="noopener noreferrer"><Music size={20} /></Link>
                 )}
                 {socialLinks.youtube && (
-                  <Link href={'http://' + socialLinks.youtube} target='_blank' rel="noopener noreferrer"><Youtube size={20} /></Link>
+                  <Link href={'http://youtube.com/' + socialLinks.youtube} target='_blank' rel="noopener noreferrer"><Youtube size={20} /></Link>
                 )}
                 {socialLinks.facebook && (
-                  <Link href={'http://' + socialLinks.facebook} target='_blank' rel="noopener noreferrer"><Facebook size={20} /></Link>
+                  <Link href={'http://facebook.com/' + socialLinks.facebook} target='_blank' rel="noopener noreferrer"><Facebook size={20} /></Link>
                 )}
                 {socialLinks.twitter && (
-                  <Link href={'http://' + socialLinks.twitter} target='_blank' rel="noopener noreferrer"><Twitter size={20} /></Link>
+                  <Link href={'http://x.com/' + socialLinks.twitter} target='_blank' rel="noopener noreferrer"><Twitter size={20} /></Link>
                 )}
 
               </div>
@@ -189,5 +189,12 @@ export default function ArtistDisplay({ slug }: ArtistDisplayProps) {
         </div>
       </div>
     </div>
+  )
+}
+
+function normalizeInstagramUrl(url: string): string {
+  return url.replace(
+    /^(https?:\/\/(www\.)?instagram\.com\/)@/,
+    '$1'
   )
 }

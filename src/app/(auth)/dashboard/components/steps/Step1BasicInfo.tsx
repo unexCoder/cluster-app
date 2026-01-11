@@ -102,17 +102,34 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
       return
     }
 
-    if (formData.genres.includes(genreInput.trim())) {
-      setValidationError?.('genres', 'Genre already added')
-      return
+    const tags = genreInput.trim().split(',')
+    const unique = [...new Set(tags)]; // elimina duplicados
+    
+    if (unique.length > 0) {
+      unique.map((t) => {
+        if (formData.genres.includes(t.trim())) {
+          setValidationError?.('genres', 'Genre already added')
+          return
+        }
+        if (formData.genres.length >= 5) {
+          setValidationError?.('genres', 'Maximum 5 genres allowed')
+          return
+        }
+        addGenre(t.trim().toLowerCase())
+      })
     }
 
-    if (formData.genres.length >= 5) {
-      setValidationError?.('genres', 'Maximum 5 genres allowed')
-      return
-    }
+    // if (formData.genres.includes(genreInput.trim())) {
+    //   setValidationError?.('genres', 'Genre already added')
+    //   return
+    // }
 
-    addGenre(genreInput.trim())
+    // if (formData.genres.length >= 5) {
+    //   setValidationError?.('genres', 'Maximum 5 genres allowed')
+    //   return
+    // }
+
+    // addGenre(genreInput.trim().toLowerCase())
     setGenreInput('')
     clearFieldError('genres')
   }
@@ -146,7 +163,7 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
           // Map snake_case back to camelCase for error display
           const displayField = field === 'stage_name' ? 'stageName'
             : field === 'picture_url' ? 'pictureUrl'
-            : field
+              : field
           setValidationError(displayField, issue.message)
         })
       }
