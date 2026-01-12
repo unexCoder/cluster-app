@@ -4,7 +4,10 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { getToken, isAuthenticated } from "@/lib/auth-client"
 import { useAuthHeader } from "@/hooks/useAuthHeader"
+import styles from './page.module.css'
 import DashboardLayout from "../components/DashboardLayout"
+import NavBar from "../components/NavBar"
+import DashboardContent from "../components/DashboardContent"
 
 interface UserData {
   userId: string
@@ -77,13 +80,24 @@ export default function CustomerDashboard() {
     )
   }
 
+  const navItems = [
+    { label: 'Profile' }
+  ]
+
   return (
     <DashboardLayout
       userName={userData.name}
       userEmail={userData.email}
       userRole="customer"
     >
-      <>customer layout</>
+      <div className={styles.innerDashboardContainer}>
+          <NavBar items={navItems} onUpdate={updateUX} />
+          <DashboardContent
+            activeView={displayUX}
+            userId={userData.userId}
+            onNavigate={updateUX}
+          />
+        </div>
     </DashboardLayout>
   )
 }

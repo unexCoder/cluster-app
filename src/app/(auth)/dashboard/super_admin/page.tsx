@@ -22,10 +22,12 @@ export default function AdminDashboard() {
 
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<UserData | null>(null)
-
+  const [selectedArtistId, setSelectedArtistId] = useState<string | null>(null)
   const [displayUX, setDisplayUX] = useState('');
-  const updateUX = (value: string) => {
+
+  const updateUX = (value: string,  artistId?: string | null) => {
     setDisplayUX(value);
+    setSelectedArtistId(artistId || null)
     console.log(value)
   };
 
@@ -82,19 +84,31 @@ export default function AdminDashboard() {
 
   const navItems = [
     { label: 'System Settings' },
-    { label: 'User Managment' , children: [
-      {label:'Browse Users'}
-    ]},
-    { label: 'Cluster Managment' },
+    {
+      label: 'User Managment',
+      children: [
+        { label: 'Browse Users' },
+        { label: 'Browse Artists' },
+        { label: 'Mailing List' }
+      ]
+    },
+    {
+      label: 'Cluster Managment',
+      children: [
+        { label: 'Event List' },
+        { label: 'Venues' }
+      ]
+    },
     { label: 'Financial Control' },
     { label: 'Analitics' },
     { label: 'Security Logs' },
-    { label: 'Profile' }
+    { label: 'Profile' },
+    // { label: 'Artist Profile'}
   ]
 
   return (
-    
-    <div style={{height:'100svh'}}>
+
+    <div style={{ height: 'auto' }}>
       <DashboardLayout
         userName={userData.name}
         userEmail={userData.email}
@@ -102,7 +116,12 @@ export default function AdminDashboard() {
       >
         <div className={styles.innerDashboardContainer}>
           <NavBar items={navItems} onUpdate={updateUX} />
-          <DashboardContent activeView={displayUX} />
+          <DashboardContent
+            activeView={displayUX}
+            userId={userData.userId}
+            artistId={selectedArtistId}
+            onNavigate={updateUX}
+          />
         </div>
       </DashboardLayout>
     </div>

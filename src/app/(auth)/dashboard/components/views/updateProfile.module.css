@@ -1,0 +1,49 @@
+.formSection {
+    padding: 0 0 20px 0;
+}
+
+.formSection label {
+    padding-right: 10px;
+}
+
+.formSection input {
+    margin: 2px 0;
+    height: 20px;
+    width: 15svw;
+}
+
+.formSection span {
+    font-weight: 700;
+}
+
+.formActions button {
+  padding: 2px 12px;
+  margin-right: 8px;
+  /* background-color: #f3f4f6; */
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.formActions button:hover {
+  background-color: #c30f45;
+}
+
+.required {
+    color: #c30f45;
+}
+
+
+@media (max-width: 768px) {
+    
+    .formSection h3 {
+       margin: 10px 0;
+    }
+    
+    .formSection input {
+        margin: 5px 0;
+        height: 30px;
+        width: 80svw;
+    }
+}

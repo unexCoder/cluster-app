@@ -1,0 +1,92 @@
+.intro {
+    font-size: 3rem;
+    line-height: 1.1;
+    padding: 20px;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-weight: 500;
+}
+
+.cluster {
+    font-weight: bold;
+}
+
+.first {
+    text-align: right;
+    color: var(--text-primary);
+    padding-left: 125px;
+}
+
+.second {
+    text-align: left;
+    background-color: var(--background);
+    color: var(--text-secondary);
+}
+
+.third {
+    text-align: left;
+    background-color: var(--text-secondary);
+    color: var(--text-primary);
+}
+
+.four {
+    text-align: left;
+    background-color: var(--text-primary);
+    color: var(--background);
+    padding-right: 80px;
+}
+
+.five {
+    text-align: right;
+    padding-left: 50px;
+    color: var(--text-secondary);
+    background-color: var(--text-primary);
+}
+
+.chapter {
+    background-color: var(--background);
+    color: var(--text-primary);
+    font-size: 2rem;
+    line-height: 1.1;
+    padding: 20px;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    /* align-items: center; */
+    /* gap: 50px; */
+}
+
+.paragraph {
+    max-width: 45svw;
+    justify-content: center;
+    padding-top: 20svh;
+}
+
+.negrita {
+    font-weight: bold;
+    font-style: italic;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.paragraph p {
+    padding: 10px 0;
+}
+
+.chapterTwo {
+    background-color: var(--text-primary);
+    color: var(--foreground);
+}
+
+@media (max-width: 768px) {
+  /* Styles */
+  .intro {
+    padding: 10px;
+    font-size: 2rem;
+  }
+}

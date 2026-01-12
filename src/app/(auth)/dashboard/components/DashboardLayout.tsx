@@ -44,7 +44,7 @@ export default function DashboardLayout({
     <div className={styles.container}>
       <div className={styles.innerContainer}>
         <div className={styles.header}>
-          <h1>Cluster Dashboard</h1>
+          <h1>Cluster <span style={{fontSize:'14px'}}>Dashboard</span></h1>
           <p>
             Bienvenido, <strong>{userName}</strong>!
           </p>
