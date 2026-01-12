@@ -6,6 +6,12 @@ const nextConfig: NextConfig = {
   devIndicators: false,
   // declare remote image site patterns
   images: {
+    localPatterns: [
+      {
+        pathname: '/api/postcard',
+        search: '', // This allows any query string parameters
+      },
+    ],
     remotePatterns: [
       {
         protocol: 'https',

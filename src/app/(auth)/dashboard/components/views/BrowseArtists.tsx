@@ -172,7 +172,7 @@ export default function BrowseArtists({ onNavigate }: BrowseArtistsProps) {
                 <tr key={artist.id}>
                   <td>{artist.name}</td>
                   <td>{artist.stage_name || 'N/A'}</td>
-                  <td><Link href={`/artist/${artist.slug}`}>{artist.slug}</Link></td>
+                  <td><Link href={`/artist/${artist.slug}`} target='_blank'>{artist.slug}</Link></td>
                   <td>{artist.is_verified ? '✓' : 'No'}</td>
                   <td>{artist.popularity_score}</td>
                   {artist.deleted_at ? <td style={{ color: '#f00' }}>Inactive</td> : <td style={{ color: '#0f0' }}>Active</td>}
