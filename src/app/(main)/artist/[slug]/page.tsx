@@ -16,7 +16,6 @@ export default function ArtistPage({ params }: ArtistPageProps) {
   return (
     <>
       <ArtistDisplay slug={slug}/>
-      <ArtistDisplay slug={slug}/>
     </>
   )
 }

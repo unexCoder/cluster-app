@@ -394,7 +394,7 @@ export default function ArtistProfile({ userId,profile, onNavigate }: ArtistProf
                   <div className={styles.infoGroup}>
                     <label>Profile URL:</label>
                     <span style={{ color: '#3b82f6', fontFamily: 'monospace', fontSize: '13px' }}>
-                      <Link href={`/artist/${profile.slug}`}>/artist/{profile.slug}</Link>
+                      <Link href={`/artist/${profile.slug}` } target="_blank">/artist/{profile.slug}</Link>
                     </span>
                   </div>
                   {profile.is_verified === 1 && (
