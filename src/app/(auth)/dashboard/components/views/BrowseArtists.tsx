@@ -1,9 +1,10 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { deleteArtistProfileAction, fetchArtistsAction } from '@/app/actions/artists'
+import { activateArtistProfileAction, deleteArtistProfileAction, fetchArtistsAction } from '@/app/actions/artists'
 import styles from './dashboardViews.module.css'
 import Link from 'next/link'
+import DeleteModal from '../components/DeleteModal'
 
 interface Artist {
   id: string
@@ -29,7 +30,7 @@ interface Artist {
 }
 
 interface BrowseArtistsProps {
-  onNavigate: (view: string) => void
+  onNavigate: (view: string,id?:string | null) => void
 }
 
 export default function BrowseArtists({ onNavigate }: BrowseArtistsProps) {
@@ -38,6 +39,8 @@ export default function BrowseArtists({ onNavigate }: BrowseArtistsProps) {
   const [error, setError] = useState<string | null>(null)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [selectedArtistId, setSelectedArtistId] = useState<string | null>(null) // Add this
+
 
   useEffect(() => {
     fetchArtists()
@@ -84,22 +87,50 @@ export default function BrowseArtists({ onNavigate }: BrowseArtistsProps) {
   }
 
   const handleDeleteProfile = async () => {
-    if (!artists || artists.length === 0) return
+    if (!selectedArtistId) return // Use selectedArtistId instead
+    // if (!artists || artists.length === 0) return
+
 
     try {
       setDeleting(true)
       // Call your delete action here
-      const result = await deleteArtistProfileAction(artists[0].id)
+      const result = await deleteArtistProfileAction(selectedArtistId)
 
       if (result.success) {
         setShowDeleteModal(false)
+        setSelectedArtistId(null) // Add this line
         // Refresh the profile view or navigate back
-        // fetchArtistProfile()
+        fetchArtists()
       } else {
         alert(result.error || 'Failed to delete profile')
       }
     } catch (err) {
       alert('Error deleting profile')
+      console.error(err)
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  const handleActivate = async () => {
+    // console.log('trigger activation')
+    // if (!artists || artists.length === 0) return
+    if (!selectedArtistId) return // Use selectedArtistId instead
+    try {
+      setDeleting(true)
+      // Call your delete action here
+      const result = await activateArtistProfileAction(selectedArtistId)
+
+      if (result.success) {
+        setShowDeleteModal(false)
+        setSelectedArtistId(null) // Clear selection
+        // Refresh the profile view or navigate back
+        fetchArtists()
+      } else {
+        alert(result.error || 'Failed to activate profile')
+      }
+    } catch (err) {
+      alert('Error activating profile')
       console.error(err)
     } finally {
       setDeleting(false)
@@ -130,7 +161,9 @@ export default function BrowseArtists({ onNavigate }: BrowseArtistsProps) {
                 <th>Slug</th>
                 <th>Verified</th>
                 <th>Popularity</th>
+                <th>Status</th>
                 <th>Created At</th>
+                <th>Deleted At</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -140,102 +173,74 @@ export default function BrowseArtists({ onNavigate }: BrowseArtistsProps) {
                   <td>{artist.name}</td>
                   <td>{artist.stage_name || 'N/A'}</td>
                   <td><Link href={`/artist/${artist.slug}`}>{artist.slug}</Link></td>
-                  <td>{artist.is_verified ? '✓' : '✗'}</td>
+                  <td>{artist.is_verified ? '✓' : 'No'}</td>
                   <td>{artist.popularity_score}</td>
+                  {artist.deleted_at ? <td style={{ color: '#f00' }}>Inactive</td> : <td style={{ color: '#0f0' }}>Active</td>}
                   <td>
                     {artist.created_at
                       ? new Date(artist.created_at).toLocaleDateString()
                       : 'N/A'}
                   </td>
+                  <td style={{ color: '#f00' }}>
+                    {artist.deleted_at
+                      ? new Date(artist.deleted_at).toLocaleDateString()
+                      : 'N/A'}
+                  </td>
                   <td>
                     <button
                       className={styles.actionButton}
-                      onClick={() => onNavigate('Update Artist Profile')}
+                      // onMouseEnter={ () => setSelectedArtistId(artist.id)} // set the ID first!
+                      onClick={() => {
+                        setSelectedArtistId(artist.id) // ADD THIS LINE!
+                        onNavigate('Artist Profile', artist.id)
+                      }}
                     >
-                      Edit
+                      View
                     </button>
                     <button
                       className={styles.actionButton}
                       // onClick={() => onNavigate('Update Artist Profile')}
-                      onClick={() => setShowDeleteModal(true)}
+                      // onMouseEnter={ () => setSelectedArtistId(artist.id)} // set the ID first!
+                      onClick={() => {
+                        setSelectedArtistId(artist.id) // ADD THIS LINE!
+                        onNavigate('Update Artist Profile', artist.id)
+                      }}
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      className={styles.actionButton}
+                      // onClick={() => onNavigate('Update Artist Profile')}
+                      onMouseEnter={ () => setSelectedArtistId(artist.id)} // set the ID first!
+                      onClick={() => {
+                        setSelectedArtistId(artist.id) // ADD THIS LINE!
+                        !artist.deleted_at ? setShowDeleteModal(true) : handleActivate()
+                      }
+                      }
                       style={{ background: '#dc2626' }}
                     >
-                      Delete
+                      {!artist.deleted_at ? 'Delete' : 'Activate'}
                     </button>
-                    {/* Delete Confirmation Modal */}
-                    {showDeleteModal && (
-                      <div
-                        style={{
-                          position: 'fixed',
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          zIndex: 1000
-                        }}
-                        onClick={() => setShowDeleteModal(false)}
-                      >
-                        <div
-                          style={{
-                            background: 'white',
-                            borderRadius: '12px',
-                            padding: '24px',
-                            maxWidth: '400px',
-                            width: '90%',
-                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-                          }}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px' }}>
-                            Delete Artist Profile
-                          </h3>
-                          <p style={{ color: '#6b7280', marginBottom: '24px' }}>
-                            Are you sure you want to delete this artist profile? This action cannot be undone.
-                          </p>
-                          <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-                            <button
-                              onClick={() => setShowDeleteModal(false)}
-                              disabled={deleting}
-                              style={{
-                                padding: '10px 24px',
-                                background: '#6b7280',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '6px',
-                                cursor: deleting ? 'not-allowed' : 'pointer',
-                                fontSize: '14px'
-                              }}
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              onClick={handleDeleteProfile}
-                              disabled={deleting}
-                              style={{
-                                padding: '10px 24px',
-                                background: deleting ? '#fca5a5' : '#dc2626',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '6px',
-                                cursor: deleting ? 'not-allowed' : 'pointer',
-                                fontSize: '14px'
-                              }}
-                            >
-                              {deleting ? 'Deleting...' : 'Delete Profile'}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
+
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+
+          {/* Delete Confirmation Modal */}
+          {showDeleteModal &&
+            <DeleteModal
+              onConfirm={handleDeleteProfile}
+              onCancel={() => {
+                setShowDeleteModal(false)
+                setSelectedArtistId(null)
+              }} // Clear the selection when canceling
+              
+              deleting={deleting}
+            />}
+
         </div>
       )}
     </div>

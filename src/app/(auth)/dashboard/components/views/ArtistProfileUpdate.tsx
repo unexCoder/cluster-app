@@ -12,12 +12,13 @@ import { updateArtistProfileAction } from '@/app/actions/artists'
 import { ValidationErrors } from '../../../../../../types/types'
 import { artistInfoSchema, contactInfoSchema, socialLinksSchema, techInfoSchema } from '@/lib/validations/artistProfile'
 import { z } from 'zod'
+import { profile } from 'console'
 
 interface ArtistProfileUpdateProps {
   userId: string
   artistId: string
   initialData: any // Replace with your artist profile type
-  onNavigate?: (view: string) => void
+  onNavigate?: (view: string, artistId?: string | null) => void
 }
 
 export default function ArtistProfileUpdate({ userId, artistId, initialData, onNavigate }: ArtistProfileUpdateProps) {
@@ -283,7 +284,7 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
         </div>
         <button
           type="button"
-          onClick={() => onNavigate?.('Artist Profile')}
+          onClick={() => onNavigate?.('Artist Profile',artistId)}
           style={{
             padding: '0 16px',
             height: '24px',

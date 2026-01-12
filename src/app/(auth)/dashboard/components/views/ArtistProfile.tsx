@@ -6,6 +6,8 @@ import styles from './dashboardViews.module.css'
 import styles_local from './artistProfile.module.css'
 import Link from 'next/link'
 
+import  DeleteModal  from '../components/DeleteModal'
+
 interface Artist {
   id: string
   user_id: string
@@ -31,10 +33,11 @@ interface Artist {
 
 interface ArtistProfileProps {
   userId?: string
-  onNavigate?: (view: string) => void
+  profile?: Artist | null // Add this line
+  onNavigate?: (view: string, artistId?: string | null) => void
 }
 
-export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps) {
+export default function ArtistProfile({ userId,profile, onNavigate }: ArtistProfileProps) {
   const [artist, setArtist] = useState<Artist[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -42,10 +45,15 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
   const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
-    if (userId) {
+    if (profile) {
+      // If profile is provided directly, use it
+      setArtist([profile])
+      setLoading(false)
+    } else if (userId) {
+      // Otherwise fetch by userId
       fetchArtistProfile()
     }
-  }, [userId])
+  }, [userId, profile])
 
   const fetchArtistProfile = async () => {
     if (!userId) return
@@ -101,7 +109,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
   }
 
   // if (!artist) {
-  if (!artist?.length) {
+  if (!artist?.length || artist[0].deleted_at) {
     return (
       <div className={styles.container}>
         <div className={styles.empty}>
@@ -134,7 +142,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
       if (result.success) {
         setShowDeleteModal(false)
         // Refresh the profile view or navigate back
-        // fetchArtistProfile()
+        fetchArtistProfile()
       } else {
         alert(result.error || 'Failed to delete profile')
       }
@@ -167,7 +175,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                 <div style={{ display: 'flex', gap: '12px' }}>
                   <button
                     className={styles.actionButton}
-                    onClick={() => onNavigate?.('Update Artist Profile')}
+                    onClick={() => onNavigate?.('Update Artist Profile',profile.id)}
                   >
                     Edit Profile
                   </button>
@@ -280,7 +288,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                   <h3 className={styles_local.sectionTitle}>Social Media</h3>
                   <div className={styles_local.socialMedia}>
                     {socialLinks.website && (
-                      <Link href={'http://' + socialLinks.website}
+                      <Link href={'https://' + socialLinks.website}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={styles.socialLink}
@@ -289,7 +297,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                       </Link>
                     )}
                     {socialLinks.instagram && (
-                      <Link href={normalizeInstagramUrl('http://instagram.com/' + socialLinks.instagram)}
+                      <Link href={normalizeInstagramUrl('https://instagram.com/' + socialLinks.instagram)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={styles.socialLink}
@@ -298,7 +306,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                       </Link>
                     )}
                     {socialLinks.facebook && (
-                      <Link href={'http://facebook.com/' + socialLinks.facebook}
+                      <Link href={'https://facebook.com/' + socialLinks.facebook}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={styles.socialLink}
@@ -307,7 +315,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                       </Link>
                     )}
                     {socialLinks.twitter && (
-                      <Link href={'http://x.com/' + socialLinks.twitter}
+                      <Link href={'https://x.com/' + socialLinks.twitter}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={styles.socialLink}
@@ -325,7 +333,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                       </Link>
                     )}
                     {socialLinks.youtube && (
-                      <Link href={'http://youtube.com/' + socialLinks.youtube}
+                      <Link href={'https://youtube.com/' + socialLinks.youtube}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={styles.socialLink}
@@ -334,7 +342,7 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                       </Link>
                     )}
                     {socialLinks.tiktok && (
-                      <Link href={'http://' + socialLinks.tiktok}
+                      <Link href={'https://' + socialLinks.tiktok}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={styles.socialLink}
@@ -416,85 +424,38 @@ export default function ArtistProfile({ userId, onNavigate }: ArtistProfileProps
                         : 'N/A'}
                     </span>
                   </div>
+                  <div className={styles.infoGroup}>
+                    {profile.deleted_at && 
+                     <>
+                      <label>Deleted:</label>
+                      <span style={{color:'#f00'}}>
+                        {profile.deleted_at
+                          ? new Date(profile.deleted_at).toLocaleDateString()
+                          : 'N/A'}
+                      </span>
+                    </>
+                    }
+                  </div>
                 </div>
               </div>
 
               <div style={{ display: 'flex', gap: '12px' }}>
-                <button
-                  className={styles.actionButton}
-                  onClick={() => setShowDeleteModal(true)}
-                >
-                  Delete Profile
-                </button>
-                {/* Delete Confirmation Modal */}
-                {showDeleteModal && (
-                  <div
-                    style={{
-                      position: 'fixed',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      zIndex: 1000
-                    }}
-                    onClick={() => setShowDeleteModal(false)}
+                {!profile.deleted_at && 
+                  <button
+                    className={styles.actionButton}
+                    onClick={() => setShowDeleteModal(true)}
                   >
-                    <div
-                      style={{
-                        background: 'white',
-                        borderRadius: '12px',
-                        padding: '24px',
-                        maxWidth: '400px',
-                        width: '90%',
-                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px' }}>
-                        Delete Artist Profile
-                      </h3>
-                      <p style={{ color: '#6b7280', marginBottom: '24px' }}>
-                        Are you sure you want to delete this artist profile? This action cannot be undone.
-                      </p>
-                      <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-                        <button
-                          onClick={() => setShowDeleteModal(false)}
-                          disabled={deleting}
-                          style={{
-                            padding: '10px 24px',
-                            background: '#6b7280',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '6px',
-                            cursor: deleting ? 'not-allowed' : 'pointer',
-                            fontSize: '14px'
-                          }}
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={handleDeleteProfile}
-                          disabled={deleting}
-                          style={{
-                            padding: '10px 24px',
-                            background: deleting ? '#fca5a5' : '#dc2626',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '6px',
-                            cursor: deleting ? 'not-allowed' : 'pointer',
-                            fontSize: '14px'
-                          }}
-                        >
-                          {deleting ? 'Deleting...' : 'Delete Profile'}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                    Delete Profile
+                  </button>
+                }
+                {/* Delete Confirmation Modal */}              
+                {showDeleteModal && 
+                  <DeleteModal
+                    onConfirm={handleDeleteProfile}
+                    onCancel={() => setShowDeleteModal(false)}
+                    deleting={deleting}
+                />}
+  
               </div>
 
             </div>

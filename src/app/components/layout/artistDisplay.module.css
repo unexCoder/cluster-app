@@ -1,12 +1,17 @@
 .container {
     height: 100svh;
+    overflow: hidden;
+    position: relative; /* Create stacking context */
 }
+
 .profileCard {
     display: flex;
     flex-direction: row;
+    z-index: 1;
 }
 
 .imgContainer {
+    z-index: 1;
     display: flex;
     height: 100svh;
     min-width: 55vw;

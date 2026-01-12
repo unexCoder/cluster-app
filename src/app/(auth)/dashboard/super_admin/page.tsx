@@ -22,10 +22,12 @@ export default function AdminDashboard() {
 
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<UserData | null>(null)
-
+  const [selectedArtistId, setSelectedArtistId] = useState<string | null>(null)
   const [displayUX, setDisplayUX] = useState('');
-  const updateUX = (value: string) => {
+
+  const updateUX = (value: string,  artistId?: string | null) => {
     setDisplayUX(value);
+    setSelectedArtistId(artistId || null)
     console.log(value)
   };
 
@@ -101,7 +103,7 @@ export default function AdminDashboard() {
     { label: 'Analitics' },
     { label: 'Security Logs' },
     { label: 'Profile' },
-    { label: 'Artist Profile'}
+    // { label: 'Artist Profile'}
   ]
 
   return (
@@ -117,6 +119,7 @@ export default function AdminDashboard() {
           <DashboardContent
             activeView={displayUX}
             userId={userData.userId}
+            artistId={selectedArtistId}
             onNavigate={updateUX}
           />
         </div>

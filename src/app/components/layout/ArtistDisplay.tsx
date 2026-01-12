@@ -26,6 +26,7 @@ export default function ArtistDisplay({ slug }: ArtistDisplayProps) {
   const [artist, setArtist] = useState<Artist | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [imageAspect, setImageAspect] = useState<'portrait' | 'landscape' | 'square'>('square')
 
   useEffect(() => {
     if (slug) {
@@ -112,6 +113,19 @@ export default function ArtistDisplay({ slug }: ArtistDisplayProps) {
     }
   })()
 
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget
+    const ratio = img.naturalWidth / img.naturalHeight
+
+    if (ratio > 1.1) {
+      setImageAspect('landscape')
+    } else if (ratio < 0.9) {
+      setImageAspect('portrait')
+    } else {
+      setImageAspect('square')
+    }
+  }
+
   return (
     <div className={`${styles.container} ${colorLayout}`}>
 
@@ -120,14 +134,25 @@ export default function ArtistDisplay({ slug }: ArtistDisplayProps) {
         {/* Profile Picture */}
         {artist.picture_url && (
           <div className={`${styles.imgContainer} ${altLayout ? styles.imgContainerAlt : null} ${switchLayout ? styles.imgContainerSwitch : null}`}>
-            <Image
+            <img
+              src={artist.picture_url}
+              width={0}
+              height={0}
+              alt="Artist preview"
+              style={{
+                width: imageAspect === 'portrait' ? '40%' : '75%',
+                height: 'auto',
+                borderRadius: '8px'
+              }}
+            />
+            {/* <Image
               src={artist.picture_url}
               width={700}
               height={0} // ignored
               alt={artist.name}
               className={styles.profileImage}
               style={{ height: 'auto' }}
-            />
+            /> */}
           </div>
         )}
 
@@ -167,7 +192,7 @@ export default function ArtistDisplay({ slug }: ArtistDisplayProps) {
                   <Link href={'http://' + socialLinks.website} target='_blank' rel="noopener noreferrer"><Globe size={20} /></Link>
                 )}
                 {socialLinks.instagram && (
-                  <Link href={normalizeInstagramUrl( 'http://instagram.com/' + socialLinks.instagram)} target='_blank' rel="noopener noreferrer"><Instagram size={20} /></Link>
+                  <Link href={normalizeInstagramUrl('http://instagram.com/' + socialLinks.instagram)} target='_blank' rel="noopener noreferrer"><Instagram size={20} /></Link>
                 )}
                 {socialLinks.spotify && (
                   <Link href={'https://open.spotify.com/intl-es/artist/' + socialLinks.spotify} target='_blank' rel="noopener noreferrer"><Music size={20} /></Link>

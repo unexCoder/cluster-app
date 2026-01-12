@@ -104,7 +104,7 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
 
     const tags = genreInput.trim().split(',')
     const unique = [...new Set(tags)]; // elimina duplicados
-    
+
     if (unique.length > 0) {
       unique.map((t) => {
         if (formData.genres.includes(t.trim())) {
@@ -234,7 +234,18 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
 
         {isValidHttpUrl(formData.pictureUrl) && (
           <div>
-            <Image
+            <img
+              src={formData.pictureUrl}
+              width={500}
+              height={500}
+              alt="Artist preview"
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+                borderRadius: '8px'
+              }}
+            />
+            {/* <Image
               src={formData.pictureUrl}
               width={500}
               height={500}
@@ -248,7 +259,7 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
                 border: '1px solid #e5e7eb',
                 objectFit: 'cover'
               }}
-            />
+            /> */}
             <button
               type="button"
               onClick={() => updateField('pictureUrl', '')}

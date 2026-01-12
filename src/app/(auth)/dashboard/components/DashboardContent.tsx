@@ -11,31 +11,61 @@ import ChangePassword from './views/ChangePassword';
 import ArtistProfile from './views/ArtistProfile';
 import ArtistProfileCreate from './views/ArtistProfileCreate';
 import ArtistProfileUpdate from './views/ArtistProfileUpdate';
-import { fetchArtistByUserIdAction } from '@/app/actions/artists';
+import { fetchArtistByUserIdAction, fetchArtistByIdAction } from '@/app/actions/artists';
 
 interface DashboardContentProps {
   activeView: string;
   userId?: string; // Añadir userId como prop
-  onNavigate(view: string): void; // Añadir prop: string
+  artistId?: string | null; // Add this
+  onNavigate(view: string, artistId?: string | null): void;
 }
 
-export default function DashboardContent({ activeView, userId, onNavigate }: DashboardContentProps) {
+export default function DashboardContent({ activeView, userId, artistId, onNavigate }: DashboardContentProps) {
   const [artistProfile, setArtistProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
 
+  // // Fetch artist profile when needed
+  // useEffect(() => {
+  //   if (userId && activeView === 'Update Artist Profile') {
+  //     setLoadingProfile(true);
+  //     fetchArtistByUserIdAction(userId)
+  //       .then(result => {
+  //         if (result.success && result.profile) {
+  //           setArtistProfile(result.profile[0]); // profile is an array
+  //         }
+  //       })
+  //       .finally(() => setLoadingProfile(false));
+  //   }
+  // }, [userId, activeView]);
   // Fetch artist profile when needed
   useEffect(() => {
-    if (userId && activeView === 'Update Artist Profile') {
+    if (activeView === 'Update Artist Profile' || activeView === 'Artist Profile') {
       setLoadingProfile(true);
-      fetchArtistByUserIdAction(userId)
-        .then(result => {
-          if (result.success && result.profile) {
-            setArtistProfile(result.profile[0]); // profile is an array
-          }
-        })
-        .finally(() => setLoadingProfile(false));
+      setArtistProfile(null); // Reset profile
+
+      if (artistId) {
+        // Admin viewing specific artist
+        fetchArtistByIdAction(artistId)
+          .then(result => {
+            if (result.success && result.profile) {
+              setArtistProfile(result.profile);
+            }
+          })
+          .finally(() => setLoadingProfile(false));
+      } else if (userId) {
+        // User viewing their own profile
+        fetchArtistByUserIdAction(userId)
+          .then(result => {
+            if (result.success && result.profile) {
+              setArtistProfile(result.profile[0]);
+            }
+          })
+          .finally(() => setLoadingProfile(false));
+      } else {
+        setLoadingProfile(false);
+      }
     }
-  }, [userId, activeView]);
+  }, [userId, artistId, activeView]);
 
   // Función que retorna el componente basado en la vista activa
   const renderView = () => {
@@ -47,7 +77,7 @@ export default function DashboardContent({ activeView, userId, onNavigate }: Das
       case 'Browse Users':
         return <BrowseUsers />;
       case 'Browse Artists':
-        return <BrowseArtists onNavigate={onNavigate}/>;
+        return <BrowseArtists onNavigate={onNavigate} />;
       case 'Mailing List':
         return <MailingList />;
       case 'Cluster Managment':
@@ -78,12 +108,28 @@ export default function DashboardContent({ activeView, userId, onNavigate }: Das
         );
 
       // artist dashboard
+      // case 'Artist Profile':
+      //   return userId ? (
+      //     <ArtistProfile userId={userId} onNavigate={onNavigate} />
+      //   ) : (
+      //     <div>User ID not available</div>
+      //   );
+      // Artist dashboard
       case 'Artist Profile':
-        return userId ? (
-          <ArtistProfile userId={userId} onNavigate={onNavigate} />
-        ) : (
-          <div>User ID not available</div>
-        );
+        if (loadingProfile) return <div>Loading profile...</div>;
+
+        if (artistId) {
+          // Admin viewing specific artist
+          if (!artistProfile) return <div>No artist profile found</div>;
+            return <ArtistProfile userId={artistProfile.user_id} profile={artistProfile}  onNavigate={onNavigate} />;
+        } else {
+          // User viewing their own profile
+          return userId ? (
+            <ArtistProfile userId={userId} onNavigate={onNavigate} />
+          ) : (
+            <div>User ID not available</div>
+          );
+        }
 
       case 'Create Artist Profile':
         return userId ? (
@@ -94,14 +140,14 @@ export default function DashboardContent({ activeView, userId, onNavigate }: Das
         ) : (
           <div>User ID not available</div>
         );
-      
-        case 'Update Artist Profile':
-          if (!userId) return <div>User ID not available</div>;
-          if (loadingProfile) return <div>Loading profile...</div>;
-          if (!artistProfile) return <div>No artist profile found</div>;
+
+      case 'Update Artist Profile':
+        if (!userId) return <div>User ID not available</div>;
+        if (loadingProfile) return <div>Loading profile...</div>;
+        if (!artistProfile) return <div>No artist profile found</div>;
         return userId ? (
           <ArtistProfileUpdate
-            userId={userId}
+            userId={artistProfile.user_id}
             artistId={artistProfile.id}
             initialData={artistProfile}
             onNavigate={onNavigate}

@@ -30,7 +30,7 @@ interface ArtistRow extends RowDataPacket {
 
 export async function fetchArtistsAction() {
   try {
-    const artists = await query('SELECT * FROM artist WHERE deleted_at = NULL') as ArtistRow[];
+    const artists = await query('SELECT * FROM artist') as ArtistRow[];
     return { success: true, artists };
   } catch (error) {
     console.error('Database error:', error);
@@ -40,7 +40,8 @@ export async function fetchArtistsAction() {
 
 export async function fetchArtistByUserIdAction(id: string) {
   try {
-    const profile = await query('SELECT * FROM artist WHERE user_id = ? AND deleted_at = NULL', [id]) as ArtistRow[];
+    // const profile = await query('SELECT * FROM artist WHERE user_id = ? AND deleted_at = NULL', [id]) as ArtistRow[];
+    const profile = await query('SELECT * FROM artist WHERE user_id = ?', [id]) as ArtistRow[];
     return { success: true, profile: profile || null };
   } catch (error) {
     console.error('Database error:', error);
@@ -319,6 +320,40 @@ export async function deleteArtistProfileAction(artistId: string): Promise<Actio
   }
 }
 
+export async function activateArtistProfileAction(artistId: string): Promise<ActionResult> {
+  try {
+    // Soft delete - set deleted_at timestamp
+    await query(
+      'UPDATE artist SET deleted_at = NULL WHERE id = ?',
+      [artistId]
+    )
+
+    revalidatePath('/dashboard')
+    revalidatePath('/artist-profile')
+
+    return { success: true }
+  } catch (error) {
+    console.error('Database error:', error)
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Failed to activate profile' 
+    }
+  }
+}
+
+export async function fetchArtistByIdAction(artistId: string) {
+  try {
+    const profile = await query(
+      'SELECT * FROM artist WHERE id = ? AND deleted_at IS NULL', 
+      [artistId]
+    ) as ArtistRow[];
+    
+    return { success: true, profile: profile[0] || null };
+  } catch (error) {
+    console.error('Database error:', error);
+    return { success: false, error: 'Failed to fetch artist', profile: null };
+  }
+}
 
 // utils
 function generateSlug(name: string): string {
