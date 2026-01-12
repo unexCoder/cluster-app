@@ -1,7 +1,12 @@
 import React from 'react'
+import FastForward from '@/app/(main)/blog/components/FastForward'
 
 export default function Blog() {
   return (
-    <div style={{fontSize:'3rem'}}>&gt;&gt; fast forward</div>
+    <>
+      <div>
+        <FastForward />
+      </div>
+    </>
   )
 }
