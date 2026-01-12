@@ -21,14 +21,23 @@ interface DatabaseCredentials {
  * @param region - AWS region (default: sa-east-1)
  * @returns The secret value as a string or parsed JSON object
  */
+
 export async function getSecret(
-  secretName: string = 'rds!db-541292c3-faa1-428f-b5be-70ee52200632',
-  region: string = 'sa-east-1'
+  secretName: string = process.env.SECRET_NAME || 'rds!db-541292c3-faa1-428f-b5be-70ee52200632',
+  region: string = process.env.AWS_REGION || 'sa-east-1'
 ): Promise<string | DatabaseCredentials> {
-  // Create a Secrets Manager client
+  
   const client = new SecretsManagerClient({
     region: region,
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    }
   });
+  // Create a Secrets Manager client
+  // const client = new SecretsManagerClient({
+  //   region: region,
+  // });
 
   const input: GetSecretValueCommandInput = {
     SecretId: secretName,
@@ -38,7 +47,7 @@ export async function getSecret(
 
   try {
     const response: GetSecretValueCommandOutput = await client.send(command);
-    
+
     if (!response.SecretString) {
       throw new Error('Secret string is empty or undefined');
     }
@@ -65,23 +74,23 @@ export async function getSecret(
  */
 export async function getDatabaseCredentials(): Promise<DatabaseCredentials> {
   const secret = await getSecret();
-  
+
   if (typeof secret === 'string') {
     throw new Error('Expected JSON credentials but received string');
   }
-  
+
   return secret;
 }
 
 // Example usage:
-// (async () => {
-//   try {
-//     const credentials = await getDatabaseCredentials();
-//     console.log('Database Host:', credentials.host);
-//     console.log('Database Port:', credentials.port);
-//     console.log('Username:', credentials.username);
-//     // Use credentials.password for database connection
-//   } catch (error) {
-//     console.error('Failed to retrieve credentials:', error);
-//   }
-// })();
+(async () => {
+  try {
+    const credentials = await getDatabaseCredentials();
+    console.log('Database Host:', credentials.host);
+    console.log('Database Port:', credentials.port);
+    console.log('Username:', credentials.username);
+    // Use credentials.password for database connection
+  } catch (error) {
+    console.error('Failed to retrieve credentials:', error);
+  }
+})();
