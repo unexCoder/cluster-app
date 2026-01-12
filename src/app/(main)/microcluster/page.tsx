@@ -22,14 +22,14 @@ export const metadata: Metadata = {
     description: "Plataforma innovadora de creatividad tecnológica e innovación en cultura digital",
     images: [
       {
-        url: "/og-image-mc.jpg", // Imagen principal
+        url: "/og-image-mc.jpeg", // Imagen principal
         width: 1200,
         height: 630,
         alt: "microCluster - Plataforma de Creatividad Tecnológica",
         type: "image/jpeg"
       },
       {
-        url: "/og-image-mc-w.jpg", // Imagen cuadrada para WhatsApp
+        url: "/og-image-mc-w.jpeg", // Imagen cuadrada para WhatsApp
         width: 630,
         height: 630,
         alt: "microCluster"
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "microCluster - Plataforma de Creatividad Tecnológica",
     description: "Plataforma innovadora de creatividad tecnológica",
-    images: ["/og-image.jpg"],
+    images: ["/og-image.jpeg"],
     creator: "@unexcoder",
     site: "@unexcoder"
   },

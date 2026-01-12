@@ -34,14 +34,14 @@ export const metadata: Metadata = {
     description: "Festival Tecnológico. Encuentro de creatividad y transformación digital",
     images: [
       {
-        url: "/og-image.jpg", // Imagen principal
+        url: "/og-image.jpeg", // Imagen principal
         width: 1200,
         height: 630,
         alt: "Festival Cluster - Festival Tecnológico",
         type: "image/jpeg"
       },
       {
-        url: "/og-image-w.jpg", // Imagen cuadrada para WhatsApp
+        url: "/og-image-w.jpeg", // Imagen cuadrada para WhatsApp
         width: 630,
         height: 630,
         alt: "Festival Cluster"
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Festival Cluster - Festival Tecnológico",
     description: "Festival Tecnológico. Encuentro de creatividad y transformación digital",
-    images: ["/og-image.jpg"],
+    images: ["/og-image.jpeg"],
     creator: "@unexcoder",
     site: "@unexcoder"
   },
