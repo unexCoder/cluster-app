@@ -28,7 +28,7 @@ export default function FastForward() {
                 <p>
                     <span className={styles.cluster}>&gt;&gt; FastForward</span> documenta y analiza fenómenos
                     como la inteligencia artificial, la cultura digital, las redes sociales, el arte
-                    generativo y las nuevas formas de producción cultural que emergen del encuentro
+                    algoritmico y las nuevas formas de producción cultural que emergen del encuentro
                     entre humanidad y máquina, buscando entender no solo qué está cambiando, sino
                     también qué significa ese cambio para nuestro futuro colectivo
                 </p>
@@ -54,7 +54,7 @@ export default function FastForward() {
                     zIndex: '-50',
                     position: 'absolute',
                     top: '0',
-                    transform: 'translate(0,0)'
+                    transform: 'translate(0,-80%)'
                 }}>
             </div>
 
