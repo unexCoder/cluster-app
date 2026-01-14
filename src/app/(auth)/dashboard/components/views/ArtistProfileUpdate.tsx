@@ -72,7 +72,8 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
             tiktok: socialLinks?.tiktok || ''
           },
           technical: {
-            requirements: initialData.technical_requirements || '',
+            // requirements: initialData.technical_requirements || '',
+            requirements: '',
             riderUrl: initialData.rider_url || '',
             presskitUrl: initialData.presskit_url || ''
           }

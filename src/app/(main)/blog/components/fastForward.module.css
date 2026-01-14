@@ -16,18 +16,20 @@
 .first {
     text-align: right;
     color: var(--text-primary);
-    padding-left: 125px;
+    padding-left: 125px; 
 }
 
 .second {
     text-align: left;
     background-color: var(--background);
+    /* background-color: #ff00ff; */
     color: var(--text-secondary);
 }
 
 .third {
     text-align: left;
-    background-color: var(--text-secondary);
+    /* background-color: var(--text-secondary); */
+    background-color: #522652;
     color: var(--text-primary);
 }
 
@@ -42,7 +44,8 @@
     text-align: right;
     padding-left: 50px;
     color: var(--text-secondary);
-    background-color: var(--text-primary);
+    /* background-color: var(--text-primary); */
+    background-color: #c1c0c1;
 }
 
 .chapter {

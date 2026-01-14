@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import { FormField } from '../components/FormField'
+import { ImageField } from '../components/ImageField'
 import type { ArtistFormData, ValidationErrors } from '../../../../../../types/types'
-import Image from 'next/image'
+// import Image from 'next/image'
 import { artistInfoSchema } from '@/lib/validations/artistProfile'
 import { z } from 'zod'
+import { getImageUploadUrl } from '@/app/actions/upload-file'
+
 
 interface Step1Props {
   formData: ArtistFormData
@@ -34,6 +37,9 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
   setValidationError
 }) => {
   const [genreInput, setGenreInput] = useState('')
+  const [isUploading, setIsUploading] = useState(false)
+  const [previewUrl, setPreviewUrl] = useState<string>('')
+  const [fileKey, setFileKey] = useState(0)
 
   // Validate individual field
   const validateField = (fieldName: string, value: any) => {
@@ -119,16 +125,6 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
       })
     }
 
-    // if (formData.genres.includes(genreInput.trim())) {
-    //   setValidationError?.('genres', 'Genre already added')
-    //   return
-    // }
-
-    // if (formData.genres.length >= 5) {
-    //   setValidationError?.('genres', 'Maximum 5 genres allowed')
-    //   return
-    // }
-
     // addGenre(genreInput.trim().toLowerCase())
     setGenreInput('')
     clearFieldError('genres')
@@ -140,6 +136,71 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
     setTimeout(() => {
       validateField('genres', formData.genres.filter(g => g !== genre))
     }, 0)
+  }
+
+
+  // Handle file selection and upload
+  const handleFileSelect = async (file: File | null) => {
+    // Clear everything if no file
+    if (!file) {
+      if (previewUrl && previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl)
+      }
+      setPreviewUrl('')
+      updateField('pictureUrl', '')
+      return
+    }
+
+    // Validate file
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+    if (!allowedTypes.includes(file.type)) {
+      setValidationError?.('pictureUrl', 'Only JPG, PNG, and WebP images are allowed')
+      return
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setValidationError?.('pictureUrl', 'Image must be less than 5MB')
+      return
+    }
+
+    // Create local preview
+    const localPreview = URL.createObjectURL(file)
+    setPreviewUrl(localPreview)
+    clearFieldError('pictureUrl')
+
+    // Upload to S3
+    setIsUploading(true)
+    try {
+      // Get presigned URL from server
+      const response = await getImageUploadUrl(file.name, file.type)
+
+      if (!response.success || !response.uploadUrl) {
+        throw new Error(response.error || 'Failed to get upload URL')
+      }
+
+      // Upload file to S3 using presigned URL
+      const uploadResponse = await fetch(response.uploadUrl, {
+        method: 'PUT',
+        body: file,
+        headers: {
+          'Content-Type': file.type,
+        },
+      })
+
+      if (!uploadResponse.ok) {
+        throw new Error('Failed to upload image')
+      }
+
+      // Update form with the public URL
+      updateField('pictureUrl', response.publicUrl)
+      console.log('✅ Image uploaded successfully:', response.publicUrl)
+    } catch (error) {
+      console.error('Upload error:', error)
+      setValidationError?.('pictureUrl', 'Failed to upload image. Please try again.')
+      setPreviewUrl('')
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   // Validate all fields (can be called from parent)
@@ -174,12 +235,26 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
   const isValidHttpUrl = (value: string) => {
     try {
       const url = new URL(value)
-      return url.protocol === 'http:' || url.protocol === 'https:'
+      return url.protocol === 'http:' || url.protocol === 'https:' || url.protocol === 'blob:'
     } catch {
       return false
     }
   }
 
+  const handleRemoveImage = () => {
+    updateField('pictureUrl', '')
+    setPreviewUrl('')
+    setFileKey(k => k + 1)
+    // Clean up object URL to prevent memory leaks
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl)
+    }
+  }
+
+  const displayUrl = previewUrl || formData.pictureUrl
+  const hasImage = isValidHttpUrl(displayUrl)
+
+  // style
   const fieldClassName = 'infoGroup'
 
   return (
@@ -218,61 +293,96 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
           className={fieldClassName}
         />
 
-        <FormField
-          label="Profile Picture URL"
-          name="pictureUrl"
-          type="url"
-          value={formData.pictureUrl}
-          onChange={handleFieldChange}
-          onFocus={clearFieldError}
-          onBlur={() => handleFieldBlur('pictureUrl')}
-          required
-          placeholder="https://example.com/image.jpg"
-          error={validationErrors.pictureUrl}
-          className={fieldClassName}
-        />
 
-        {isValidHttpUrl(formData.pictureUrl) && (
-          <div>
+        {/* Image Upload using FileField */}
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'start' }}>
+          <ImageField
+            label="Profile Picture"
+            name="pictureFile"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            onChange={handleFileSelect}
+            onFocus={clearFieldError}
+            required
+            maxSize={5 * 1024 * 1024}
+            isUploading={isUploading}
+            error={validationErrors.pictureUrl}
+            className={fieldClassName}
+            helperText="JPG, PNG, or WebP (max 5MB)"
+            key={fileKey}
+          />
+        </div>
+
+        {/* Image Preview */}
+        {hasImage && isValidHttpUrl(displayUrl) && !isUploading && (
+          <div style={{ position: 'relative', display: 'inline-block' }}>
             <img
-              src={formData.pictureUrl}
-              width={500}
-              height={500}
+              src={displayUrl}
               alt="Artist preview"
               style={{
                 maxWidth: '100%',
-                height: 'auto',
-                borderRadius: '8px'
-              }}
-            />
-            {/* <Image
-              src={formData.pictureUrl}
-              width={500}
-              height={500}
-              alt="Picture of the artist"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 500px"
-              style={{
-                width: '100%',
-                maxWidth: '500px',
-                height: 'auto',
+                maxHeight: '400px',
                 borderRadius: '8px',
                 border: '1px solid #e5e7eb',
                 objectFit: 'cover'
               }}
-            /> */}
+              onError={(e) => {
+                console.error('Image failed to load')
+                setPreviewUrl('')
+                updateField('pictureUrl', '')
+              }}
+            />
             <button
               type="button"
-              onClick={() => updateField('pictureUrl', '')}
+              onClick={handleRemoveImage}
+              title="Remove image"
               style={{
-                marginLeft: '8px',
-                background: 'none',
+                position: 'absolute',
+                top: '8px',
+                right: '8px',
+                background: 'rgba(0, 0, 0, 0.6)',
+                color: 'white',
                 border: 'none',
+                borderRadius: '50%',
+                width: '32px',
+                height: '32px',
                 cursor: 'pointer',
-                fontSize: '20px'
+                fontSize: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
               }}
             >
               ×
             </button>
+
+            {/* Upload Status Overlay */}
+            {isUploading && (
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'rgba(255, 255, 255, 0.9)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+                gap: '8px'
+              }}>
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  border: '4px solid #e5e7eb',
+                  borderTop: '4px solid #3b82f6',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite'
+                }} />
+                <span style={{ color: '#3b82f6', fontSize: '14px', fontWeight: '500' }}>
+                  Uploading...
+                </span>
+              </div>
+            )}
           </div>
         )}
 
