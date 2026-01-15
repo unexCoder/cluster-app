@@ -21,14 +21,20 @@ export async function GET(request: NextRequest) {
   let bckGnd1: string = searchParams.get('bckGndb') || '#c30f45';
   let color: string = searchParams.get('color') || '#231123';
   const w: number = parseInt(searchParams.get('width') || '3840');
-
+  
   // Ensure colors have # prefix for canvas
   bckGnd0 = bckGnd0.startsWith('#') ? bckGnd0 : `#${bckGnd0}`;
   bckGnd1 = bckGnd1.startsWith('#') ? bckGnd1 : `#${bckGnd1}`;
-
+  
   const width: number = w * 3 / 4;
   const height: number = w;
-
+  
+  // Cluster Position parameters
+  const xPos: number = parseInt(searchParams.get('x') || '0');
+  const yPos: number = parseInt(searchParams.get('y') || '0');
+  const zPos: number = parseInt(searchParams.get('z') || '0');
+  
+  
   // Text parameters
   const title: string | null = searchParams.get('title');
   const titleColor: string = searchParams.get('titleColor') || 'ffffff';
@@ -115,9 +121,9 @@ export async function GET(request: NextRequest) {
 
   for (let i = 0; i < numPoints; i++) {
     const center = new Vector3(
-      gaussianRandom(0, stdDev),
-      gaussianRandom(0, stdDev),
-      gaussianRandom(0, stdDev)
+      gaussianRandom(xPos, stdDev),
+      gaussianRandom(yPos, stdDev),
+      gaussianRandom(zPos, stdDev)
     );
 
     const numVertices = Math.random() > 0.5 ? 3 : 4;
