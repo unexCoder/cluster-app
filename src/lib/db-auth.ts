@@ -27,6 +27,7 @@ export async function getSecret(
   region: string = process.env.AWS_REGION || 'sa-east-1'
 ): Promise<string | DatabaseCredentials> {
   
+  // Create a Secrets Manager client
   const client = new SecretsManagerClient({
     region: region,
     credentials: {
@@ -34,10 +35,6 @@ export async function getSecret(
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
     }
   });
-  // Create a Secrets Manager client
-  // const client = new SecretsManagerClient({
-  //   region: region,
-  // });
 
   const input: GetSecretValueCommandInput = {
     SecretId: secretName,
@@ -83,14 +80,14 @@ export async function getDatabaseCredentials(): Promise<DatabaseCredentials> {
 }
 
 // Example usage:
-(async () => {
-  try {
-    const credentials = await getDatabaseCredentials();
-    console.log('Database Host:', credentials.host);
-    console.log('Database Port:', credentials.port);
-    console.log('Username:', credentials.username);
-    // Use credentials.password for database connection
-  } catch (error) {
-    console.error('Failed to retrieve credentials:', error);
-  }
-})();
+// (async () => {
+//   try {
+//     const credentials = await getDatabaseCredentials();
+//     console.log('Database Host:', credentials.host);
+//     console.log('Database Port:', credentials.port);
+//     console.log('Username:', credentials.username);
+//     // Use credentials.password for database connection
+//   } catch (error) {
+//     console.error('Failed to retrieve credentials:', error);
+//   }
+// })();
