@@ -9,7 +9,7 @@ export default function FastForward() {
     useEffect(() => {
         // runs ONLY on client, AFTER hydration
         setFlyerUrl(
-            `/api/postcard?bckGnda=1241ac00&bckGndb=ac41ac00&color=ff00ff&width=2200&v=${crypto.randomUUID()}`
+            `/api/postcard?bckGnda=1241ac00&bckGndb=ac41ac00&color=ff00ff&x=20&y=-100&z=50&width=1200&v=${crypto.randomUUID()}`
         )
     }, [])
 
@@ -49,12 +49,12 @@ export default function FastForward() {
                 style={{
                     ...bgStyle,
                     minWidth: '100svw',
-                    minHeight: '620svh',
+                    minHeight: '120svh',
                     overflow: 'hidden',
                     zIndex: '-50',
                     position: 'absolute',
                     top: '0',
-                    transform: 'translate(0,-80%)'
+                    transform: 'translate(0,0)'
                 }}>
             </div>
 

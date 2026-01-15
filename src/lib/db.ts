@@ -1,7 +1,7 @@
 // src/lib/db.ts
 import mysql from 'mysql2/promise';
 import type { Pool, RowDataPacket, ResultSetHeader } from 'mysql2/promise';
-import { getSecret } from './db-auth';
+import { getDatabaseCredentials, getSecret } from './db-auth';
 
 // The pool will handle thousands of queries efficiently! 
 // Just adjust DB_CONNECTION_LIMIT based on your traffic.
@@ -48,12 +48,16 @@ async function initializePool(): Promise<Pool> {
           process.env.AWS_REGION
         );
 
+        console.log(secret);
+        
+        
+        
         if (typeof secret === 'string') {
           throw new Error('Expected database credentials object, got string');
         }
-
-        const credentials = secret as DatabaseCredentials;
-                
+        
+        const credentials = secret as DatabaseCredentials;        
+        
         dbConfig = {
           host: credentials.host || process.env.DB_HOST || '',
           port: credentials.port || parseInt(process.env.DB_PORT || '3306'),
