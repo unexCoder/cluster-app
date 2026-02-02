@@ -1,6 +1,6 @@
 # CLUSTER Festival - Digital Event Management Platform
 
-A modern, high-performance web application for managing multimedia art and music festivals with integrated ticket management, QR code validation, and real-time event analytics.
+A modern, high-performance web application for managing multimedia art and music festivals with integrated ticket management, QR code validation, and advanced 3D visualization. **Currently in early development (25-30% complete).**
 
 ![Next.js](https://img.shields.io/badge/Next.js-16.0-black?style=flat-square&logo=next.js)
 ![React](https://img.shields.io/badge/React-19.2-61dafb?style=flat-square&logo=react)
@@ -53,22 +53,42 @@ cp .env.example .env.local
 
 Edit `.env.local` with your configuration:
 ```env
-# Database
-DATABASE_URL="mysql://user:password@localhost:3306/festival_cluster"
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=your-password
+DB_NAME=festival_cluster
 
-# Authentication
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-secret-key-here"
+# Optional: AWS Secrets Manager (for production)
+USE_SECRETS_MANAGER=false
+AWS_REGION=us-east-1
+SECRET_NAME=cluster/db
 
-# API Keys
-STRIPE_PUBLIC_KEY="pk_..."
-STRIPE_SECRET_KEY="sk_..."
+# NextAuth Configuration (in development)
+NEXTAUTH_SECRET=your-secret-key-here
+NEXTAUTH_URL=http://localhost:3000
+
+# Email Service (Resend - in development)
+RESEND_API_KEY=re_xxxxx
+
+# Optional: Payment Processing (coming soon)
+STRIPE_PUBLIC_KEY=pk_...
+STRIPE_SECRET_KEY=sk_...
+
+# SMS Service (Twilio - optional)
+TWILIO_ACCOUNT_SID=AC...
+TWILIO_AUTH_TOKEN=...
+TWILIO_PHONE_NUMBER=+1...
 ```
 
 4. **Initialize the database**
 ```bash
-npm run db:setup
-npm run db:seed
+# Import the schema
+mysql -u root -p festival_cluster < clusterDB.sql
+
+# Or run migrations when available
+npm run db:migrate
 ```
 
 5. **Start development server**
@@ -92,9 +112,14 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ### Backend
 - **Runtime:** Node.js (via Next.js)
 - **Database:** MySQL 8.0 with InnoDB
-- **ORM:** [Prisma](https://www.prisma.io/) *(in development)*
-- **Authentication:** [NextAuth.js](https://next-auth.js.org/) *(in development)*
-- **Validation:** [Zod](https://zod.dev/) *(in development)*
+- **Database Client:** mysql2/promise (with connection pooling)
+- **Authentication:** JWT tokens + bcrypt password hashing
+- **Email Service:** Resend
+- **Email Templates:** Built-in system with HTML templates
+- **Validation:** Zod schema validation
+- **Security:** AWS Secrets Manager integration, cryptographic token generation
+- **SMS/Voice:** Twilio integration
+- **Cloud Storage:** AWS S3 (for file uploads)
 
 ### DevOps & Tools
 - **Package Manager:** npm
@@ -208,13 +233,14 @@ The application provides RESTful API endpoints for all major operations:
 
 ### Authentication
 ```
-POST   /api/auth/register        # Create new account
-POST   /api/auth/login           # User login
-POST   /api/auth/logout          # User logout
-POST   /api/auth/refresh         # Refresh tokens
+POST   /api/auth/login           # User login (in development)
+POST   /api/auth/register        # Create new account (in development)
+POST   /api/auth/logout          # User logout (not implemented)
+POST   /api/auth/refresh         # Refresh tokens (not implemented)
+GET    /api/health               # Health check / DB connectivity
 ```
 
-### Events
+### Events *(Not yet implemented)*
 ```
 GET    /api/events               # List all events
 GET    /api/events/[id]          # Get event details
@@ -223,16 +249,16 @@ PUT    /api/events/[id]          # Update event (admin)
 DELETE /api/events/[id]          # Delete event (admin)
 ```
 
-### Tickets
+### Tickets *(Not yet implemented)*
 ```
 GET    /api/tickets              # List user's tickets
 GET    /api/tickets/[id]         # Get ticket details
 POST   /api/tickets              # Purchase tickets
 PUT    /api/tickets/[id]         # Update ticket (transfer)
-GET    /api/tickets/[id]/qr      # Get QR code
+GET    /api/qr/[uuid]            # Generate QR code (SVG) ✅ Working
 ```
 
-### Orders
+### Orders *(Not yet implemented)*
 ```
 POST   /api/orders               # Create order
 GET    /api/orders/[id]          # Get order details
@@ -240,7 +266,14 @@ PUT    /api/orders/[id]/cancel   # Cancel order
 POST   /api/orders/[id]/refund   # Request refund
 ```
 
-### Search
+### Newsletter *(Partially working)*
+```
+POST   /api/newsletter            # Subscribe to newsletter
+GET    /api/newsletter/confirm    # Confirm subscription
+GET    /api/newsletter/unsubscribe # Unsubscribe
+```
+
+### Search *(Placeholder)*
 ```
 GET    /api/search               # Global search
 GET    /api/search/events        # Search events
@@ -248,21 +281,15 @@ GET    /api/search/artists       # Search artists
 GET    /api/search/venues        # Search venues
 ```
 
-### QR Code
+### Users *(Placeholder)*
 ```
-GET    /api/qr/[uuid]            # Generate QR code (SVG)
-POST   /api/qr/validate          # Validate QR code
-```
-
-### Users
-```
-GET    /api/users/me             # Get current user
-GET    /api/users/[id]           # Get user profile
-PUT    /api/users/me             # Update profile
-GET    /api/users/[id]/orders    # User's orders
+GET    /api/users/me             # Get current user (not working)
+GET    /api/users/[id]           # Get user profile (not working)
+PUT    /api/users/me             # Update profile (not working)
+GET    /api/users/[id]/orders    # User's orders (not working)
 ```
 
-Full API documentation coming soon with OpenAPI/Swagger specification.
+**Note:** Most endpoints are stubbed out. See [z_PROJECT_ANALYSIS.md](./z_PROJECT_ANALYSIS.md) for implementation priority.
 
 ---
 
@@ -312,26 +339,58 @@ CLUSTER implements industry-standard security practices:
 - Payment Card Industry (PCI) compliance path
 - Regular security assessments
 
-⚠️ **Note:** Authentication and advanced security features are currently in development. Do not use in production without completing security hardening.
+⚠️ **Current Status:** 
+- Basic authentication infrastructure is in place but not fully functional
+- User registration and login endpoints exist but need debugging
+- Email verification flow not yet implemented
+- Session management incomplete
+- Do not use in production without completing security hardening and testing
 
 ---
 
-## 🚦 Development Status
+## 🚦 Development Status - January 2026
 
-| Component | Status | Timeline |
-|-----------|--------|----------|
-| Database Schema | ✅ Complete | - |
-| Frontend Foundation | ✅ Complete | - |
-| 3D Visualization | ✅ Complete | - |
-| API Infrastructure | 🔄 In Progress | Week 1-2 |
-| Authentication | 🔄 In Progress | Week 2-3 |
-| Core Features | ⏳ Planned | Week 3-6 |
-| Payment Integration | ⏳ Planned | Week 7-8 |
-| Admin Dashboard | ⏳ Planned | Week 11-12 |
+**Current Progress:** 25-30% (API Implementation Phase)
+
+| Component | Status | Details |
+|-----------|--------|---------|
+| **Database Schema** | ✅ Complete | 17 normalized tables with full indexing |
+| **Frontend Structure** | ✅ Complete | Route structure, layout framework, 3D hero |
+| **3D Visualization** | ✅ Complete | WebGPU-powered Gaussian cluster rendering |
+| **Database Connection** | ✅ Complete | Connection pooling, AWS Secrets Manager support |
+| **Core API Infrastructure** | 🔄 In Progress | Health check, QR generation working; auth/user endpoints partial |
+| **Authentication** | 🔄 In Progress | 40% - JWT tokens, bcrypt, client utilities; missing email verification |
+| **Frontend Components** | ⏳ Next | Forms, navigation, data display |
+| **Core Features** | ⏳ Planned | Event browsing, ticket purchase, search |
+| **Payment Integration** | ⏳ Planned | Stripe integration |
+| **Admin Dashboard** | ⏳ Planned | Management interfaces |
+| **Production Ready** | ❌ Not Started | Deployment, monitoring, scaling |
 
 **Legend:** ✅ Complete | 🔄 In Progress | ⏳ Planned | ❌ Not Started
 
-Full development roadmap available in [PROJECT_ANALYSIS.md](./PROJECT_ANALYSIS.md).
+### Current Working Features
+- ✅ Landing page with 3D visualization
+- ✅ Database connection with connection pooling
+- ✅ QR code generation endpoint
+- ✅ Health check endpoint
+- ✅ Email template system
+- ✅ Token generation and validation
+- ✅ Basic authentication utilities
+- ⚠️ Login/Register endpoints (needs debugging & completion)
+- ⚠️ Newsletter subscription management
+
+### Known Limitations
+- ❌ User authentication flow not complete
+- ❌ Event data endpoints not implemented
+- ❌ Ticket purchasing not functional
+- ❌ Payment processing not integrated
+- ❌ Admin features not available
+- ❌ Frontend state management not implemented
+- ❌ Error handling not standardized
+- ❌ Rate limiting not implemented
+- ⚠️ Full authorization (RBAC) not enforced
+
+For detailed analysis and roadmap, see [z_PROJECT_ANALYSIS.md](./z_PROJECT_ANALYSIS.md)
 
 ---
 
@@ -376,7 +435,60 @@ Found a bug? Please [create an issue](https://github.com/yourusername/cluster-fe
 
 ---
 
-## 🛠️ Troubleshooting
+## 🛠️ Immediate Next Steps (Priority Order)
+
+Based on the current codebase analysis, here are the critical items to address next:
+
+### Week 1: Complete Authentication
+1. **Debug & complete login endpoint** (4-6 hours)
+   - Test JWT token generation
+   - Verify password comparison with bcrypt
+   - Add proper error responses
+
+2. **Complete registration endpoint** (4-6 hours)
+   - Input validation with Zod schemas
+   - Email verification flow
+   - Prevent duplicate accounts
+
+3. **Add protected route middleware** (3-4 hours)
+   - JWT verification
+   - Role-based access control (RBAC)
+   - Error handling for unauthorized access
+
+### Week 2: Implement Core API Endpoints
+4. **Events CRUD operations** (8-10 hours)
+   - GET /api/events (list with filtering)
+   - GET /api/events/[id] (single event)
+   - POST/PUT/DELETE for admin users
+
+5. **User endpoints** (6-8 hours)
+   - GET /api/users/profile (current user)
+   - PUT /api/users/profile (update profile)
+   - Artist profile management
+
+6. **Search functionality** (6-8 hours)
+   - Implement full-text search on events
+   - Filter by category, date, venue
+   - Search caching strategy
+
+### Week 3: Frontend Components & State
+7. **Frontend state management** (6-8 hours)
+   - Set up TanStack Query for server state
+   - Implement Zustand for client state
+   - Add auth context provider
+
+8. **Core UI components** (10-12 hours)
+   - Navigation menu
+   - Authentication forms (login/register)
+   - Event cards & list components
+   - User profile page
+
+### Detailed Implementation Guide
+For complete implementation details, breaking down each feature, estimated timeline, and specific code patterns needed, see [z_PROJECT_ANALYSIS.md - PRIORITY IMPROVEMENTS](./z_PROJECT_ANALYSIS.md#-priority-improvements--corrections)
+
+---
+
+## 🔍 Troubleshooting
 
 ### Dev server won't start
 ```bash
@@ -387,22 +499,54 @@ npm run dev
 ```
 
 ### Database connection error
-- Verify `DATABASE_URL` in `.env.local`
-- Ensure MySQL server is running
-- Check database credentials
-- Confirm the database exists
+```
+ERROR: connect ECONNREFUSED 127.0.0.1:3306
+```
+- Verify MySQL server is running: `sudo service mysql start` (Linux) or start via Docker
+- Check `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` in `.env.local`
+- Verify database exists: `mysql -u root -e "SHOW DATABASES;"`
+- If needed, create database: `mysql -u root -e "CREATE DATABASE festival_cluster;"`
+
+### Database credentials from Secrets Manager
+```
+Error: Unable to retrieve secret from AWS Secrets Manager
+```
+- Ensure `USE_SECRETS_MANAGER=false` in `.env.local` for development
+- For production, configure AWS credentials and set `USE_SECRETS_MANAGER=true`
+- Verify secret format: `{"username":"...","password":"...","host":"...","port":3306}`
 
 ### 3D visualization not rendering
-- Check browser WebGPU support ([Can I Use](https://caniuse.com/webgpu))
-- Try Chrome 113+ or Edge 113+
-- Check browser console for errors
+- Check browser WebGPU support: Use Chrome 113+ or Edge 113+
+- Open DevTools → Console for WebGL errors
 - Fallback message should appear if unsupported
+- Try disabling browser extensions that might interfere
+
+### JWT token errors
+```
+Error: Invalid token signature
+```
+- Ensure `NEXTAUTH_SECRET` is set in `.env.local`
+- Clear browser localStorage: `localStorage.clear()`
+- Restart dev server
 
 ### Port 3000 already in use
 ```bash
 # Use a different port
 npm run dev -- -p 3001
 ```
+
+---
+
+## 📚 Key Implementation Files
+
+Important files to understand for development:
+
+- **[src/lib/db.ts](./src/lib/db.ts)** - Database connection pooling & query execution
+- **[src/lib/auth-client.ts](./src/lib/auth-client.ts)** - Client-side authentication utilities
+- **[src/app/api/auth/login/route.ts](./src/app/api/auth/login/route.ts)** - Authentication endpoint
+- **[src/lib/validations/](./src/lib/validations/)** - Zod validation schemas
+- **[clusterDB.sql](./clusterDB.sql)** - Database schema definition
+- **[z_PROJECT_ANALYSIS.md](./z_PROJECT_ANALYSIS.md)** - Detailed technical analysis & roadmap
 
 ---
 
@@ -460,4 +604,4 @@ CLUSTER is more than just a ticketing platform—it's a movement to celebrate di
 
 ---
 
-*Last updated: December 2025 | Version 0.1.0*
+*Last updated: January 18, 2026 | Version 0.1.0 - Early Development (25-30% complete)*

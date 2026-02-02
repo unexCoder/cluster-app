@@ -38,7 +38,7 @@ async function initializePool(): Promise<Pool> {
       };
 
       // Check if we should use Secrets Manager
-      const useSecretsManager = process.env.USE_SECRETS_MANAGER === 'true';
+      const useSecretsManager = process.env.USE_SECRETS_MANAGER === 'false';
 
       if (useSecretsManager) {
         console.log('🔐 Fetching database credentials from AWS Secrets Manager...');

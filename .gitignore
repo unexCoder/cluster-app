@@ -50,6 +50,7 @@ next-env.d.ts
 # dev docs
 z_PROJECT_ANALYSIS.md
 z_AUTH_IMPLEMENTATION_ANALYSIS.md
+UPDATES_JAN_2026.md
 em.html
 /src/app/api/api_design.txt
 
