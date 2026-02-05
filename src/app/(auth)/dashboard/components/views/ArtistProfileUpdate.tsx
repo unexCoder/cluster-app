@@ -293,7 +293,7 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
       }
 
       await updateArtistProfileAction(artistData)
-      console.log('Profile updated successfully:', formData)
+      // console.log('Profile updated successfully:', formData)
       
       onNavigate?.('Artist Profile')
     } catch (err) {

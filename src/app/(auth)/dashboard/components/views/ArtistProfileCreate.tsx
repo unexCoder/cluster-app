@@ -71,7 +71,7 @@ export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfil
           // Map snake_case back to camelCase for error display
           const displayField = field === 'stage_name' ? 'stageName'
             : field === 'picture_url' ? 'pictureUrl'
-            : field
+              : field
           setValidationError(displayField, issue.message)
         })
       }
@@ -79,7 +79,7 @@ export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfil
     }
   }
   // Validate Step 1 (Basic Info)
-  
+
   const validateStep2 = (): boolean => {
     try {
       const dataToValidate = {
@@ -130,6 +130,13 @@ export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfil
   }
 
   const validateStep4 = (): boolean => {
+
+    const fieldMap: Record<string, string> = {
+      technical_requirements: 'requirements',
+      rider_url: 'riderUrl',
+      presskit_url: 'presskitUrl',
+    }
+
     try {
       const dataToValidate = {
         technical_requirements: formData.technical.requirements,
@@ -141,10 +148,12 @@ export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfil
       clearAllErrors()
       return true
     } catch (error) {
+      
       if (error instanceof z.ZodError) {
         error.issues.forEach(issue => {
           const field = issue.path[0] as string
-          setValidationError(field, issue.message)
+          const uiField = fieldMap[field] ?? field
+          setValidationError(uiField, issue.message)
         })
       }
       return false
@@ -184,7 +193,7 @@ export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfil
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     // Validate all steps before submission
     if (!validateCurrentStep()) {
       return
@@ -210,7 +219,7 @@ export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfil
 
       await createArtistProfileAction(artistData)
       console.log('Profile created successfully:', formData)
-      
+
       // Navigate back or show success message
       onNavigate?.('Artist Profile')
     } catch (err) {
@@ -275,36 +284,36 @@ export default function ArtistProfileCreate({ userId, onNavigate }: ArtistProfil
               addGenre={addGenre}
               removeGenre={removeGenre}
               setValidationError={setValidationError}
-              />
-            )}
+            />
+          )}
 
           {currentStep === 2 && (
             <Step2ContactInfo
-            formData={formData.contactInfo}
-            validationErrors={validationErrors}
-            updateField={updateField}
-            clearFieldError={clearFieldError}
-            setValidationError={setValidationError}
+              formData={formData.contactInfo}
+              validationErrors={validationErrors}
+              updateField={updateField}
+              clearFieldError={clearFieldError}
+              setValidationError={setValidationError}
             />
           )}
 
           {currentStep === 3 && (
             <Step3socialLinks
-            formData={formData.socialLinks}
-            validationErrors={validationErrors}
-            updateField={updateField}
-            clearFieldError={clearFieldError}
-            setValidationError={setValidationError}
+              formData={formData.socialLinks}
+              validationErrors={validationErrors}
+              updateField={updateField}
+              clearFieldError={clearFieldError}
+              setValidationError={setValidationError}
             />
           )}
 
           {currentStep === 4 && (
             <Step4TechInfo
-            formData={formData.technical}
-            validationErrors={validationErrors}
-            updateField={updateField}
-            clearFieldError={clearFieldError}
-            setValidationError={setValidationError}
+              formData={formData.technical}
+              validationErrors={validationErrors}
+              updateField={updateField}
+              clearFieldError={clearFieldError}
+              setValidationError={setValidationError}
             />
           )}
 
