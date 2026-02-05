@@ -46,6 +46,7 @@ next-env.d.ts
 
 # data layer
 /database
+cluster-db.txt
 
 # dev docs
 z_PROJECT_ANALYSIS.md

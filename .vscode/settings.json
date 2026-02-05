@@ -21,13 +21,26 @@
             },
             "ssh": "Disabled",
             "previewLimit": 50,
-            "server": "cluster-app-mysql.cpiw0yqkethc.sa-east-1.rds.amazonaws.com",
+            "server": "cluster-db.ccv8y28yupee.us-east-1.rds.amazonaws.com",
             "port": 3306,
             "driver": "MySQL",
-            "name": "AWS RDS MySQL",
-            "username": "admin",
+            "name": "AWS-cluster-db",
             "database": "festival_cluster",
-            "askForPassword": true
+            "username": "admin"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "3.81.67.224",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "EC2 unexcoder-mysql-server",
+            "database": "festival_cluster",
+            "username": "admin"
         }
     ]
 }

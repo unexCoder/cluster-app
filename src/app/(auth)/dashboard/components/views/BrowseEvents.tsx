@@ -30,7 +30,11 @@ interface Event {
   deleted_at: Date  
 }
 
-export default function BrowseEvents() {
+interface BrowseEventProps {
+  onNavigate: (view: string,id?:string | null) => void
+}
+
+export default function BrowseEvents( {onNavigate}: BrowseEventProps ) {
   const [events, setEvents] = useState<Event[]>([]) 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -83,8 +87,11 @@ export default function BrowseEvents() {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2>Events List</h2>
-        <button onClick={fetchEvents} className={styles.refreshButton}> {/* ✓ Corregido: era "fetchUsers" */}
-          Refresh
+        <button 
+          className={styles.refreshButton}
+          onClick={() => onNavigate('Create Event Profile')}
+        >
+          Create Event
         </button>
       </div>
 

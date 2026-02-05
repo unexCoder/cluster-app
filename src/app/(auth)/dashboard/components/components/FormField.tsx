@@ -13,6 +13,7 @@ interface FormFieldProps {
   rows?: number
   error?: string
   className?: string
+  min?:number
 }
 
 export const FormField: React.FC<FormFieldProps> = ({
@@ -26,7 +27,8 @@ export const FormField: React.FC<FormFieldProps> = ({
   placeholder,
   rows,
   error,
-  className = ''
+  className = '',
+  min
 }) => {
   const isTextarea = rows && rows > 1
 
@@ -56,6 +58,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         <input
           id={name}
           type={type}
+          min={min}
           value={value}
           onChange={(e) => onChange(name, e.target.value)}
           onFocus={() => onFocus?.(name)}

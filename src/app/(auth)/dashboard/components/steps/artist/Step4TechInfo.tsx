@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { FormField } from '../components/FormField'
-import type { TechnicalInfo, ValidationErrors } from '../../../../../../types/types'
-import styles from './steps.module.css'
+import { FormField } from '../../components/FormField'
+import type { TechnicalInfo, ValidationErrors } from '../../../../../../../types/types'
+import styles from '../steps.module.css'
 import { techInfoSchema } from '@/lib/validations/artistProfile'
 import { z } from 'zod'
-import { PDFField } from '../components/PDFField'
+import { PDFField } from '../../components/PDFField'
 import { getPDFUploadUrl } from '@/app/actions/upload-file'
 import { validatePDFFile } from '@/lib/s3-upload'
 
@@ -58,7 +58,7 @@ export const Step4TechInfo: React.FC<Step4Props> = ({
             return
         }
 
-        setState({ isUploading: true, error: '' })
+        setState({ isUploading: true, error: '' }) 
 
         try {
             const response = await getPDFUploadUrl(file.name, file.type)
@@ -80,6 +80,7 @@ export const Step4TechInfo: React.FC<Step4Props> = ({
             }
 
             updateField(fieldName, response.publicUrl)
+            clearFieldError(fieldName)
             console.log(`✅ ${fieldName} uploaded successfully:`, response.publicUrl)
         } catch (error) {
             console.error('Upload error:', error)
@@ -175,8 +176,9 @@ export const Step4TechInfo: React.FC<Step4Props> = ({
                     onFocus={() => clearFieldError('requirements')}
                     onBlur={() => handleFieldBlur('requirements')}
                     placeholder="What you and your setup need for the show"
-                    error={validationErrors['technical_requirements']}
+                    error={validationErrors['requirements']}
                     className={fieldClassName}
+                    
                 />
 
                 {/* Tech Rider PDF Upload */}

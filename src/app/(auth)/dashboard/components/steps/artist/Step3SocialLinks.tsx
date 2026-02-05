@@ -1,7 +1,7 @@
 import React from 'react'
-import { FormField } from '../components/FormField'
-import type { SocialLinks, ValidationErrors } from '../../../../../../types/types'
-import styles from './steps.module.css'
+import { FormField } from '../../components/FormField'
+import type { SocialLinks, ValidationErrors } from '../../../../../../../types/types'
+import styles from '../steps.module.css'
 import { socialLinksSchema } from '@/lib/validations/artistProfile'
 import { z } from 'zod'
 

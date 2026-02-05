@@ -11,32 +11,25 @@ import ChangePassword from './views/ChangePassword';
 import ArtistProfile from './views/ArtistProfile';
 import ArtistProfileCreate from './views/ArtistProfileCreate';
 import ArtistProfileUpdate from './views/ArtistProfileUpdate';
+import VenueProfileCreate from './views/VenueProfileCreate';
+import EventCreate from './views/EventCreate';
 import { fetchArtistByUserIdAction, fetchArtistByIdAction } from '@/app/actions/artists';
+import VenueProfileUpdate from './views/VenueProfileUpdate';
+import { getVenueByIdAction } from '@/app/actions/venues';
 
 interface DashboardContentProps {
   activeView: string;
   userId?: string; // Añadir userId como prop
-  artistId?: string | null; // Add this
+  artistId?: string | null;
+  venueId?: string | null; 
   onNavigate(view: string, artistId?: string | null): void;
 }
 
-export default function DashboardContent({ activeView, userId, artistId, onNavigate }: DashboardContentProps) {
+export default function DashboardContent({ activeView, userId, artistId,venueId, onNavigate }: DashboardContentProps) {
   const [artistProfile, setArtistProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
+  const [venueProfile, setVenueProfile] = useState<any>(null);
 
-  // // Fetch artist profile when needed
-  // useEffect(() => {
-  //   if (userId && activeView === 'Update Artist Profile') {
-  //     setLoadingProfile(true);
-  //     fetchArtistByUserIdAction(userId)
-  //       .then(result => {
-  //         if (result.success && result.profile) {
-  //           setArtistProfile(result.profile[0]); // profile is an array
-  //         }
-  //       })
-  //       .finally(() => setLoadingProfile(false));
-  //   }
-  // }, [userId, activeView]);
   // Fetch artist profile when needed
   useEffect(() => {
     if (activeView === 'Update Artist Profile' || activeView === 'Artist Profile') {
@@ -67,6 +60,25 @@ export default function DashboardContent({ activeView, userId, artistId, onNavig
     }
   }, [userId, artistId, activeView]);
 
+  // Fetch venue profile when needed
+  useEffect(() => {
+    if (activeView === 'Venue Profile Edit') {
+      setLoadingProfile(true);
+      setVenueProfile(null); // Reset profile
+      if (venueId) {
+        getVenueByIdAction(venueId)
+          .then(result => {
+            if (result.success && result.venue) {
+              setVenueProfile(result.venue);
+            }
+          })
+          .finally(() => setLoadingProfile(false));
+      } else {
+        setLoadingProfile(false);
+      }
+    }
+  }, [venueId,activeView]);
+
   // Función que retorna el componente basado en la vista activa
   const renderView = () => {
     switch (activeView) {
@@ -83,9 +95,22 @@ export default function DashboardContent({ activeView, userId, artistId, onNavig
       case 'Cluster Managment':
         return <div>Cluster Management</div>;
       case 'Event List':
-        return <BrowseEvents />;
+        return <BrowseEvents onNavigate={onNavigate} />;
+      case 'Create Event Profile':
+        return <EventCreate />;
       case 'Venues':
-        return <BrowseVenues />;
+        return <BrowseVenues onNavigate={onNavigate} />;
+      case 'Create Venue Profile':
+        return <VenueProfileCreate onNavigate={onNavigate} />
+      case 'Venue Profile Edit':
+        if (!venueId) return <div>Venue ID not available</div>;
+        if (loadingProfile) return <div>Loading profile...</div>;
+        if (!venueProfile) return <div>No venue profile found</div>;
+        return <VenueProfileUpdate 
+                venueId={venueId} 
+                onNavigate={onNavigate} 
+                initialData={venueProfile}
+                />
       case 'Financial Control':
         return <div>Financial Control</div>;
       case 'Analitics':
@@ -121,7 +146,7 @@ export default function DashboardContent({ activeView, userId, artistId, onNavig
         if (artistId) {
           // Admin viewing specific artist
           if (!artistProfile) return <div>No artist profile found</div>;
-            return <ArtistProfile userId={artistProfile.user_id} profile={artistProfile}  onNavigate={onNavigate} />;
+          return <ArtistProfile userId={artistProfile.user_id} profile={artistProfile} onNavigate={onNavigate} />;
         } else {
           // User viewing their own profile
           return userId ? (

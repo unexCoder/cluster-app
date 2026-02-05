@@ -1,90 +1,38 @@
-'use client'
-
-import { useArtistForm } from '@/hooks/useArtistForm'
-import React, { useState, useEffect, useRef } from 'react'
-import styles from './artistProfileCreate.module.css'
-import { StepIndicator } from '../components/StepIndicator'
-import { Step1BasicInfo } from '../steps/artist/Step1BasicInfo' 
-import { Step2ContactInfo } from '../steps/artist/Step2ContactInfo'
-import { Step3socialLinks } from '../steps/artist/Step3SocialLinks'
-import { Step4TechInfo } from '../steps/artist/Step4TechInfo' 
-import { updateArtistProfileAction } from '@/app/actions/artists'
+import { useVenueForm } from '@/hooks/useVenueForm'
+import React, { useEffect, useRef, useState } from 'react'
 import { ValidationErrors } from '../../../../../../types/types'
-import { artistInfoSchema, contactInfoSchema, socialLinksSchema, techInfoSchema } from '@/lib/validations/artistProfile'
-import { z } from 'zod'
+import { venueBasicInfoSchema, venueContactSchema, venueDetailsSchema, venueLocationSchema } from '@/lib/validations/venueProfile'
+import { updateVenueAction } from '@/app/actions/venues'
+import z from 'zod'
+import { StepIndicator } from '../components/StepIndicator'
+import { Step1BasicInfo } from '../steps/venue/Step1BasicInfo'
+import { Step2LocationInfo } from '../steps/venue/Step2LocationInfo'
+import { Step3ContactInfo } from '../steps/venue/Step3ContactInfo'
+import { Step4VenueDetails } from '../steps/venue/Step4VenueDetails'
+import styles from './venueProfileCreate.module.css'
 
-interface ArtistProfileUpdateProps {
-  userId: string
-  artistId: string
+interface VenueProfileUpdateProps {
+  venueId: string
   initialData: any // Replace with your artist profile type
-  onNavigate?: (view: string, artistId?: string | null) => void
+  onNavigate: (view: string, venueId?: string) => void  // Add this prop
 }
 
-export default function ArtistProfileUpdate({ userId, artistId, initialData, onNavigate }: ArtistProfileUpdateProps) {
+export default function VenueProfileUpdate({ venueId, initialData, onNavigate }: VenueProfileUpdateProps) {
   const {
     formData,
     currentStep,
-    // error,
     creating,
     updateField,
-    addGenre,
-    removeGenre,
+    addAmenity,
+    removeAmenity,
+    addImageUrl,
+    removeImageUrl,
     setCurrentStep,
     setCreating,
     setFormData
-  } = useArtistForm()
+  } = useVenueForm()
 
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({})
-  const [loading, setLoading] = useState(true)
-
-  // Load initial data on mount
-  useEffect(() => {
-    if (initialData) {
-      try {
-        const contactInfo = typeof initialData.contact_info === 'string' 
-          ? JSON.parse(initialData.contact_info) 
-          : initialData.contact_info
-
-        const socialLinks = typeof initialData.social_links === 'string'
-          ? JSON.parse(initialData.social_links)
-          : initialData.social_links
-
-        setFormData({
-          name: initialData.name || '',
-          stageName: initialData.stage_name || '',
-          bio: initialData.bio || '',
-          pictureUrl: initialData.picture_url || '',
-          genres: initialData.genres || [],
-          contactInfo: {
-            name: contactInfo?.name || '',
-            lastName: contactInfo?.last_name || '',
-            email: contactInfo?.email || '',
-            phone: contactInfo?.phone || ''
-          },
-          socialLinks: {
-            website: socialLinks?.website || '',
-            instagram: socialLinks?.instagram || '',
-            facebook: socialLinks?.facebook || '',
-            twitter: socialLinks?.twitter || '',
-            youtube: socialLinks?.youtube || '',
-            spotify: socialLinks?.spotify || '',
-            tiktok: socialLinks?.tiktok || ''
-          },
-          technical: {
-            requirements: initialData.technical_requirements || '',
-            // requirements: '',
-            riderUrl: initialData.rider_url || '',
-            presskitUrl: initialData.presskit_url || ''
-          }
-        })
-        setLoading(false)
-      } catch (err) {
-        console.error('Error loading initial data:', err)
-        setValidationError('submit', 'Failed to load profile data')
-        setLoading(false)
-      }
-    }
-  }, [initialData])
 
   const setValidationError = (field: string, error: string) => {
     setValidationErrors(prev => ({ ...prev, [field]: error }))
@@ -102,43 +50,40 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
     setValidationErrors({})
   }
 
+  // Validate Step 1 (Basic Info)
   const validateStep1 = (): boolean => {
     try {
       const dataToValidate = {
         name: formData.name,
-        stage_name: formData.stageName,
-        bio: formData.bio,
-        picture_url: formData.pictureUrl,
-        genres: formData.genres
+        description: formData.description,
+        capacity: formData.capacity ? Number(formData.capacity) : undefined
       }
-
-      artistInfoSchema.parse(dataToValidate)
+      venueBasicInfoSchema.parse(dataToValidate)
       clearAllErrors()
       return true
     } catch (error) {
       if (error instanceof z.ZodError) {
         error.issues.forEach(issue => {
           const field = issue.path[0] as string
-          const displayField = field === 'stage_name' ? 'stageName'
-            : field === 'picture_url' ? 'pictureUrl'
-            : field
-          setValidationError(displayField, issue.message)
+          setValidationError(field, issue.message)
         })
       }
       return false
     }
   }
-  
+
+  // Validate Step 2 (Location Info)
   const validateStep2 = (): boolean => {
     try {
       const dataToValidate = {
-        name: formData.contactInfo.name,
-        last_name: formData.contactInfo.lastName,
-        email: formData.contactInfo.email,
-        phone: formData.contactInfo.phone
+        address: formData.address,
+        city: formData.city,
+        country: formData.country,
+        latitude: formData.latitude ? Number(formData.latitude) : undefined,
+        longitude: formData.longitude ? Number(formData.longitude) : undefined
       }
 
-      contactInfoSchema.parse(dataToValidate)
+      venueLocationSchema.parse(dataToValidate)
       clearAllErrors()
       return true
     } catch (error) {
@@ -152,19 +97,17 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
     }
   }
 
+  // Validate Step 3 (Contact Info)
   const validateStep3 = (): boolean => {
     try {
       const dataToValidate = {
-        website: formData.socialLinks.website,
-        instagram: formData.socialLinks.instagram,
-        facebook: formData.socialLinks.facebook,
-        twitter: formData.socialLinks.twitter,
-        youtube: formData.socialLinks.youtube,
-        spotify: formData.socialLinks.spotify,
-        tiktok: formData.socialLinks.tiktok,
+        name: formData.contactInfo.name,
+        email: formData.contactInfo.email,
+        phone: formData.contactInfo.phone,
+        website: formData.contactInfo.website
       }
 
-      socialLinksSchema.parse(dataToValidate)
+      venueContactSchema.parse(dataToValidate)
       clearAllErrors()
       return true
     } catch (error) {
@@ -178,22 +121,31 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
     }
   }
 
+  // Validate Step 4 (Venue Details)
   const validateStep4 = (): boolean => {
     try {
       const dataToValidate = {
-        technical_requirements: formData.technical.requirements,
-        rider_url: formData.technical.riderUrl,
-        presskit_url: formData.technical.presskitUrl,
+        type: formData.venueInfo.type,
+        amenities: formData.venueInfo.amenities,
+        accessibility: formData.venueInfo.accessibility,
+        parking_info: formData.venueInfo.parkingInfo,
+        public_transport: formData.venueInfo.publicTransport,
+        image_urls: formData.imageUrls
       }
 
-      techInfoSchema.parse(dataToValidate)
+      venueDetailsSchema.parse(dataToValidate)
       clearAllErrors()
       return true
     } catch (error) {
       if (error instanceof z.ZodError) {
         error.issues.forEach(issue => {
           const field = issue.path[0] as string
-          setValidationError(field, issue.message)
+          // Map snake_case back to camelCase for error display
+          const displayField = field === 'parking_info' ? 'parkingInfo'
+            : field === 'public_transport' ? 'publicTransport'
+              : field === 'image_urls' ? 'imageUrls'
+                : field
+          setValidationError(displayField, issue.message)
         })
       }
       return false
@@ -226,29 +178,30 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
     setCurrentStep(currentStep - 1)
   }
 
+
   const [canSubmit, setCanSubmit] = useState(false)
   const submitAttemptedRef = useRef(false)
 
   // Unified effect for step transitions
-    useEffect(() => {
-      // Reset submission guard whenever step changes
-      submitAttemptedRef.current = false
-  
-      if (currentStep === 4) {
-        // Disable submission initially
-        setCanSubmit(false)
-  
-        // Enable submission after component is fully mounted and stable
-        const timer = setTimeout(() => {
-          setCanSubmit(true)
-        }, 300) // 300ms delay
-  
-        return () => clearTimeout(timer)
-      } else {
-        // Disable submission on any other step
-        setCanSubmit(false)
-      }
-    }, [currentStep])
+  useEffect(() => {
+    // Reset submission guard whenever step changes
+    submitAttemptedRef.current = false
+
+    if (currentStep === 4) {
+      // Disable submission initially
+      setCanSubmit(false)
+
+      // Enable submission after component is fully mounted and stable
+      const timer = setTimeout(() => {
+        setCanSubmit(true)
+      }, 300) // 300ms delay
+
+      return () => clearTimeout(timer)
+    } else {
+      // Disable submission on any other step
+      setCanSubmit(false)
+    }
+  }, [currentStep])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -268,6 +221,8 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
 
     // Add a small delay to ensure step transition is complete
     await new Promise(resolve => setTimeout(resolve, 100))
+
+
     if (!validateCurrentStep()) {
       return
     }
@@ -277,55 +232,72 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
     try {
       setCreating(true)
 
-      const artistData = {
-        id: artistId,
-        user_id: userId,
+      // Transform to match database schema
+      const venueData = {
         name: formData.name,
-        stage_name: formData.stageName,
-        bio: formData.bio,
-        picture_url: formData.pictureUrl,
-        genres: formData.genres,
+        description: formData.description,
+        capacity: Number(formData.capacity),
+        address: formData.address,
+        city: formData.city,
+        country: formData.country,
+        // latitude: formData.latitude ? Number(formData.latitude) : null,
+        // longitude: formData.longitude ? Number(formData.longitude) : null,
+        latitude: formData.latitude && formData.latitude.trim() !== '' ? Number(formData.latitude) : null,
+        longitude: formData.longitude && formData.longitude.trim() !== '' ? Number(formData.longitude) : null,
         contact_info: JSON.stringify(formData.contactInfo),
-        social_links: JSON.stringify(formData.socialLinks),
-        technical_requirements: formData.technical.requirements,
-        rider_url: formData.technical.riderUrl,
-        presskit_url: formData.technical.presskitUrl
+        venue_info: JSON.stringify(formData.venueInfo),
+        image_urls: JSON.stringify(formData.imageUrls)
       }
 
-      await updateArtistProfileAction(artistData)
-      console.log('Profile updated successfully:', formData)
-      
-      onNavigate?.('Artist Profile')
+      await updateVenueAction(venueId, venueData)
+      console.log('Venue updated successfully:', formData)
+
+      onNavigate?.('Venues', venueId)
     } catch (err) {
-      console.error('Error updating profile:', err)
-      setValidationError('submit', 'Failed to update profile. Please try again.')
+      console.error('Error creating venue:', err)
+      setValidationError('submit', 'Failed to create venue. Please try again.')
+      submitAttemptedRef.current = false // Reset on error
     } finally {
       setCreating(false)
     }
   }
 
-  if (loading) {
-    return (
-      <div className={styles.container}>
-        <div style={{ textAlign: 'center', padding: '48px' }}>
-          <p>Loading profile data...</p>
-        </div>
-      </div>
-    )
-  }
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        name: initialData.name,
+        description: initialData.description,
+        capacity: initialData.capacity?.toString() || '',
+        address: initialData.address,
+        city: initialData.city,
+        country: initialData.country,
+        latitude: initialData.latitude?.toString() || '',
+        longitude: initialData.longitude?.toString() || '',
+        contactInfo: typeof initialData.contact_info === 'string'
+          ? JSON.parse(initialData.contact_info)
+          : initialData.contact_info,
+        venueInfo: typeof initialData.venue_info === 'string'
+          ? JSON.parse(initialData.venue_info)
+          : initialData.venue_info,
+        imageUrls: typeof initialData.image_urls === 'string'
+          ? JSON.parse(initialData.image_urls)
+          : initialData.image_urls
+      })
+    }
+  }, [initialData])
 
   return (
     <div className={styles.container}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
-          <h2 style={{ fontSize: '24px', fontWeight: '700' }}>Update Artist Profile</h2>
+          <h2 style={{ fontSize: '24px', fontWeight: '700' }}>Edit Venue Profile</h2>
           <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '4px' }}>
             Step {currentStep} of 4
           </p>
         </div>
         <button
           type="button"
-          onClick={() => onNavigate?.('Artist Profile')}
+          onClick={() => onNavigate('Venues')}
           style={{
             padding: '0 16px',
             height: '24px',
@@ -344,6 +316,7 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
       <div style={{ background: '#ff00ff66', borderRadius: '12px', padding: '32px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
         <StepIndicator currentStep={currentStep} />
 
+        {/* Show general submission errors */}
         {validationErrors.submit && (
           <div style={{
             padding: '12px',
@@ -357,22 +330,20 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} >
           {currentStep === 1 && (
             <Step1BasicInfo
               formData={formData}
               validationErrors={validationErrors}
               updateField={updateField}
               clearFieldError={clearFieldError}
-              addGenre={addGenre}
-              removeGenre={removeGenre}
               setValidationError={setValidationError}
             />
           )}
 
           {currentStep === 2 && (
-            <Step2ContactInfo
-              formData={formData.contactInfo}
+            <Step2LocationInfo
+              formData={formData}
               validationErrors={validationErrors}
               updateField={updateField}
               clearFieldError={clearFieldError}
@@ -381,8 +352,8 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
           )}
 
           {currentStep === 3 && (
-            <Step3socialLinks
-              formData={formData.socialLinks}
+            <Step3ContactInfo
+              formData={formData.contactInfo}
               validationErrors={validationErrors}
               updateField={updateField}
               clearFieldError={clearFieldError}
@@ -391,12 +362,16 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
           )}
 
           {currentStep === 4 && (
-            <Step4TechInfo
-              formData={formData.technical}
+            <Step4VenueDetails
+              formData={formData}
               validationErrors={validationErrors}
               updateField={updateField}
               clearFieldError={clearFieldError}
               setValidationError={setValidationError}
+              addAmenity={addAmenity}
+              removeAmenity={removeAmenity}
+              addImageUrl={addImageUrl}
+              removeImageUrl={removeImageUrl}
             />
           )}
 
@@ -448,16 +423,16 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
                 disabled={creating || !canSubmit}
                 style={{
                   padding: '10px 24px',
-                  background: (creating || !canSubmit) ? '#93c5fd' : '#3b82f6',
+                  background: creating ? '#93c5fd' : '#3b82f6',
                   color: 'white',
                   border: 'none',
                   borderRadius: '6px',
-                  cursor: (creating || !canSubmit) ? 'not-allowed' : 'pointer',
+                  cursor: creating ? 'not-allowed' : 'pointer',
                   fontSize: '14px',
                   marginLeft: 'auto'
                 }}
               >
-                {creating ? 'Updating...' : 'Update Profile'}
+                {creating ? 'Updating...' : 'Update Venue'}
               </button>
             )}
           </div>

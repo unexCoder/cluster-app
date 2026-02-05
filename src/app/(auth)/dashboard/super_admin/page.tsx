@@ -23,12 +23,20 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<UserData | null>(null)
   const [selectedArtistId, setSelectedArtistId] = useState<string | null>(null)
+  const [selectedVenueId, setSelectedVenueId] = useState<string | null>(null)
   const [displayUX, setDisplayUX] = useState('');
 
-  const updateUX = (value: string,  artistId?: string | null) => {
+  const updateUX = (value: string,  id?: string | null) => {
     setDisplayUX(value);
-    setSelectedArtistId(artistId || null)
-    console.log(value)
+
+    // Handle artist ID
+    if (value === 'Artist Profile' || value === 'Update Artist Profile') {
+      setSelectedArtistId(id || null)
+    }
+    // Handle venue ID
+    if (value === 'Venue Profile Edit') {
+      setSelectedVenueId(id || null)
+    }
   };
 
   useEffect(() => {
@@ -120,6 +128,7 @@ export default function AdminDashboard() {
             activeView={displayUX}
             userId={userData.userId}
             artistId={selectedArtistId}
+            venueId={selectedVenueId}
             onNavigate={updateUX}
           />
         </div>

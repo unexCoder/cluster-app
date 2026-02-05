@@ -1,8 +1,8 @@
 // components/steps/Step2ContactInfo.tsx
 import React from 'react'
-import { FormField } from '../components/FormField'
-import type { ContactInfo, ValidationErrors } from '../../../../../../types/types'
-import styles from './steps.module.css'
+import { FormField } from '../../components/FormField'
+import type { ContactInfo, ValidationErrors } from '../../../../../../../types/types'
+import styles from '../steps.module.css'
 import { contactInfoSchema } from '@/lib/validations/artistProfile';
 import { z } from 'zod'
 
