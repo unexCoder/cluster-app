@@ -33,7 +33,7 @@ export default function Fundacion() {
             <div className={`${styles.intro} ${styles.third}`}>
                 <p>
                     El propósito del festival <span className={styles.cluster}>CLUSTER</span> es crear un polo de convergencia orientado a visibilizar y estimular el 
-                    desarrollo de estas actividades y recursos fundamentalmente en las ciudades de Funes y Roldán y
+                    desarrollo de estas actividades y recursos fundamentalmente en la ciudad de Rosario y
                     su área de influencia
                 </p>
             </div>
