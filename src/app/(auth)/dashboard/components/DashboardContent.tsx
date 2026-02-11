@@ -16,16 +16,17 @@ import EventCreate from './views/EventCreate';
 import { fetchArtistByUserIdAction, fetchArtistByIdAction } from '@/app/actions/artists';
 import VenueProfileUpdate from './views/VenueProfileUpdate';
 import { getVenueByIdAction } from '@/app/actions/venues';
+import EmailComposer from './views/EmailComposer';
 
 interface DashboardContentProps {
   activeView: string;
   userId?: string; // Añadir userId como prop
   artistId?: string | null;
-  venueId?: string | null; 
+  venueId?: string | null;
   onNavigate(view: string, artistId?: string | null): void;
 }
 
-export default function DashboardContent({ activeView, userId, artistId,venueId, onNavigate }: DashboardContentProps) {
+export default function DashboardContent({ activeView, userId, artistId, venueId, onNavigate }: DashboardContentProps) {
   const [artistProfile, setArtistProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [venueProfile, setVenueProfile] = useState<any>(null);
@@ -77,7 +78,7 @@ export default function DashboardContent({ activeView, userId, artistId,venueId,
         setLoadingProfile(false);
       }
     }
-  }, [venueId,activeView]);
+  }, [venueId, activeView]);
 
   // Función que retorna el componente basado en la vista activa
   const renderView = () => {
@@ -106,11 +107,11 @@ export default function DashboardContent({ activeView, userId, artistId,venueId,
         if (!venueId) return <div>Venue ID not available</div>;
         if (loadingProfile) return <div>Loading profile...</div>;
         if (!venueProfile) return <div>No venue profile found</div>;
-        return <VenueProfileUpdate 
-                venueId={venueId} 
-                onNavigate={onNavigate} 
-                initialData={venueProfile}
-                />
+        return <VenueProfileUpdate
+          venueId={venueId}
+          onNavigate={onNavigate}
+          initialData={venueProfile}
+        />
       case 'Financial Control':
         return <div>Financial Control</div>;
       case 'Analitics':
@@ -131,14 +132,9 @@ export default function DashboardContent({ activeView, userId, artistId,venueId,
         ) : (
           <div>User ID not available</div>
         );
-
-      // artist dashboard
-      // case 'Artist Profile':
-      //   return userId ? (
-      //     <ArtistProfile userId={userId} onNavigate={onNavigate} />
-      //   ) : (
-      //     <div>User ID not available</div>
-      //   );
+      case 'Email':
+        return <EmailComposer/>;
+        // return <div>Send Email</div>;
       // Artist dashboard
       case 'Artist Profile':
         if (loadingProfile) return <div>Loading profile...</div>;
