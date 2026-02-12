@@ -103,7 +103,7 @@ export const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
       {/* Venue Name */}
       <div style={{ marginBottom: '20px' }}>
         <FormField
-          label="Artist Name"
+          label="Venue Name"
           name="name"
           value={formData.name}
           onChange={handleFieldChange}

@@ -189,6 +189,8 @@ export const useEventForm = () => {
         break
       
       case 3:
+        console.log('categories:', formData.categories)
+        console.log('tags:', formData.tags)
         // Event Details (categories, tags, restrictions)
         // All optional, but could add custom validation if needed
         break

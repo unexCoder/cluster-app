@@ -99,7 +99,7 @@ export const Step2ContactInfo: React.FC<Step2Props> = ({
       <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>
         Contact Information
       </h3>
-      <p style={{ color: '#6b7280', fontSize: '14px', marginBottom: '24px' }}>
+      <p style={{ fontSize: '14px', marginBottom: '24px' }}>
         How can venues and promoters reach you?
       </p>
 

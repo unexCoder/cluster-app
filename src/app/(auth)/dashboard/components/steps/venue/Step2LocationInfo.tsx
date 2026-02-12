@@ -37,7 +37,7 @@ export const Step2LocationInfo: React.FC<Step2LocationInfoProps> = ({
           htmlFor="address"
           style={{
             display: 'block',
-            fontSize: '14px',
+            fontSize: '16px',
             fontWeight: '500',
             marginBottom: '6px'
           }}
@@ -77,7 +77,7 @@ export const Step2LocationInfo: React.FC<Step2LocationInfoProps> = ({
             htmlFor="city"
             style={{
               display: 'block',
-              fontSize: '14px',
+              fontSize: '16px',
               fontWeight: '500',
               marginBottom: '6px'
             }}
@@ -115,7 +115,7 @@ export const Step2LocationInfo: React.FC<Step2LocationInfoProps> = ({
             htmlFor="country"
             style={{
               display: 'block',
-              fontSize: '14px',
+              fontSize: '16px',
               fontWeight: '500',
               marginBottom: '6px'
             }}

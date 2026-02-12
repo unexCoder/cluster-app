@@ -17,19 +17,23 @@ import { fetchArtistByUserIdAction, fetchArtistByIdAction } from '@/app/actions/
 import VenueProfileUpdate from './views/VenueProfileUpdate';
 import { getVenueByIdAction } from '@/app/actions/venues';
 import EmailComposer from './views/EmailComposer';
+import EventEdit from './views/EventEdit';
+import { fetchEventByIdAction } from '@/app/actions/events';
 
 interface DashboardContentProps {
   activeView: string;
-  userId?: string; // Añadir userId como prop
+  userId: string; // Añadir userId como prop
   artistId?: string | null;
   venueId?: string | null;
-  onNavigate(view: string, artistId?: string | null): void;
+  eventId?: string | null;
+  onNavigate(view: string, artistId?: string | null, eventId?: string | null): void;
 }
 
-export default function DashboardContent({ activeView, userId, artistId, venueId, onNavigate }: DashboardContentProps) {
+export default function DashboardContent({ activeView, userId, artistId, venueId, eventId, onNavigate }: DashboardContentProps) {
   const [artistProfile, setArtistProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [venueProfile, setVenueProfile] = useState<any>(null);
+  const [eventData, setEventData] = useState<any>(null);
 
   // Fetch artist profile when needed
   useEffect(() => {
@@ -80,6 +84,23 @@ export default function DashboardContent({ activeView, userId, artistId, venueId
     }
   }, [venueId, activeView]);
 
+  // Fetch event data when needed
+  useEffect(() => {
+    if (activeView === 'Event Edit' && eventId) {
+      setLoadingProfile(true)
+      setEventData(null)
+
+      fetchEventByIdAction(eventId)
+        .then((data) => {
+          if (data.success && data.event) {
+            setEventData(data.event)  // ← unwrap here
+          }
+        })
+        .catch((err) => console.error('Failed to fetch event:', err))
+        .finally(() => setLoadingProfile(false))
+    }
+  }, [activeView, eventId])
+
   // Función que retorna el componente basado en la vista activa
   const renderView = () => {
     switch (activeView) {
@@ -97,8 +118,18 @@ export default function DashboardContent({ activeView, userId, artistId, venueId
         return <div>Cluster Management</div>;
       case 'Event List':
         return <BrowseEvents onNavigate={onNavigate} />;
-      case 'Create Event Profile':
-        return <EventCreate />;
+      case 'Event Create':
+        return <EventCreate userId={userId} onNavigate={onNavigate} />;
+      case 'Event Edit':
+        // return <div>Event Edit</div>
+        if (!eventId) return <div>Event ID not available</div>;
+        if (loadingProfile) return <div>Loading event...</div>;
+        if (!eventData) return <div>No event found</div>;
+        return <EventEdit
+          eventId={eventId}
+          onNavigate={onNavigate}
+          initialData={eventData}
+        />
       case 'Venues':
         return <BrowseVenues onNavigate={onNavigate} />;
       case 'Create Venue Profile':
@@ -133,8 +164,8 @@ export default function DashboardContent({ activeView, userId, artistId, venueId
           <div>User ID not available</div>
         );
       case 'Email':
-        return <EmailComposer/>;
-        // return <div>Send Email</div>;
+        return <EmailComposer />;
+      // return <div>Send Email</div>;
       // Artist dashboard
       case 'Artist Profile':
         if (loadingProfile) return <div>Loading profile...</div>;

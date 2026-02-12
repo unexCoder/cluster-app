@@ -262,7 +262,7 @@ export const Step1BasicInfo: React.FC<Step1Props> = ({
       <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>
         Basic Information
       </h3>
-      <p style={{ color: '#6b7280', fontSize: '14px', marginBottom: '24px' }}>
+      <p style={{ fontSize: '14px', marginBottom: '24px' }}>
         Tell us about yourself and your music
       </p>
 
