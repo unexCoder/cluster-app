@@ -25,11 +25,7 @@ export default function ArtistDashboard() {
   const [userData, setUserData] = useState<UserData | null>(null)
   const [artistId, setArtistId] = useState<string | undefined>(undefined)
   const [displayUX, setDisplayUX] = useState('Artist Profile');
-  
   const [performanceId, setPerformanceId] = useState<string | undefined>(undefined)
-  // const updateUX = (value: string) => {
-  //   setDisplayUX(value);
-  // };
 
   const updateUX = (value: string, id?: string | null) => {
     setDisplayUX(value)
@@ -116,8 +112,6 @@ export default function ArtistDashboard() {
     { label: 'Profile' }
   ]
 
-  console.log('user id: ', userData.userId)
-  console.log('artist id: ', artistId)
   return (
     <div style={{ height: '100%' }}>
       <DashboardLayout

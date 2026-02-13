@@ -185,7 +185,6 @@ export default function BrowseEventArtistPerformances({ onNavigate, artistId }: 
     )
   }
 
-  console.log(performances)
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -269,11 +268,8 @@ export default function BrowseEventArtistPerformances({ onNavigate, artistId }: 
                     <button
                       className={styles.actionButton}
                       onClick={() => {
-                        // const id = artistId ? performances[0].id : performance.id
                         const id = performance.id
                         setSelectedPerformanceId(id)
-                        // onNavigate('Performance Detail', performance.id)
-                        console.log(id)
                         onNavigate('Performance Detail', id)
                       }}
                     >

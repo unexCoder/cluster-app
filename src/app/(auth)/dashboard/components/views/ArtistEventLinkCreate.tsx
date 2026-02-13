@@ -296,6 +296,7 @@ const cardStyle: React.CSSProperties = {
   borderRadius: '12px',
   padding: '32px',
   boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+  minWidth:'400px'
 }
 
 const cancelButtonStyle: React.CSSProperties = {
