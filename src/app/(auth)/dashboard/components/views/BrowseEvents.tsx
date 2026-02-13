@@ -5,6 +5,7 @@ import { deleteEventAction, fetchEventsAction } from '@/app/actions/events'
 import styles from './dashboardViews.module.css'
 import { X } from 'lucide-react'
 import { fetchVenuesAction } from '@/app/actions/venues'
+import Link from 'next/link'
 
 interface Event {
   id: string
@@ -188,7 +189,7 @@ export default function BrowseEvents({ onNavigate }: BrowseEventProps) {
               {events.map((event) => ( // ✓ Corregido: era "user"
                 <tr key={event.id}>
                   <td>{event.name}</td>
-                  <td>{event.slug}</td>
+                  <td><Link href={`/event/${event.slug}`} target='_blank'>{event.slug}</Link></td>
                   <td>{venues.find(v => v.id === event.venue_id)?.name ?? '—'}
                   </td>
                   <td>{venues.find(v => v.id === event.venue_id)?.city ?? '—'}

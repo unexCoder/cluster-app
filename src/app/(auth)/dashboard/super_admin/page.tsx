@@ -25,6 +25,7 @@ export default function AdminDashboard() {
   const [selectedArtistId, setSelectedArtistId] = useState<string | null>(null)
   const [selectedVenueId, setSelectedVenueId] = useState<string | null>(null)
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
+  const [selectedPerformanceId, setSelectedPerformanceId] = useState<string | null>(null)
   const [displayUX, setDisplayUX] = useState('');
 
   const updateUX = (value: string,  id?: string | null) => {
@@ -41,6 +42,10 @@ export default function AdminDashboard() {
     // Handle event ID
     if (value === 'Event Edit') {
       setSelectedEventId(id || null)
+    }
+    // Handle performance ID
+    if (value === 'Artist Event Link Edit' || 'Performance Detail') {
+      setSelectedPerformanceId(id || null)
     }
   };
 
@@ -108,8 +113,9 @@ export default function AdminDashboard() {
     {
       label: 'Cluster Managment',
       children: [
+        { label: 'Venues' },
         { label: 'Event List' },
-        { label: 'Venues' }
+        { label: 'Artist > Event Link' }
       ]
     },
     { label: 'Financial Control' },
@@ -135,6 +141,7 @@ export default function AdminDashboard() {
             artistId={selectedArtistId}
             venueId={selectedVenueId}
             eventId={selectedEventId}
+            performanceId={selectedPerformanceId}
             onNavigate={updateUX}
           />
         </div>
