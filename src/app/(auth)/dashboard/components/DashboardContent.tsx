@@ -35,11 +35,6 @@ interface DashboardContentProps {
   onNavigate(view: string, artistId?: string | null, eventId?: string | null): void;
 }
 
-interface PerformanceDetailProps {
-  performanceId: string  // guaranteed string after the guard in DashboardContent
-  onNavigate: (view: string, artistId?: string | null, eventId?: string | null) => void
-}
-
 export default function DashboardContent({ activeView, userId, artistId, venueId, eventId, performanceId, onNavigate }: DashboardContentProps) {
   const [artistProfile, setArtistProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
@@ -187,7 +182,11 @@ export default function DashboardContent({ activeView, userId, artistId, venueId
         />
       case 'Performance Detail':
         if (!performanceId) return <div>Performance ID not available</div>;
-        return <PerformanceDetail performanceId={performanceId} onNavigate={onNavigate} />
+        return <PerformanceDetail 
+        performanceId={performanceId} 
+        onNavigate={onNavigate}       
+        artistId={artistId ?? undefined}   // ← pass it through
+      />
       case 'Financial Control':
         return <div>Financial Control</div>;
       case 'Analitics':
@@ -251,6 +250,16 @@ export default function DashboardContent({ activeView, userId, artistId, venueId
           />
         ) : (
           <div>User ID not available</div>
+        );
+
+      case 'Gigs List':
+        if (!userId) return <div>User ID not available</div>;
+        if (!artistId) return <div>Artist profile not found</div>;
+        return (
+          <BrowseArtistEventLink
+            artistId={artistId ?? undefined}
+            onNavigate={onNavigate}
+          />
         );
 
       default:

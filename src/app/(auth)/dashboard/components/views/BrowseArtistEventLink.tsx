@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { fetchEventArtistPerformancesAction, deleteEventArtistPerformanceAction, type EventArtistPerformanceRow } from '@/app/actions/artist-event-link'
+import { fetchEventArtistPerformancesAction, deleteEventArtistPerformanceAction, type EventArtistPerformanceRow, fetchPerformancesByArtistIdAction } from '@/app/actions/artist-event-link'
 import styles from './dashboardViews.module.css'
 import DeleteModal from '../components/DeleteModal'
 import { fetchEventsAction } from '@/app/actions/events'
@@ -9,6 +9,7 @@ import { fetchArtistsAction } from '@/app/actions/artists'
 
 interface BrowseEventArtistPerformancesProps {
   onNavigate: (view: string, id?: string | null) => void
+  artistId?: string
 }
 
 const BILLING_LABELS: Record<string, string> = {
@@ -41,7 +42,7 @@ interface ArtistOption {
   name: string
 }
 
-export default function BrowseEventArtistPerformances({ onNavigate }: BrowseEventArtistPerformancesProps) {
+export default function BrowseEventArtistPerformances({ onNavigate, artistId }: BrowseEventArtistPerformancesProps) {
   const [performances, setPerformances] = useState<EventArtistPerformanceRow[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -58,7 +59,11 @@ export default function BrowseEventArtistPerformances({ onNavigate }: BrowseEven
       setLoading(true)
       setError(null)
 
-      const result = await fetchEventArtistPerformancesAction()
+      // const result = await fetchEventArtistPerformancesAction()
+      const result =
+        artistId
+          ? await fetchPerformancesByArtistIdAction(artistId)
+          : await fetchEventArtistPerformancesAction()
 
       if (result.success) {
         setPerformances(result.performances)
@@ -180,6 +185,7 @@ export default function BrowseEventArtistPerformances({ onNavigate }: BrowseEven
     )
   }
 
+  console.log(performances)
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -263,31 +269,39 @@ export default function BrowseEventArtistPerformances({ onNavigate }: BrowseEven
                     <button
                       className={styles.actionButton}
                       onClick={() => {
-                        setSelectedPerformanceId(performance.id)
-                        onNavigate('Performance Detail', performance.id)
+                        // const id = artistId ? performances[0].id : performance.id
+                        const id = performance.id
+                        setSelectedPerformanceId(id)
+                        // onNavigate('Performance Detail', performance.id)
+                        console.log(id)
+                        onNavigate('Performance Detail', id)
                       }}
                     >
                       View
                     </button>
-                    <button
-                      className={styles.actionButton}
-                      onClick={() => {
-                        setSelectedPerformanceId(performance.id)
-                        onNavigate('Artist Event Link Edit', performance.id)
-                      }}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className={styles.actionButton}
-                      onClick={() => {
-                        setSelectedPerformanceId(performance.id)
-                        setShowDeleteModal(true)
-                      }}
-                      style={{ background: '#dc2626' }}
-                    >
-                      Delete
-                    </button>
+                    {!artistId && (
+                      <>
+                        <button
+                          className={styles.actionButton}
+                          onClick={() => {
+                            setSelectedPerformanceId(performance.id)
+                            onNavigate('Artist Event Link Edit', performance.id)
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className={styles.actionButton}
+                          onClick={() => {
+                            setSelectedPerformanceId(performance.id)
+                            setShowDeleteModal(true)
+                          }}
+                          style={{ background: '#dc2626' }}
+                        >
+                          Delete
+                        </button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))}

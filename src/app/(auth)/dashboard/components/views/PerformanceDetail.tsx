@@ -10,6 +10,7 @@ import styles_local from './displayProfile.module.css'
 interface PerformanceDetailProps {
   performanceId: string
   onNavigate: (view: string, id?: string | null) => void
+  artistId?: string   // ← add this
 }
 
 const BILLING_LABELS: Record<string, string> = {
@@ -32,7 +33,7 @@ const BACKSTAGE_COLORS: Record<string, string> = {
   none: '#ef4444',
 }
 
-export default function PerformanceDetail({ performanceId, onNavigate }: PerformanceDetailProps) {
+export default function PerformanceDetail({ performanceId, onNavigate, artistId }: PerformanceDetailProps) {
   const [performance, setPerformance] = useState<EventArtistPerformanceRow | null>(null)
   const [eventName, setEventName] = useState<string | null>(null)
   const [artistName, setArtistName] = useState<string | null>(null)
@@ -231,7 +232,22 @@ export default function PerformanceDetail({ performanceId, onNavigate }: Perform
 
         {/* ── Actions ── */}
         <div className={styles.actions}>
+          {!artistId && (
+            <button
+              className={styles.actionButton}
+              onClick={() => onNavigate('Artist Event Link Edit', performanceId)}
+            >
+              Edit Performance
+            </button>
+          )}
+
           <button
+            className={styles.actionButton}
+            onClick={() => onNavigate(artistId ? 'Gigs List' : 'Artist > Event Link')}
+          >
+            Back to List
+          </button>
+          {/* <button
             className={styles.actionButton}
             onClick={() => onNavigate('Artist Event Link Edit', performanceId)}
           >
@@ -239,10 +255,10 @@ export default function PerformanceDetail({ performanceId, onNavigate }: Perform
           </button>
           <button
             className={styles.actionButton}
-            onClick={() => onNavigate('Browse Performances')}
+            onClick={() => onNavigate('Artist > Event Link')}
           >
             Back to List
-          </button>
+          </button> */}
         </div>
 
       </div>
