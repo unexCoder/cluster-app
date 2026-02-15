@@ -143,5 +143,7 @@ export const config = {
     "/api/users/:path*",
     "/api/qr/:path*",
     "/api/random/:path*",
+    '/((?!api/webhooks).*)', // ✅ exclude webhooks from auth
+
   ],
 };
