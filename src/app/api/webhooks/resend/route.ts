@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db'; // your db client (Prisma, Drizzle, postgres.js, etc.)
+import { query } from '@/lib/db';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+
+    console.log('FULL PAYLOAD:', JSON.stringify(body, null, 2)); // add this
+    console.log('TYPE:', body.type);
+    console.log('DATA KEYS:', Object.keys(body.data ?? {}));
+
     const { type, data } = body;
 
     if (type === 'email.received') {
@@ -34,14 +39,14 @@ export async function POST(request: NextRequest) {
         data.message_id,
         data.from,
         data.to,
-        data.cc      ?? [],
-        data.bcc     ?? [],
+        data.cc ?? [],
+        data.bcc ?? [],
         data.reply_to ?? [],
         data.subject,
         data.html,
         data.text,
-        JSON.stringify(data.headers      ?? {}),
-        JSON.stringify(data.attachments  ?? []),
+        JSON.stringify(data.headers ?? {}),
+        JSON.stringify(data.attachments ?? []),
         type,
         JSON.stringify(body),
         data.created_at ?? null,
