@@ -1,26 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { query } from '@/lib/db'; // your db client (Prisma, Drizzle, postgres.js, etc.)
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
-    // Resend webhook payload structure
     const { type, data } = body;
-    
+
     if (type === 'email.received') {
-      // Handle received email
-      console.log('Received email:', {
-        from: data.from,
-        to: data.to,
-        subject: data.subject,
-        html: data.html,
-        text: data.text,
-      });
-      
-      // Store in database, trigger notifications, etc.
-      // Example: await db.emails.create({ data: { ...data } });
+      await query(`
+        INSERT INTO received_emails (
+          resend_email_id,
+          resend_message_id,
+          from_address,
+          to_addresses,
+          cc_addresses,
+          bcc_addresses,
+          reply_to,
+          subject,
+          html,
+          text,
+          headers,
+          attachments,
+          webhook_type,
+          raw_payload,
+          sent_at
+        ) VALUES (
+          $1, $2, $3, $4, $5, $6, $7,
+          $8, $9, $10, $11, $12, $13, $14, $15
+        )
+        ON CONFLICT (resend_email_id) DO NOTHING  -- prevent duplicate webhooks
+      `, [
+        data.email_id,
+        data.message_id,
+        data.from,
+        data.to,
+        data.cc      ?? [],
+        data.bcc     ?? [],
+        data.reply_to ?? [],
+        data.subject,
+        data.html,
+        data.text,
+        JSON.stringify(data.headers      ?? {}),
+        JSON.stringify(data.attachments  ?? []),
+        type,
+        JSON.stringify(body),
+        data.created_at ?? null,
+      ]);
     }
-    
+
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error('Webhook error:', error);
