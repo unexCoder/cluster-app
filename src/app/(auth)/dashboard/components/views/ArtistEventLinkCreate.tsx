@@ -169,6 +169,7 @@ export default function ArtistEventLinkCreate({ onNavigate }: ArtistEventLinkCre
         event_id: formData.event_id,
         artist_id: formData.artist_id,
         performance_type: formData.performance_type,
+        status:formData.status,
         performance_order: Number(formData.performance_order),
         start_time: formData.start_time || null,
         end_time: formData.end_time || null,

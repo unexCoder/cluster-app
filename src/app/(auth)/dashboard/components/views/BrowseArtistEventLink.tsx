@@ -32,6 +32,12 @@ const BACKSTAGE_COLORS: Record<string, string> = {
   none: '#ef4444',
 }
 
+const STATUS_COLORS: Record<string, string> = {
+  confirmed: '#22c55e',
+  scheduled: '#f59e0b',
+  canceled: '#ef4444',
+}
+
 interface EventOption {
   id: string
   name: string
@@ -208,6 +214,7 @@ export default function BrowseEventArtistPerformances({ onNavigate, artistId }: 
                 <th>Event</th>
                 <th>Artist</th>
                 <th>Type</th>
+                <th>Status</th>
                 <th>Stage</th>
                 <th>Billing</th>
                 <th>Date</th>
@@ -232,6 +239,13 @@ export default function BrowseEventArtistPerformances({ onNavigate, artistId }: 
                   <td title={performance.performance_type}>
                     {performance.performance_type}
                   </td>
+                  
+                  <td>
+                    <span style={{ color: STATUS_COLORS[performance.status] }}>
+                      {performance.status}
+                    </span>
+                  </td>
+
                   <td>{performance.stage || 'N/A'}</td>
                   <td>
                     {performance.billing_position ? (

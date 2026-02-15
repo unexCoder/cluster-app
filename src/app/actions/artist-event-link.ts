@@ -1,6 +1,7 @@
 
 'use server'
 
+import { PerformanceStatusType } from '@/hooks/usePerformanceForm';
 import { query } from '@/lib/db';
 import { RowDataPacket } from 'mysql2';
 import { revalidatePath } from 'next/cache'
@@ -10,6 +11,7 @@ export interface EventArtistPerformanceRow extends RowDataPacket {
   event_id: string
   artist_id: string
   performance_type: 'live_set' | 'dj_set' | 'a/v_set' | 'visuals' | 'live_cinema' | 'sound_installation' | 'other'
+  status: PerformanceStatusType
   performance_order: number
   start_time: Date | null
   end_time: Date | null
@@ -28,6 +30,7 @@ interface CreateEventArtistPerformanceData {
   event_id: string
   artist_id: string
   performance_type: 'live_set' | 'dj_set' | 'a/v_set' | 'visuals' | 'live_cinema' | 'sound_installation' | 'other'
+  status: 'scheduled' | 'confirmed' | 'canceled'
   performance_order: number
   start_time?: string | null
   end_time?: string | null
@@ -43,7 +46,7 @@ interface CreateEventArtistPerformanceData {
 export async function fetchEventArtistPerformancesAction() {
   try {
     const performances = await query(
-      'SELECT * FROM artist_event_link;'
+      'SELECT * FROM artist_event_link WHERE deleted_at IS NULL;'
     ) as EventArtistPerformanceRow[]
     return { success: true, performances }
   } catch (error) {
@@ -55,7 +58,7 @@ export async function fetchEventArtistPerformancesAction() {
 export async function fetchPerformancesByEventIdAction(eventId: string) {
   try {
     const performances = await query(
-      'SELECT * FROM artist_event_link WHERE event_id = ? ORDER BY performance_order ASC',
+      'SELECT * FROM artist_event_link WHERE event_id = ? AND deleted_at IS NULL ORDER BY performance_order ASC',
       [eventId]
     ) as EventArtistPerformanceRow[]
     return { success: true, performances }
@@ -68,7 +71,7 @@ export async function fetchPerformancesByEventIdAction(eventId: string) {
 export async function fetchPerformancesByArtistIdAction(artistId: string) {
   try {
     const performances = await query(
-      'SELECT * FROM artist_event_link WHERE artist_id = ? ORDER BY start_time ASC',
+      'SELECT * FROM artist_event_link WHERE artist_id = ? AND deleted_at IS NULL ORDER BY start_time ASC',
       [artistId]
     ) as EventArtistPerformanceRow[]
     return { success: true, performances }
@@ -81,7 +84,7 @@ export async function fetchPerformancesByArtistIdAction(artistId: string) {
 export async function getEventArtistPerformanceByIdAction(performanceId: string) {
   try {
     const result = await query(
-      'SELECT * FROM artist_event_link WHERE id = ? LIMIT 1',
+      'SELECT * FROM artist_event_link WHERE id = ? AND deleted_at IS NULL LIMIT 1',
       [performanceId]
     ) as EventArtistPerformanceRow[]
 
@@ -106,6 +109,7 @@ export async function createEventArtistPerformanceAction(data: CreateEventArtist
         event_id,
         artist_id,
         performance_type,
+        status,
         performance_order,
         start_time,
         end_time,
@@ -118,7 +122,7 @@ export async function createEventArtistPerformanceAction(data: CreateEventArtist
         notes,
         created_at,
         updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
     `
 
     await query(insertQuery, [
@@ -126,6 +130,7 @@ export async function createEventArtistPerformanceAction(data: CreateEventArtist
       data.event_id,
       data.artist_id,
       data.performance_type,
+      data.status,
       data.performance_order,
       data.start_time ?? null,
       data.end_time ?? null,
@@ -189,7 +194,8 @@ export async function updateEventArtistPerformanceAction(
 export async function deleteEventArtistPerformanceAction(performanceId: string) {
   try {
     await query(
-      'DELETE FROM artist_event_link WHERE id = ?',
+      // soft delete
+      'UPDATE artist_event_link SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?',
       [performanceId]
     )
 
@@ -202,10 +208,11 @@ export async function deleteEventArtistPerformanceAction(performanceId: string) 
   }
 }
 
+// soft delete
 export async function deletePerformancesByEventIdAction(eventId: string) {
   try {
     await query(
-      'DELETE FROM artist_event_link WHERE event_id = ?',
+      'UPDATE artist_event_link SET deleted_at = CURRENT_TIMESTAMP WHERE event_id = ?',
       [eventId]
     )
 

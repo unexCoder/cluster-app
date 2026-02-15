@@ -33,6 +33,12 @@ const BACKSTAGE_COLORS: Record<string, string> = {
   none: '#ef4444',
 }
 
+const STATUS_COLORS: Record<string, string> = {
+  confirmed: '#22c55e',
+  scheduled: '#f59e0b',
+  canceled: '#ef4444',
+}
+
 export default function PerformanceDetail({ performanceId, onNavigate, artistId }: PerformanceDetailProps) {
   const [performance, setPerformance] = useState<EventArtistPerformanceRow | null>(null)
   const [eventName, setEventName] = useState<string | null>(null)
@@ -144,6 +150,12 @@ export default function PerformanceDetail({ performanceId, onNavigate, artistId 
           <div className={styles_local.profileField}>
             <label>Performance Type:</label>
             <span>{performance.performance_type}</span>
+          </div>
+          <div className={styles_local.profileField}>
+            <label>Performance Status:</label>
+             <span style={{ color: STATUS_COLORS[performance.status] }}>
+              {performance.status}
+            </span>
           </div>
           <div className={styles_local.profileField}>
             <label>Performance Order:</label>

@@ -69,6 +69,7 @@ export default function ArtistEventLinkEdit({
         event_id: initialData.event_id,
         artist_id: initialData.artist_id,
         performance_type: initialData.performance_type,
+        status: initialData.status,
         performance_order: initialData.performance_order.toString(),
         start_time: toDatetimeLocal(initialData.start_time),
         end_time: toDatetimeLocal(initialData.end_time),
@@ -205,6 +206,8 @@ export default function ArtistEventLinkEdit({
       const performanceData = {
         event_id: formData.event_id,
         artist_id: formData.artist_id,
+        performance_type: formData.performance_type,
+        status: formData.status,
         performance_order: Number(formData.performance_order),
         start_time: formData.start_time || null,
         end_time: formData.end_time || null,

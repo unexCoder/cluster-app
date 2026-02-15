@@ -130,6 +130,26 @@ export function Step3Details({
           {formData.notes.length} / 2000
         </p>
       </div>
+      
+      {/* Status */}
+      <div style={{ marginBottom: '20px' }}>
+        <label style={labelStyle}>Performance Status</label>
+        <select
+          value={formData.status}
+          onChange={e => {
+            updateField('status', e.target.value as PerformanceFormData['status'])
+            clearFieldError('status')
+          }}
+          style={inputStyle(!!validationErrors.status)}
+        >
+          <option value="scheduled">Scheduled</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="canceled">Canceled</option>
+        </select>
+        {validationErrors.status && (
+          <p style={errorStyle}>{validationErrors.status}</p>
+        )}
+      </div>
     </div>
   )
 }

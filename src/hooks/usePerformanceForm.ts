@@ -9,11 +9,17 @@ export type PerformanceType =
   | 'sound_installation'
   | 'other'
 
+export type PerformanceStatusType =
+  | 'scheduled'
+  | 'confirmed'
+  | 'canceled'
+
 export interface PerformanceFormData {
   // Step 1 — Link
   event_id: string
   artist_id: string
   performance_type: PerformanceType
+  status: PerformanceStatusType
   performance_order: string // kept as string for input, parsed on submit
 
   // Step 2 — Schedule
@@ -34,6 +40,7 @@ const defaultFormData: PerformanceFormData = {
   event_id: '',
   artist_id: '',
   performance_type: 'live_set',
+  status: 'scheduled',
   performance_order: '1',
   start_time: '',
   end_time: '',
