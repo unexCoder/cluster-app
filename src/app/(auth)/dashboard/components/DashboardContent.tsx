@@ -208,10 +208,10 @@ export default function DashboardContent({ activeView, userId, artistId, venueId
           <div>User ID not available</div>
         );
       case 'Email':
+      case 'Inbox':
+          return <BrowseEmails />
       case 'Compose':
         return <EmailComposer />;
-        case 'Inbox':
-        return <BrowseEmails />
 
       // Artist dashboard
       case 'Artist Profile':
