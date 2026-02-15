@@ -122,7 +122,11 @@ export default function AdminDashboard() {
     { label: 'Analitics' },
     { label: 'Security Logs' },
     { label: 'Profile' },
-    { label: 'Email'}
+    { label: 'Email',
+      children: [
+        { label: 'Compose' },
+        { label: 'Inbox' },
+    ]}
   ]
 
   return (

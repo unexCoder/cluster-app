@@ -24,6 +24,7 @@ import ArtistEventLinkCreate from './views/ArtistEventLinkCreate';
 import ArtistEventLinkEdit from './views/ArtistEventLinkEdit';
 import PerformanceDetail from './views/PerformanceDetail';
 import { getEventArtistPerformanceByIdAction } from '@/app/actions/artist-event-link';
+import BrowseEmails from './views/BrowseEmails';
 
 interface DashboardContentProps {
   activeView: string;
@@ -131,7 +132,7 @@ export default function DashboardContent({ activeView, userId, artistId, venueId
       case 'System Settings':
         return <div>System Settings</div>;
       case 'User Managment':
-        return <div>User Managment</div>;
+        // return <div>User Managment</div>;
       case 'Browse Users':
         return <BrowseUsers />;
       case 'Browse Artists':
@@ -139,13 +140,12 @@ export default function DashboardContent({ activeView, userId, artistId, venueId
       case 'Mailing List':
         return <MailingList />;
       case 'Cluster Managment':
-        return <div>Cluster Management</div>;
+        // return <div>Cluster Management</div>;
       case 'Event List':
         return <BrowseEvents onNavigate={onNavigate} />;
       case 'Event Create':
         return <EventCreate userId={userId} onNavigate={onNavigate} />;
       case 'Event Edit':
-        // return <div>Event Edit</div>
         if (!eventId) return <div>Event ID not available</div>;
         if (loadingProfile) return <div>Loading event...</div>;
         if (!eventData) return <div>No event found</div>;
@@ -208,8 +208,11 @@ export default function DashboardContent({ activeView, userId, artistId, venueId
           <div>User ID not available</div>
         );
       case 'Email':
+      case 'Compose':
         return <EmailComposer />;
-      // return <div>Send Email</div>;
+        case 'Inbox':
+        return <BrowseEmails />
+
       // Artist dashboard
       case 'Artist Profile':
         if (loadingProfile) return <div>Loading profile...</div>;
