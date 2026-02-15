@@ -16,19 +16,31 @@ import EventCreate from './views/EventCreate';
 import { fetchArtistByUserIdAction, fetchArtistByIdAction } from '@/app/actions/artists';
 import VenueProfileUpdate from './views/VenueProfileUpdate';
 import { getVenueByIdAction } from '@/app/actions/venues';
+import EmailComposer from './views/EmailComposer';
+import EventEdit from './views/EventEdit';
+import { fetchEventByIdAction } from '@/app/actions/events';
+import BrowseArtistEventLink from './views/BrowseArtistEventLink';
+import ArtistEventLinkCreate from './views/ArtistEventLinkCreate';
+import ArtistEventLinkEdit from './views/ArtistEventLinkEdit';
+import PerformanceDetail from './views/PerformanceDetail';
+import { getEventArtistPerformanceByIdAction } from '@/app/actions/artist-event-link';
 
 interface DashboardContentProps {
   activeView: string;
-  userId?: string; // Añadir userId como prop
+  userId: string; // Añadir userId como prop
   artistId?: string | null;
-  venueId?: string | null; 
-  onNavigate(view: string, artistId?: string | null): void;
+  venueId?: string | null;
+  eventId?: string | null;
+  performanceId?: string | null;
+  onNavigate(view: string, artistId?: string | null, eventId?: string | null): void;
 }
 
-export default function DashboardContent({ activeView, userId, artistId,venueId, onNavigate }: DashboardContentProps) {
+export default function DashboardContent({ activeView, userId, artistId, venueId, eventId, performanceId, onNavigate }: DashboardContentProps) {
   const [artistProfile, setArtistProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [venueProfile, setVenueProfile] = useState<any>(null);
+  const [eventData, setEventData] = useState<any>(null);
+  const [performanceData, setPerformanceData] = useState<any>(null);
 
   // Fetch artist profile when needed
   useEffect(() => {
@@ -77,7 +89,41 @@ export default function DashboardContent({ activeView, userId, artistId,venueId,
         setLoadingProfile(false);
       }
     }
-  }, [venueId,activeView]);
+  }, [venueId, activeView]);
+
+  // Fetch event data when needed
+  useEffect(() => {
+    if (activeView === 'Event Edit' && eventId) {
+      setLoadingProfile(true)
+      setEventData(null)
+
+      fetchEventByIdAction(eventId)
+        .then((data) => {
+          if (data.success && data.event) {
+            setEventData(data.event)  // ← unwrap here
+          }
+        })
+        .catch((err) => console.error('Failed to fetch event:', err))
+        .finally(() => setLoadingProfile(false))
+    }
+  }, [activeView, eventId])
+
+  // Fetch performance data when needed
+  useEffect(() => {
+    if (activeView === 'Artist Event Link Edit' && performanceId) {
+      setLoadingProfile(true)
+      setPerformanceData(null)
+
+      getEventArtistPerformanceByIdAction(performanceId)
+        .then((data) => {
+          if (data.success && data.performance) {
+            setPerformanceData(data.performance)  // ← unwrap here
+          }
+        })
+        .catch((err) => console.error('Failed to fetch performances:', err))
+        .finally(() => setLoadingProfile(false))
+    }
+  }, [activeView, performanceId])
 
   // Función que retorna el componente basado en la vista activa
   const renderView = () => {
@@ -96,8 +142,18 @@ export default function DashboardContent({ activeView, userId, artistId,venueId,
         return <div>Cluster Management</div>;
       case 'Event List':
         return <BrowseEvents onNavigate={onNavigate} />;
-      case 'Create Event Profile':
-        return <EventCreate />;
+      case 'Event Create':
+        return <EventCreate userId={userId} onNavigate={onNavigate} />;
+      case 'Event Edit':
+        // return <div>Event Edit</div>
+        if (!eventId) return <div>Event ID not available</div>;
+        if (loadingProfile) return <div>Loading event...</div>;
+        if (!eventData) return <div>No event found</div>;
+        return <EventEdit
+          eventId={eventId}
+          onNavigate={onNavigate}
+          initialData={eventData}
+        />
       case 'Venues':
         return <BrowseVenues onNavigate={onNavigate} />;
       case 'Create Venue Profile':
@@ -106,11 +162,31 @@ export default function DashboardContent({ activeView, userId, artistId,venueId,
         if (!venueId) return <div>Venue ID not available</div>;
         if (loadingProfile) return <div>Loading profile...</div>;
         if (!venueProfile) return <div>No venue profile found</div>;
-        return <VenueProfileUpdate 
-                venueId={venueId} 
-                onNavigate={onNavigate} 
-                initialData={venueProfile}
-                />
+        return <VenueProfileUpdate
+          venueId={venueId}
+          onNavigate={onNavigate}
+          initialData={venueProfile}
+        />
+      case 'Artist > Event Link':
+        return <BrowseArtistEventLink onNavigate={onNavigate} />
+      case 'Artist Event Link Create':
+        return <ArtistEventLinkCreate onNavigate={onNavigate} />
+      case 'Artist Event Link Edit':
+        if (!performanceId) return <div>Performance ID not available</div>;
+        if (loadingProfile) return <div>Loading profile...</div>;
+        if (!performanceData) return <div>No performance data found</div>;
+        return <ArtistEventLinkEdit
+          performanceId={performanceId}
+          onNavigate={onNavigate}
+          initialData={performanceData}
+        />
+      case 'Performance Detail':
+        if (!performanceId) return <div>Performance ID not available</div>;
+        return <PerformanceDetail 
+        performanceId={performanceId} 
+        onNavigate={onNavigate}       
+        artistId={artistId ?? undefined}   // ← pass it through
+      />
       case 'Financial Control':
         return <div>Financial Control</div>;
       case 'Analitics':
@@ -131,14 +207,9 @@ export default function DashboardContent({ activeView, userId, artistId,venueId,
         ) : (
           <div>User ID not available</div>
         );
-
-      // artist dashboard
-      // case 'Artist Profile':
-      //   return userId ? (
-      //     <ArtistProfile userId={userId} onNavigate={onNavigate} />
-      //   ) : (
-      //     <div>User ID not available</div>
-      //   );
+      case 'Email':
+        return <EmailComposer />;
+      // return <div>Send Email</div>;
       // Artist dashboard
       case 'Artist Profile':
         if (loadingProfile) return <div>Loading profile...</div>;
@@ -179,6 +250,16 @@ export default function DashboardContent({ activeView, userId, artistId,venueId,
           />
         ) : (
           <div>User ID not available</div>
+        );
+
+      case 'Gigs List':
+        if (!userId) return <div>User ID not available</div>;
+        if (!artistId) return <div>Artist profile not found</div>;
+        return (
+          <BrowseArtistEventLink
+            artistId={artistId ?? undefined}
+            onNavigate={onNavigate}
+          />
         );
 
       default:

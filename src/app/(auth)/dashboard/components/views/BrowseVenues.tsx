@@ -191,7 +191,7 @@ export default function BrowseVenues({ onNavigate }: BrowseVenuesProps) {
         </div>
       )}
 
-       {/* Delete Confirmation Modal */}
+      {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>

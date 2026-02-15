@@ -8,7 +8,7 @@ import { Step1BasicInfo } from '../steps/event/Step1BasicInfo'
 import { Step2DateVenue } from '../steps/event/Step2DateVenue'
 import { Step3EventDetails } from '../steps/event/Step3EventDetails'
 import { Step4MediaPolicies } from '../steps/event/Step4MediaPolicies'
-import { createEventAction } from '@/app/actions/events'
+import { updateEventAction } from '@/app/actions/events'
 import { ValidationErrors } from '../../../../../../types/types'
 import {
   eventBasicInfoSchema,
@@ -18,12 +18,13 @@ import {
 } from '@/lib/validations/eventProfile'
 import { z } from 'zod'
 
-interface EventCreateProps {
-  userId: string
-  onNavigate: (view: string) => void
+interface EventUpdateProps {
+  eventId: string
+  initialData: any
+  onNavigate: (view: string, eventId?: string) => void
 }
 
-export default function EventCreate({ userId, onNavigate }: EventCreateProps) {
+export default function EventEdit({ eventId, initialData, onNavigate }: EventUpdateProps) {
   const {
     formData,
     currentStep,
@@ -38,7 +39,8 @@ export default function EventCreate({ userId, onNavigate }: EventCreateProps) {
     addProhibitedItem,
     removeProhibitedItem,
     setCurrentStep,
-    setCreating
+    setCreating,
+    setFormData
   } = useEventForm()
 
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({})
@@ -78,7 +80,7 @@ export default function EventCreate({ userId, onNavigate }: EventCreateProps) {
           const field = issue.path[0] as string
           const displayField = field === 'short_description' ? 'shortDescription'
             : field === 'event_type' ? 'eventType'
-            : field
+              : field
           setValidationError(displayField, issue.message)
         })
       }
@@ -107,10 +109,10 @@ export default function EventCreate({ userId, onNavigate }: EventCreateProps) {
           const field = issue.path[0] as string
           const displayField = field === 'venue_id' ? 'venueId'
             : field === 'start_date_time' ? 'startDateTime'
-            : field === 'end_date_time' ? 'endDateTime'
-            : field === 'doors_open_time' ? 'doorsOpenTime'
-            : field === 'remaining_capacity' ? 'remainingCapacity'
-            : field
+              : field === 'end_date_time' ? 'endDateTime'
+                : field === 'doors_open_time' ? 'doorsOpenTime'
+                  : field === 'remaining_capacity' ? 'remainingCapacity'
+                    : field
           setValidationError(displayField, issue.message)
         })
       }
@@ -138,7 +140,7 @@ export default function EventCreate({ userId, onNavigate }: EventCreateProps) {
           const field = issue.path[0] as string
           const displayField = field === 'age_restriction' ? 'ageRestriction'
             : field === 'is_featured' ? 'isFeatured'
-            : field
+              : field
           setValidationError(displayField, issue.message)
         })
       }
@@ -168,9 +170,9 @@ export default function EventCreate({ userId, onNavigate }: EventCreateProps) {
           const field = issue.path[0] as string
           const displayField = field === 'refund_policy' ? 'refundPolicy'
             : field === 'accessibility_info' ? 'accessibilityInfo'
-            : field === 'prohibited_items' ? 'prohibitedItems'
-            : field === 'general_rules' ? 'generalRules'
-            : field
+              : field === 'prohibited_items' ? 'prohibitedItems'
+                : field === 'general_rules' ? 'generalRules'
+                  : field
           setValidationError(displayField, issue.message)
         })
       }
@@ -189,9 +191,16 @@ export default function EventCreate({ userId, onNavigate }: EventCreateProps) {
   }
 
   const handleNext = () => {
-    if (validateCurrentStep()) {
+    console.log('handleNext called, currentStep:', currentStep)
+    const valid = validateCurrentStep()
+    console.log('valid:', valid)
+    if (valid) {
       setCurrentStep(currentStep + 1)
+      console.log('setCurrentStep called with:', currentStep + 1)
     }
+    // if (validateCurrentStep()) {
+    //   setCurrentStep(currentStep + 1)
+    // }
   }
 
   const handlePrevious = () => {
@@ -247,32 +256,94 @@ export default function EventCreate({ userId, onNavigate }: EventCreateProps) {
         tags: JSON.stringify(formData.tags),
         media_urls: JSON.stringify(formData.mediaUrls),
         event_policies: JSON.stringify(formData.eventPolicies),
-        remaining_capacity: Number(formData.remainingCapacity),
-        created_by: userId
+        remaining_capacity: Number(formData.remainingCapacity)
       }
 
-      const result = await createEventAction(eventData)
+      await updateEventAction(eventId, eventData)
 
-      if (result.success) {
-        onNavigate('Events')
-      } else {
-        setValidationError('submit', result.error || 'Failed to create event. Please try again.')
-        submitAttemptedRef.current = false
-      }
+      onNavigate?.('Events', eventId)
     } catch (err) {
-      console.error('Error creating event:', err)
-      setValidationError('submit', 'Failed to create event. Please try again.')
+      console.error('Error updating event:', err)
+      setValidationError('submit', 'Failed to update event. Please try again.')
       submitAttemptedRef.current = false
     } finally {
       setCreating(false)
     }
   }
 
+  // helper to normalize DB datetime → datetime-local format
+  const toDateTimeLocal = (value: string | null | undefined): string => {
+    if (!value) return ''
+    // handles both "2024-11-15T20:00:00.000Z" and "2024-11-15 20:00:00"
+    return new Date(value).toISOString().slice(0, 16)  // "YYYY-MM-DDTHH:MM"
+  }
+
+  // Populate form with existing event data
+  useEffect(() => {
+    if (!initialData) return
+
+    const parseJsonArray = (value: any): string[] => {
+      if (Array.isArray(value)) return value
+      if (typeof value === 'string') {
+        try {
+          const parsed = JSON.parse(value)
+          return Array.isArray(parsed) ? parsed : []
+        } catch {
+          return []
+        }
+      }
+      return []
+    }
+
+    const parseJsonObject = (value: any, fallback: object) => {
+      if (value && typeof value === 'object') return value
+      if (typeof value === 'string') {
+        try {
+          return JSON.parse(value) ?? fallback
+        } catch {
+          return fallback
+        }
+      }
+      return fallback
+    }
+
+    setFormData({
+      name: initialData.name ?? '',
+      description: initialData.description ?? '',
+      shortDescription: initialData.short_description ?? '',
+      eventType: initialData.event_type ?? '',
+      venueId: initialData.venue_id ?? '',
+      startDateTime: toDateTimeLocal(initialData.start_date_time),
+      endDateTime: toDateTimeLocal(initialData.end_date_time),
+      doorsOpenTime: toDateTimeLocal(initialData.doors_open_time),
+      timezone: initialData.timezone ?? 'UTC',
+      remainingCapacity: initialData.remaining_capacity?.toString() ?? '',
+      status: initialData.status ?? 'draft',
+      // isFeatured: initialData.is_featured ?? false,
+      isFeatured: Boolean(initialData.is_featured), // ← converts 1/0 to true/false
+      ageRestriction: initialData.age_restriction ?? 'all_ages',
+      categories: parseJsonArray(initialData.categories),   // ← never null
+      tags: parseJsonArray(initialData.tags),               // ← never null
+      mediaUrls: parseJsonObject(initialData.media_urls, {
+        images: [],
+        videos: [],
+        poster: ''
+      }),
+      eventPolicies: parseJsonObject(initialData.event_policies, {
+        refundPolicy: '',
+        accessibilityInfo: '',
+        covidPolicies: '',
+        prohibitedItems: [],
+        generalRules: ''
+      })
+    })
+  }, [initialData])
+
   return (
     <div className={styles.container}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
-          <h2 style={{ fontSize: '24px', fontWeight: '700' }}>Create Event</h2>
+          <h2 style={{ fontSize: '24px', fontWeight: '700' }}>Edit Event</h2>
           <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '4px' }}>
             Step {currentStep} of 4
           </p>
@@ -296,14 +367,14 @@ export default function EventCreate({ userId, onNavigate }: EventCreateProps) {
       </div>
 
       <div style={{ background: '#ff00ff66', borderRadius: '12px', padding: '32px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-        <StepIndicator 
+        <StepIndicator
           currentStep={currentStep}
           steps={[
             { number: 1, label: 'Basic Info' },
             { number: 2, label: 'Date & Venue' },
             { number: 3, label: 'Event Details' },
             { number: 4, label: 'Media & Policies' }
-          ]} 
+          ]}
         />
 
         {validationErrors.submit && (
@@ -425,7 +496,7 @@ export default function EventCreate({ userId, onNavigate }: EventCreateProps) {
                   marginLeft: 'auto'
                 }}
               >
-                {creating ? 'Creating...' : 'Create Event'}
+                {creating ? 'Updating...' : 'Update Event'}
               </button>
             )}
           </div>

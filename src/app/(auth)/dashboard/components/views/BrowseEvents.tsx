@@ -1,8 +1,11 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { fetchEventsAction } from '@/app/actions/events'
+import { deleteEventAction, fetchEventsAction } from '@/app/actions/events'
 import styles from './dashboardViews.module.css'
+import { X } from 'lucide-react'
+import { fetchVenuesAction } from '@/app/actions/venues'
+import Link from 'next/link'
 
 interface Event {
   id: string
@@ -14,9 +17,9 @@ interface Event {
   start_date_time: Date
   end_date_time: Date
   doors_open_time: Date
-  timezone: string 
+  timezone: string
   status: string
-  is_featured: number  
+  is_featured: number
   age_restriction: string
   event_type: string
   categories: string
@@ -27,20 +30,53 @@ interface Event {
   created_by: string
   created_at: Date
   updated_at: Date
-  deleted_at: Date  
+  deleted_at: Date
 }
 
 interface BrowseEventProps {
-  onNavigate: (view: string,id?:string | null) => void
+  onNavigate: (view: string, id?: string | null) => void
 }
 
-export default function BrowseEvents( {onNavigate}: BrowseEventProps ) {
-  const [events, setEvents] = useState<Event[]>([]) 
+interface VenueOption {
+  id: string
+  name: string
+  city: string
+  capacity: number
+}
+
+export default function BrowseEvents({ onNavigate }: BrowseEventProps) {
+  const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [eventToDelete, setEventToDelete] = useState<Event | null>(null)
+  const [deleting, setDeleting] = useState(false)
+  const [venues, setVenues] = useState<VenueOption[]>([])
+  const [loadingVenues, setLoadingVenues] = useState(true)
 
   useEffect(() => {
     fetchEvents()
+  }, [])
+
+  useEffect(() => {
+    const loadVenues = async () => {
+      try {
+        const result = await fetchVenuesAction()
+        if (result.success) {
+          setVenues(result.venues.map((v: any) => ({
+            id: v.id,
+            name: v.name,
+            city: v.city,
+            capacity: v.capacity
+          })))
+        }
+      } catch (err) {
+        console.error('Failed to load venues:', err)
+      } finally {
+        setLoadingVenues(false)
+      }
+    }
+    loadVenues()
   }, [])
 
   const fetchEvents = async () => {
@@ -61,6 +97,40 @@ export default function BrowseEvents( {onNavigate}: BrowseEventProps ) {
       setLoading(false)
     }
   }
+
+  const handleDeleteClick = (event: Event) => {
+    setEventToDelete(event)
+    setShowDeleteModal(true)
+    console.log(event.id)
+  }
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false)
+    setEventToDelete(null)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (!eventToDelete) return
+
+    try {
+      setDeleting(true)
+      const result = await deleteEventAction(eventToDelete.id)
+
+      if (result.success) {
+        // Remove the deleted venue from the list
+        setEvents(events.filter(v => v.id !== eventToDelete.id))
+        setShowDeleteModal(false)
+        setEventToDelete(null)
+      } else {
+        throw new Error(result.error || 'Failed to delete venue')
+      }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'An error occurred while deleting')
+    } finally {
+      setDeleting(false)
+    }
+  }
+
 
   if (loading) {
     return (
@@ -87,9 +157,9 @@ export default function BrowseEvents( {onNavigate}: BrowseEventProps ) {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2>Events List</h2>
-        <button 
+        <button
           className={styles.refreshButton}
-          onClick={() => onNavigate('Create Event Profile')}
+          onClick={() => onNavigate('Event Create')}
         >
           Create Event
         </button>
@@ -104,7 +174,14 @@ export default function BrowseEvents( {onNavigate}: BrowseEventProps ) {
               <tr>
                 <th>Name</th>
                 <th>Slug</th>
-                <th>Created At</th>
+                <th>Venue</th>
+                <th>City</th>
+                <th>Capacity</th>
+                <th>Date</th>
+                <th>End</th>
+                <th>Doors</th>
+                <th>Status</th>
+                <th>Type</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -112,23 +189,37 @@ export default function BrowseEvents( {onNavigate}: BrowseEventProps ) {
               {events.map((event) => ( // ✓ Corregido: era "user"
                 <tr key={event.id}>
                   <td>{event.name}</td>
-                  <td>{event.slug}</td>
+                  <td><Link href={`/event/${event.slug}`} target='_blank'>{event.slug}</Link></td>
+                  <td>{venues.find(v => v.id === event.venue_id)?.name ?? '—'}
+                  </td>
+                  <td>{venues.find(v => v.id === event.venue_id)?.city ?? '—'}
+                  </td>
+                  <td>{venues.find(v => v.id === event.venue_id)?.capacity ?? '—'} / { event.remaining_capacity}
+                  </td>
 
-                  <td>
+                  <td>{  new Date(event.start_date_time).toLocaleString()}</td>
+                  <td>{  new Date(event.end_date_time).toLocaleTimeString()}</td>
+                  <td>{  new Date(event.doors_open_time).toLocaleTimeString()}</td>
+
+                  <td>{ event.status }</td>
+                  <td>{ event.event_type }</td>
+
+
+                  {/* <td>
                     {event.created_at
                       ? new Date(event.created_at).toLocaleDateString()
                       : 'N/A'}
-                  </td>
+                  </td> */}
                   <td>
                     <button
                       className={styles.actionButton}
-                      onClick={() => console.log('Edit event:', event.id)}
+                      onClick={() => onNavigate('Event Edit', event.id)}
                     >
                       Edit
                     </button>
                     <button
                       className={styles.actionButton}
-                      onClick={() => console.log('Delete evet:', event.id)}
+                      onClick={() => handleDeleteClick(event)}
                     >
                       Delete
                     </button>
@@ -137,6 +228,49 @@ export default function BrowseEvents( {onNavigate}: BrowseEventProps ) {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h3>Confirm Deletion</h3>
+              <button
+                className={styles.closeButton}
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleting}
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <p>Are you sure you want to delete the event:</p>
+              <p style={{ fontWeight: 'bold', margin: '10px 0' }}>
+                {eventToDelete?.name}
+              </p>
+              <p style={{ color: '#ef4444', fontSize: '14px' }}>
+                This action cannot be undone.
+              </p>
+            </div>
+            <div className={styles.modalFooter}>
+              <button
+                className={styles.cancelButton}
+                onClick={handleCancelDelete}
+                disabled={deleting}
+              >
+                Cancel
+              </button>
+              <button
+                className={styles.deleteButton}
+                onClick={handleConfirmDelete}
+                disabled={deleting}
+              >
+                {deleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -87,7 +87,7 @@ export const Step4VenueDetails: React.FC<Step4VenueDetailsProps> = ({
           htmlFor="venueType"
           style={{
             display: 'block',
-            fontSize: '14px',
+            fontSize: '16px',
             fontWeight: '500',
             marginBottom: '6px',
             color: '#fff'
@@ -138,7 +138,7 @@ export const Step4VenueDetails: React.FC<Step4VenueDetailsProps> = ({
           htmlFor="amenities"
           style={{
             display: 'block',
-            fontSize: '14px',
+            fontSize: '16px',
             fontWeight: '500',
             marginBottom: '6px',
             color: '#fff'
@@ -249,7 +249,7 @@ export const Step4VenueDetails: React.FC<Step4VenueDetailsProps> = ({
             padding: '10px 12px',
             border: validationErrors.accessibility ? '1px solid #ef4444' : '1px solid #d1d5db',
             borderRadius: '6px',
-            fontSize: '14px',
+            fontSize: '16px',
             fontFamily: 'inherit',
             resize: 'vertical',
             boxSizing: 'border-box'
@@ -268,7 +268,7 @@ export const Step4VenueDetails: React.FC<Step4VenueDetailsProps> = ({
           htmlFor="parkingInfo"
           style={{
             display: 'block',
-            fontSize: '14px',
+            fontSize: '16px',
             fontWeight: '500',
             marginBottom: '6px'
           }}
@@ -308,7 +308,7 @@ export const Step4VenueDetails: React.FC<Step4VenueDetailsProps> = ({
           htmlFor="publicTransport"
           style={{
             display: 'block',
-            fontSize: '14px',
+            fontSize: '16px',
             fontWeight: '500',
             marginBottom: '6px'
           }}
@@ -348,7 +348,7 @@ export const Step4VenueDetails: React.FC<Step4VenueDetailsProps> = ({
           htmlFor="imageUrls"
           style={{
             display: 'block',
-            fontSize: '14px',
+            fontSize: '16px',
             fontWeight: '500',
             marginBottom: '6px'
           }}

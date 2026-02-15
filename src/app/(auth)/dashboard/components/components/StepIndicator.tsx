@@ -1,7 +1,11 @@
 import React from 'react'
 import styles from './stepIndicator.module.css'
 
-const STEPS = [
+export interface Step {
+  number: number
+  label: string
+}
+const DEFAULT_STEPS: Step[] = [
   { number: 1, label: 'Basic Info' },
   { number: 2, label: 'Contact' },
   { number: 3, label: 'Social Media' },
@@ -10,11 +14,16 @@ const STEPS = [
 
 interface StepIndicatorProps {
   currentStep: number
+  steps?: Step[]
 }
 
-export const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep }) => (
+
+export const StepIndicator: React.FC<StepIndicatorProps> = ({ 
+  currentStep,
+  steps = DEFAULT_STEPS 
+}) => (
   <div className={styles.stepIndicatorContainer}>
-    {STEPS.map((step, index) => (
+    {steps.map((step, index) => (
       <React.Fragment key={step.number}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
           <div
@@ -35,13 +44,13 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep }) => 
           </div>
           <span style={{
             fontSize: '12px',
-            color: currentStep >= step.number ? '#3b82f6' : '#6b7280',
+            color: currentStep >= step.number ? '#3b82f6' : '#ffffff',
             fontWeight: currentStep === step.number ? '600' : '400'
           }}>
             {step.label}
           </span>
         </div>
-        {index < STEPS.length - 1 && (
+        {index < steps.length - 1 && (
           <div
             style={{
               // display:'none',

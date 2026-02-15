@@ -24,6 +24,8 @@ export default function AdminDashboard() {
   const [userData, setUserData] = useState<UserData | null>(null)
   const [selectedArtistId, setSelectedArtistId] = useState<string | null>(null)
   const [selectedVenueId, setSelectedVenueId] = useState<string | null>(null)
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
+  const [selectedPerformanceId, setSelectedPerformanceId] = useState<string | null>(null)
   const [displayUX, setDisplayUX] = useState('');
 
   const updateUX = (value: string,  id?: string | null) => {
@@ -36,6 +38,14 @@ export default function AdminDashboard() {
     // Handle venue ID
     if (value === 'Venue Profile Edit') {
       setSelectedVenueId(id || null)
+    }
+    // Handle event ID
+    if (value === 'Event Edit') {
+      setSelectedEventId(id || null)
+    }
+    // Handle performance ID
+    if (value === 'Artist Event Link Edit' || 'Performance Detail') {
+      setSelectedPerformanceId(id || null)
     }
   };
 
@@ -103,15 +113,16 @@ export default function AdminDashboard() {
     {
       label: 'Cluster Managment',
       children: [
+        { label: 'Venues' },
         { label: 'Event List' },
-        { label: 'Venues' }
+        { label: 'Artist > Event Link' }
       ]
     },
     { label: 'Financial Control' },
     { label: 'Analitics' },
     { label: 'Security Logs' },
     { label: 'Profile' },
-    // { label: 'Artist Profile'}
+    { label: 'Email'}
   ]
 
   return (
@@ -129,6 +140,8 @@ export default function AdminDashboard() {
             userId={userData.userId}
             artistId={selectedArtistId}
             venueId={selectedVenueId}
+            eventId={selectedEventId}
+            performanceId={selectedPerformanceId}
             onNavigate={updateUX}
           />
         </div>

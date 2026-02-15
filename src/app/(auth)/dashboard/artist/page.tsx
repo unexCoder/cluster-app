@@ -8,6 +8,7 @@ import styles from './page.module.css'
 import DashboardLayout from "../components/DashboardLayout"
 import NavBar from "../components/NavBar"
 import DashboardContent from "../components/DashboardContent"
+import { fetchArtistByUserIdAction } from "@/app/actions/artists"
 
 interface UserData {
   userId: string
@@ -22,12 +23,16 @@ export default function ArtistDashboard() {
 
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<UserData | null>(null)
-
+  const [artistId, setArtistId] = useState<string | undefined>(undefined)
   const [displayUX, setDisplayUX] = useState('Artist Profile');
-  const updateUX = (value: string) => {
-    setDisplayUX(value);
-    console.log(value)
-  };
+  const [performanceId, setPerformanceId] = useState<string | undefined>(undefined)
+
+  const updateUX = (value: string, id?: string | null) => {
+    setDisplayUX(value)
+    if (value === 'Performance Detail') {
+      setPerformanceId(id ?? undefined)
+    }
+  }
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -37,14 +42,14 @@ export default function ArtistDashboard() {
 
     const token = getToken()
     if (token) {
-      
+
       try {
         const parts = token.split(".")
         if (parts.length === 3) {
           const decoded = JSON.parse(
             Buffer.from(parts[1], "base64").toString("utf-8")
           )
-          
+
           // Check if user has admin role
           if (decoded.role !== "artist") {
             router.replace(`/dashboard/${decoded.role}`)
@@ -64,9 +69,23 @@ export default function ArtistDashboard() {
         return
       }
     }
-    
+
     setLoading(false)
   }, [router])
+
+  // Step 2 — once userId is known, fetch artistId from DB
+  useEffect(() => {
+    if (!userData?.userId) return
+
+    fetchArtistByUserIdAction(userData.userId)
+      .then(result => {
+        if (result.success && result.profile?.[0]?.id) {
+          setArtistId(result.profile[0].id)
+        }
+      })
+      .catch(err => console.error("Failed to fetch artist profile:", err))
+      .finally(() => setLoading(false))   // ← loading ends here, not before
+  }, [userData?.userId])
 
   if (loading || !userData) {
     return (
@@ -82,10 +101,15 @@ export default function ArtistDashboard() {
   }
 
   const navItems = [
-    { label: 'Artist Profile'},
-    { label: 'Gig Managment' },
+    { label: 'Artist Profile' },
+    {
+      label: 'Gig Managment',
+      children: [
+        { label: 'Gigs List' }
+      ]
+    },
     { label: 'Fee Control' },
-    { label: 'Profile'}
+    { label: 'Profile' }
   ]
 
   return (
@@ -97,11 +121,13 @@ export default function ArtistDashboard() {
       >
         <div className={styles.innerDashboardContainer}>
           <NavBar items={navItems} onUpdate={updateUX} />
-          <DashboardContent 
-            activeView={displayUX} 
+          <DashboardContent
+            activeView={displayUX}
             userId={userData.userId}
-            onNavigate={updateUX} 
-            />
+            onNavigate={updateUX}
+            artistId={artistId}
+            performanceId={performanceId}   // ← was missing
+          />
         </div>
       </DashboardLayout>
     </div>

@@ -48,7 +48,7 @@ export const Step3ContactInfo: React.FC<Step3ContactInfoProps> = ({
           htmlFor="contactName"
           style={{
             display: 'block',
-            fontSize: '14px',
+            fontSize: '16px',
             fontWeight: '500',
             marginBottom: '6px'
           }}
@@ -86,7 +86,7 @@ export const Step3ContactInfo: React.FC<Step3ContactInfoProps> = ({
           htmlFor="email"
           style={{
             display: 'block',
-            fontSize: '14px',
+            fontSize: '16px',
             fontWeight: '500',
             marginBottom: '6px'
           }}
@@ -124,7 +124,7 @@ export const Step3ContactInfo: React.FC<Step3ContactInfoProps> = ({
           htmlFor="phone"
           style={{
             display: 'block',
-            fontSize: '14px',
+            fontSize: '16px',
             fontWeight: '500',
             marginBottom: '6px'
           }}
@@ -165,7 +165,7 @@ export const Step3ContactInfo: React.FC<Step3ContactInfoProps> = ({
           htmlFor="website"
           style={{
             display: 'block',
-            fontSize: '14px',
+            fontSize: '16px',
             fontWeight: '500',
             marginBottom: '6px'
           }}

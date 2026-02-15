@@ -304,7 +304,15 @@ export default function VenueProfileCreate({ onNavigate }: VenueProfileCreatePro
       </div>
 
       <div style={{ background: '#ff00ff66', borderRadius: '12px', padding: '32px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-        <StepIndicator currentStep={currentStep} />
+        <StepIndicator 
+          currentStep={currentStep} 
+          steps={[
+            { number: 1, label: 'Basic Info' },
+            { number: 2, label: 'Location' },
+            { number: 3, label: 'Contact Info' },
+            { number: 4, label: 'Venue Details' }
+          ]}   
+        />
 
         {/* Show general submission errors */}
         {validationErrors.submit && (

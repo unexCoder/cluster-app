@@ -161,7 +161,7 @@ export const Step4TechInfo: React.FC<Step4Props> = ({
             <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>
                 Technical Information
             </h3>
-            <p style={{ color: '#6b7280', fontSize: '14px', marginBottom: '24px' }}>
+            <p style={{ fontSize: '14px', marginBottom: '24px' }}>
                 What are your technical requirements
             </p>
 
