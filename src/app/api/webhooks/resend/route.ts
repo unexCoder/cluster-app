@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
         attachments:       JSON.stringify(data.attachments    ?? []),
         webhook_type:      type,
         raw_payload:       JSON.stringify(body),
-        sent_at:           data.created_at        ?? null,
+        sent_at:           toMySQLDatetime(data.created_at) ?? null, // ✅ converted
       };
 
       try {
@@ -67,3 +67,9 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+// Helper to convert ISO string to MySQL DATETIME
+const toMySQLDatetime = (isoString: string | null | undefined): string | null => {
+  if (!isoString) return null;
+  return new Date(isoString).toISOString().slice(0, 19).replace('T', ' ');
+};
