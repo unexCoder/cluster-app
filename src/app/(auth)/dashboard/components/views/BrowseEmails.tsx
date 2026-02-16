@@ -104,7 +104,7 @@ export default function BrowseEmails() {
           onMouseLeave={e => (e.currentTarget.style.background = '#1e3a5f22')}
           title={`Download ${name}${attachment.size ? ` (${formatBytes(attachment.size)})` : ''}`}
         >
-          📎 {name}
+          📎 <span style={{paddingLeft:'5px'}}>{name}</span> 
         </a>
       )
     }
@@ -153,7 +153,7 @@ export default function BrowseEmails() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>Received Emails</h2>
+        <h2>Inbox</h2>
         <button onClick={fetchEmails} className={styles.refreshButton}>Refresh</button>
       </div>
 
