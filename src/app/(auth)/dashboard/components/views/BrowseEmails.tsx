@@ -123,10 +123,10 @@ export default function BrowseEmails() {
                 <th>From</th>
                 <th>To</th>
                 <th>Subject</th>
-                <th style={{ paddingLeft: '28px' }}>Type</th>
+                {/* <th style={{ paddingLeft: '28px' }}>Type</th> */}
                 <th>Attachments</th>
-                <th>Sent At</th>
-                <th>Received At</th>
+                {/* <th>Sent At</th> */}
+                <th>Received</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -141,7 +141,7 @@ export default function BrowseEmails() {
                     <td>{email.from_address}</td>
                     <td>{formatAddresses(email.to_addresses)}</td>
                     <td>{truncateSubject(email.subject)}</td>
-                    <td>
+                    {/* <td>
                       <span
                         className={styles.roleBadge}
                         style={{
@@ -150,20 +150,20 @@ export default function BrowseEmails() {
                       >
                         {email.webhook_type}
                       </span>
-                    </td>
+                    </td> */}
                     <td>
                       {email.attachments && email.attachments.length > 0
                         ? `${email.attachments.length} file${email.attachments.length > 1 ? 's' : ''}`
                         : 'None'}
                     </td>
-                    <td>
+                    {/* <td>
                       {email.sent_at
                         ? new Date(email.sent_at).toLocaleDateString()
                         : 'N/A'}
-                    </td>
+                    </td> */}
                     <td>
                       {email.received_at
-                        ? new Date(email.received_at).toLocaleDateString()
+                        ? new Date(email.received_at).toLocaleString()
                         : 'N/A'}
                     </td>
                     <td>

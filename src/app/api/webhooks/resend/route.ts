@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
 
     if (type === 'email.received') {
 
-      // Fetch full email content using the email_id from the webhook
+      // Fetch full email content (html, text, headers)
       const { data: email, error } = await resend.emails.receiving.get(data.email_id);
 
       if (error) {
@@ -19,7 +19,55 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ received: true, error: error.message });
       }
 
-      console.log('FULL EMAIL:', JSON.stringify(email, null, 2)); // log to inspect full shape
+      // Fetch attachment list with download URLs
+      const attachmentResponse = await resend.emails.receiving.attachments.list({
+        emailId: data.email_id,
+      });
+
+      // ListAttachmentsResponseSuccess is { data: Attachment[] }, not an array itself
+      const attachmentItems: any[] = Array.isArray(attachmentResponse.data)
+        ? attachmentResponse.data
+        : (attachmentResponse.data as any)?.data ?? [];
+
+      // Download each attachment and build a serializable record
+      const attachments: {
+        filename: string;
+        content_type: string;
+        size: number;
+        url: string;
+        content?: string;
+      }[] = [];
+
+      for (const attachment of attachmentItems) {
+        try {
+          const response = await fetch(attachment.download_url);
+          if (!response.ok) {
+            console.error(`❌ Failed to download ${attachment.filename}`);
+            // Still store metadata even if download fails
+            attachments.push({
+              filename:     attachment.filename,
+              content_type: attachment.content_type,
+              size:         attachment.size,
+              url:          attachment.download_url,
+            });
+            continue;
+          }
+
+          const buffer = Buffer.from(await response.arrayBuffer());
+
+          attachments.push({
+            filename:     attachment.filename,
+            content_type: attachment.content_type,
+            size:         attachment.size,
+            url:          attachment.download_url,
+            content:      buffer.toString('base64'),
+          });
+
+          console.log(`✅ Downloaded attachment: ${attachment.filename} (${attachment.size} bytes)`);
+        } catch (attachErr: any) {
+          console.error(`❌ Error processing attachment ${attachment.filename}:`, attachErr.message);
+        }
+      }
 
       const record = {
         resend_email_id:   data.email_id         ?? null,
@@ -30,13 +78,13 @@ export async function POST(request: NextRequest) {
         bcc_addresses:     JSON.stringify(data.bcc        ?? []),
         reply_to:          JSON.stringify(data.reply_to   ?? []),
         subject:           data.subject           ?? null,
-        html:              email?.html            ?? null,  // ✅ from full fetch
-        body_text:         email?.text            ?? null,  // ✅ from full fetch
-        headers:           JSON.stringify(email?.headers      ?? {}),
-        attachments:       JSON.stringify(data.attachments    ?? []),
+        html:              email?.html            ?? null,
+        body_text:         email?.text            ?? null,
+        headers:           JSON.stringify(email?.headers  ?? {}),
+        attachments:       JSON.stringify(attachments),
         webhook_type:      type,
         raw_payload:       JSON.stringify(body),
-        sent_at:           toMySQLDatetime(data.created_at) ?? null, // ✅ converted
+        sent_at:           toMySQLDatetime(data.created_at) ?? null,
       };
 
       try {
@@ -51,7 +99,7 @@ export async function POST(request: NextRequest) {
           ON DUPLICATE KEY UPDATE resend_email_id = resend_email_id
         `, Object.values(record));
 
-        console.log('✅ Email logged:', record.resend_email_id);
+        console.log(`✅ Email logged: ${record.resend_email_id} with ${attachments.length} attachment(s)`);
       } catch (dbError: any) {
         console.error('❌ DB insert failed:', dbError.message);
         return NextResponse.json({ received: true, dbError: dbError.message });
@@ -68,7 +116,6 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Helper to convert ISO string to MySQL DATETIME
 const toMySQLDatetime = (isoString: string | null | undefined): string | null => {
   if (!isoString) return null;
   return new Date(isoString).toISOString().slice(0, 19).replace('T', ' ');
