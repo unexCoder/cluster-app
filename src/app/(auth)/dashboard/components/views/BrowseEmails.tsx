@@ -4,6 +4,15 @@ import React, { useEffect, useState } from 'react'
 import { fetchReceivedEmailsAction } from '@/app/actions/emails'
 import styles from './dashboardViews.module.css'
 
+interface EmailAttachment {
+  id?: string
+  filename: string
+  content_type?: string
+  size?: number
+  content_disposition?: string
+  download_url?: string | null
+}
+
 interface ReceivedEmail {
   id: string
   resend_email_id?: string
@@ -17,7 +26,7 @@ interface ReceivedEmail {
   html?: string
   body_text?: string
   headers?: Record<string, string>
-  attachments?: unknown[]
+  attachments?: EmailAttachment[]
   webhook_type: string
   raw_payload?: unknown
   sent_at?: string
@@ -38,11 +47,9 @@ export default function BrowseEmails() {
     try {
       setLoading(true)
       setError(null)
-
       const result = await fetchReceivedEmailsAction()
-
       if (result.success) {
-        setEmails(result.emails)
+        setEmails(result.emails as ReceivedEmail[])
       } else {
         throw new Error(result.error || 'Failed to fetch emails')
       }
@@ -50,21 +57,6 @@ export default function BrowseEmails() {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
-    }
-  }
-
-  const getWebhookTypeBadgeColor = (webhookType: string) => {
-    switch (webhookType) {
-      case 'email.received':
-        return '#059669'
-      case 'email.bounced':
-        return '#ef4444'
-      case 'email.complained':
-        return '#f59e0b'
-      case 'email.delivery_delayed':
-        return '#250fc3'
-      default:
-        return '#6b7280'
     }
   }
 
@@ -83,12 +75,68 @@ export default function BrowseEmails() {
     setExpandedId(prev => (prev === emailId ? null : emailId))
   }
 
-  if (loading) {
+  const AttachmentLink = ({ attachment }: { attachment: EmailAttachment }) => {
+    const name = attachment.filename || 'unnamed'
+    const url = attachment.download_url
+
+    if (url) {
+      return (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '4px',
+            color: '#60a5fa',
+            textDecoration: 'none',
+            fontSize: '12px',
+            padding: '2px 6px',
+            borderRadius: '4px',
+            border: '1px solid #1e40af',
+            background: '#1e3a5f22',
+            whiteSpace: 'nowrap',
+            transition: 'background 0.15s',
+          }}
+          onMouseEnter={e => (e.currentTarget.style.background = '#1e3a5f55')}
+          onMouseLeave={e => (e.currentTarget.style.background = '#1e3a5f22')}
+          title={`Download ${name}${attachment.size ? ` (${formatBytes(attachment.size)})` : ''}`}
+        >
+          📎 {name}
+        </a>
+      )
+    }
+
     return (
-      <div className={styles.container}>
-        <div className={styles.loading}>Loading emails...</div>
-      </div>
+      <span
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '4px',
+          color: '#9ca3af',
+          fontSize: '12px',
+          padding: '2px 6px',
+          borderRadius: '4px',
+          border: '1px solid #374151',
+          whiteSpace: 'nowrap',
+        }}
+        title={attachment.size ? formatBytes(attachment.size) : undefined}
+      >
+        📎 {name}
+      </span>
     )
+  }
+
+  const formatBytes = (bytes: number): string => {
+    if (bytes < 1024) return `${bytes} B`
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+  }
+
+  if (loading) {
+    return <div className={styles.container}><div className={styles.loading}>Loading emails...</div></div>
   }
 
   if (error) {
@@ -96,9 +144,7 @@ export default function BrowseEmails() {
       <div className={styles.container}>
         <div className={styles.error}>
           <p>Error: {error}</p>
-          <button onClick={fetchEmails} className={styles.retryButton}>
-            Retry
-          </button>
+          <button onClick={fetchEmails} className={styles.retryButton}>Retry</button>
         </div>
       </div>
     )
@@ -108,9 +154,7 @@ export default function BrowseEmails() {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2>Received Emails</h2>
-        <button onClick={fetchEmails} className={styles.refreshButton}>
-          Refresh
-        </button>
+        <button onClick={fetchEmails} className={styles.refreshButton}>Refresh</button>
       </div>
 
       {emails.length === 0 ? (
@@ -123,89 +167,144 @@ export default function BrowseEmails() {
                 <th>From</th>
                 <th>To</th>
                 <th>Subject</th>
-                {/* <th style={{ paddingLeft: '28px' }}>Type</th> */}
                 <th>Attachments</th>
-                {/* <th>Sent At</th> */}
                 <th>Received</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {emails.map((email) => (
-                <React.Fragment key={email.id}>
-                  <tr
-                    onClick={() => handleRowClick(email.id)}
-                    style={{ cursor: 'pointer' }}
-                    title="Click to expand"
-                  >
-                    <td>{email.from_address}</td>
-                    <td>{formatAddresses(email.to_addresses)}</td>
-                    <td>{truncateSubject(email.subject)}</td>
-                    {/* <td>
-                      <span
-                        className={styles.roleBadge}
-                        style={{
-                          backgroundColor: getWebhookTypeBadgeColor(email.webhook_type),
-                        }}
-                      >
-                        {email.webhook_type}
-                      </span>
-                    </td> */}
-                    <td>
-                      {email.attachments && email.attachments.length > 0
-                        ? `${email.attachments.length} file${email.attachments.length > 1 ? 's' : ''}`
-                        : 'None'}
-                    </td>
-                    {/* <td>
-                      {email.sent_at
-                        ? new Date(email.sent_at).toLocaleDateString()
-                        : 'N/A'}
-                    </td> */}
-                    <td>
-                      {email.received_at
-                        ? new Date(email.received_at).toLocaleString()
-                        : 'N/A'}
-                    </td>
-                    <td>
-                      <button
-                        className={styles.actionButton}
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleRowClick(email.id)
-                        }}
-                      >
-                        {expandedId === email.id ? 'Collapse' : 'View'}
-                      </button>
-                    </td>
-                  </tr>
+              {emails.map((email) => {
+                const attachments = email.attachments ?? []
+                return (
+                  <React.Fragment key={email.id}>
+                    <tr
+                      onClick={() => handleRowClick(email.id)}
+                      style={{ cursor: 'pointer' }}
+                      title="Click to expand"
+                    >
+                      <td>{email.from_address}</td>
+                      <td>{formatAddresses(email.to_addresses)}</td>
+                      <td>{truncateSubject(email.subject)}</td>
 
-                  {expandedId === email.id && (
-                    <tr>
-                      <td colSpan={8}>
-                        <div style={{ padding: '12px 16px', background: '#1a1a2e', borderRadius: '6px', fontSize: '13px', lineHeight: '1.6' }}>
-                          {email.cc_addresses && email.cc_addresses.length > 0 && (
-                            <p><strong>CC:</strong> {email.cc_addresses.join(', ')}</p>
-                          )}
-                          {email.reply_to && email.reply_to.length > 0 && (
-                            <p><strong>Reply-To:</strong> {email.reply_to.join(', ')}</p>
-                          )}
-                          {email.resend_email_id && (
-                            <p><strong>Resend Email ID:</strong> {email.resend_email_id}</p>
-                          )}
-                          {email.body_text && (
-                            <div>
-                              <strong>Body:</strong>
-                              <pre style={{ whiteSpace: 'pre-wrap', marginTop: '6px', maxHeight: '200px', overflowY: 'auto', background: '#111', padding: '8px', borderRadius: '4px' }}>
-                                {email.body_text}
-                              </pre>
-                            </div>
-                          )}
-                        </div>
+                      {/* Attachment column: show linked filenames inline */}
+                      <td>
+                        {attachments.length === 0 ? (
+                          <span style={{ color: '#6b7280', fontSize: '12px' }}>None</span>
+                        ) : (
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                            {attachments.map((a, i) => (
+                              <AttachmentLink key={a.id ?? i} attachment={a} />
+                            ))}
+                          </div>
+                        )}
+                      </td>
+
+                      <td>{email.received_at ? new Date(email.received_at).toLocaleString() : 'N/A'}</td>
+                      <td>
+                        <button
+                          className={styles.actionButton}
+                          onClick={(e) => { e.stopPropagation(); handleRowClick(email.id) }}
+                        >
+                          {expandedId === email.id ? 'Collapse' : 'View'}
+                        </button>
                       </td>
                     </tr>
-                  )}
-                </React.Fragment>
-              ))}
+
+                    {expandedId === email.id && (
+                      <tr>
+                        <td colSpan={6}>
+                          <div style={{ padding: '12px 16px', background: '#1a1a2e', borderRadius: '6px', fontSize: '13px', lineHeight: '1.6' }}>
+
+                            {email.cc_addresses && email.cc_addresses.length > 0 && (
+                              <p><strong>CC:</strong> {email.cc_addresses.join(', ')}</p>
+                            )}
+                            {email.reply_to && email.reply_to.length > 0 && (
+                              <p><strong>Reply-To:</strong> {email.reply_to.join(', ')}</p>
+                            )}
+                            {email.resend_email_id && (
+                              <p><strong>Resend Email ID:</strong> {email.resend_email_id}</p>
+                            )}
+
+                            {/* Attachments detail */}
+                            {attachments.length > 0 && (
+                              <div style={{ marginTop: '8px' }}>
+                                <strong>Attachments ({attachments.length}):</strong>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '6px' }}>
+                                  {attachments.map((a, i) => (
+                                    <div
+                                      key={a.id ?? i}
+                                      style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        background: '#111',
+                                        padding: '6px 10px',
+                                        borderRadius: '4px',
+                                        gap: '12px',
+                                      }}
+                                    >
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+                                        <span>📎</span>
+                                        <span style={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                          {a.filename}
+                                        </span>
+                                        {a.content_type && (
+                                          <span style={{ color: '#6b7280', fontSize: '11px', whiteSpace: 'nowrap' }}>
+                                            {a.content_type}
+                                          </span>
+                                        )}
+                                        {a.size && (
+                                          <span style={{ color: '#6b7280', fontSize: '11px', whiteSpace: 'nowrap' }}>
+                                            {formatBytes(a.size)}
+                                          </span>
+                                        )}
+                                      </div>
+                                      {a.download_url ? (
+                                        <a
+                                          href={a.download_url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          onClick={(e) => e.stopPropagation()}
+                                          style={{
+                                            color: '#60a5fa',
+                                            textDecoration: 'none',
+                                            fontSize: '12px',
+                                            padding: '3px 10px',
+                                            borderRadius: '4px',
+                                            border: '1px solid #1e40af',
+                                            background: '#1e3a5f44',
+                                            whiteSpace: 'nowrap',
+                                            flexShrink: 0,
+                                          }}
+                                        >
+                                          Download ↓
+                                        </a>
+                                      ) : (
+                                        <span style={{ color: '#6b7280', fontSize: '11px', flexShrink: 0 }}>
+                                          No URL
+                                        </span>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {email.body_text && (
+                              <div style={{ marginTop: '10px' }}>
+                                <strong>Body:</strong>
+                                <pre style={{ whiteSpace: 'pre-wrap', marginTop: '6px', maxHeight: '200px', overflowY: 'auto', background: '#111', padding: '8px', borderRadius: '4px' }}>
+                                  {email.body_text}
+                                </pre>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                )
+              })}
             </tbody>
           </table>
         </div>
