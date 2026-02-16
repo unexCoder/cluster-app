@@ -18,33 +18,52 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ received: true, error: error.message });
       }
 
+      // Fetch attachments list to get per-attachment download_url
       const attachmentResponse = await resend.emails.receiving.attachments.list({
         emailId: data.email_id,
       });
 
+      console.log('ATTACHMENT RESPONSE:', JSON.stringify(attachmentResponse, null, 2));
+
+      // Build a map of attachment id -> download_url from the list response
       const attachmentItems: any[] = Array.isArray(attachmentResponse.data)
         ? attachmentResponse.data
         : (attachmentResponse.data as any)?.data ?? [];
 
-      const attachments = attachmentItems.map((attachment: any) => ({
-        filename:     attachment.filename,
-        content_type: attachment.content_type,
-        size:         attachment.size,
-        url:          attachment.download_url,
+      const downloadUrlMap = new Map<string, string>(
+        attachmentItems
+          .filter((a: any) => a.id && a.download_url)
+          .map((a: any) => [a.id, a.download_url])
+      );
+
+      // Merge email.attachments metadata with download URLs from the list
+      const emailAttachments: any[] = Array.isArray((email as any)?.attachments)
+        ? (email as any).attachments
+        : [];
+
+      const attachments = emailAttachments.map((a: any) => ({
+        id:                  a.id,
+        filename:            a.filename,
+        content_type:        a.content_type,
+        size:                a.size,
+        content_disposition: a.content_disposition,
+        download_url:        downloadUrlMap.get(a.id) ?? null,
       }));
 
+      console.log('MERGED ATTACHMENTS:', JSON.stringify(attachments, null, 2));
+
       const record = {
-        resend_email_id:   data.email_id              ?? null,
-        resend_message_id: data.message_id             ?? null,
-        from_address:      data.from                   ?? null,
-        to_addresses:      JSON.stringify(data.to      ?? []),
-        cc_addresses:      JSON.stringify(data.cc      ?? []),
-        bcc_addresses:     JSON.stringify(data.bcc     ?? []),
+        resend_email_id:   data.email_id               ?? null,
+        resend_message_id: data.message_id              ?? null,
+        from_address:      data.from                    ?? null,
+        to_addresses:      JSON.stringify(data.to       ?? []),
+        cc_addresses:      JSON.stringify(data.cc       ?? []),
+        bcc_addresses:     JSON.stringify(data.bcc      ?? []),
         reply_to:          JSON.stringify(data.reply_to ?? []),
-        subject:           data.subject                ?? null,
-        html:              email?.html                 ?? null,
-        body_text:         email?.text                 ?? null,
-        headers:           JSON.stringify(email?.headers ?? {}),
+        subject:           data.subject                 ?? null,
+        html:              (email as any)?.html         ?? null,
+        body_text:         (email as any)?.text         ?? null,
+        headers:           JSON.stringify((email as any)?.headers ?? {}),
         attachments:       JSON.stringify(attachments),
         webhook_type:      type,
         raw_payload:       JSON.stringify(body),
