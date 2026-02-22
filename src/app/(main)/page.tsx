@@ -1,5 +1,7 @@
-import Portada from "../components/layout/Portada";
 import styles from "./page.module.css";
+import Ed26 from "../components/layout/Ed2K26";
+
+
 
 export default async function Home() {
   // 'use server'
@@ -7,7 +9,7 @@ export default async function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <Portada/>
+        <Ed26 />
       </main>
     </div>
   );

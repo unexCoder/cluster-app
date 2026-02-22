@@ -1,0 +1,14 @@
+.headerContainer {
+    height: 9svh;
+    display: flex;
+    align-items: flex-end;
+}
+
+
+@media (max-width: 768px) {
+    /* Styles */
+    .headerContainer {
+        flex-direction: column;
+        /* align-items: center; */
+    }
+}

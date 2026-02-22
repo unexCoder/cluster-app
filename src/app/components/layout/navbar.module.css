@@ -1,0 +1,12 @@
+.navbarContainer {
+    color: var(--text-primary);
+    font-size: 2.5rem;
+    font-weight: 900;
+}
+
+.navbarContainer ul {
+    display: flex;
+    gap: 30px;
+    padding: 0 40px;
+    align-items: baseline;
+}

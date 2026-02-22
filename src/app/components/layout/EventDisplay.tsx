@@ -4,7 +4,7 @@ import styles from './eventDisplay.module.css'
 import Link from 'next/link'
 
 interface EventDisplayProps {
-  slug: string
+  id: string
 }
 
 interface Artist {
@@ -45,20 +45,21 @@ interface Event {
   venue: Venue
 }
 
-export default function EventDisplay({ slug }: EventDisplayProps) {
+export default function EventDisplay({ id }: EventDisplayProps) {
   const [event, setEvent] = useState<Event | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!slug) return
+    if (!id) return
 
     const fetchEvent = async () => {
+
       try {
         setLoading(true)
         setError(null)
 
-        const response = await fetch(`/api/events/${slug}`)
+        const response = await fetch(`/api/events/${id}`)
 
         if (!response.ok) {
           throw new Error(`Failed to fetch event: ${response.status} ${response.statusText}`)
@@ -74,7 +75,7 @@ export default function EventDisplay({ slug }: EventDisplayProps) {
     }
 
     fetchEvent()
-  }, [slug])
+  }, [id])
 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleString('es-AR', {
@@ -87,11 +88,29 @@ export default function EventDisplay({ slug }: EventDisplayProps) {
     })
 
   if (loading) return <div className={styles.loading}>Loading event...</div>
-  if (error)   return <div className={styles.error}>Error: {error}</div>
-  if (!event)  return <div className={styles.empty}>No event found.</div>
+  if (error) return <div className={styles.error}>Error: {error}</div>
+  if (!event) return <div className={styles.empty}>No event found.</div>
+
+  // styling
+  const switchLayout = Math.random() > 0.5 ? true : false;
+  const altLayout = Math.random() > 0.5 ? true : false;
+  const colorRand = Math.random();
+
+  const colorLayout = (() => {
+    switch (true) {
+      case colorRand < 0.33:
+        return styles.colorB
+
+      case colorRand < 0.66:
+        return styles.colorA
+
+      default:
+        return styles.colorC
+    }
+  })()
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${colorLayout}`}>
 
       {/* Header */}
       {event.media.poster && (
@@ -151,6 +170,11 @@ export default function EventDisplay({ slug }: EventDisplayProps) {
       <div className={styles.description}>
         <h2>About</h2>
         <p>{event.description}</p>
+      </div>
+
+      {/* Tikets */}
+      <div className={styles.tikets}>
+        <h2>Tikets</h2>
       </div>
 
     </div>

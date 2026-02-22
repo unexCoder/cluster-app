@@ -1,0 +1,39 @@
+.container {
+    height: 100svh;
+}
+
+
+.cover {
+    max-height: 91svh;
+    overflow: hidden;
+    width: 100svw;
+    background-color: var(--background);
+    color: var(--foreground);
+    transition: filter 0.6s ease, background-color 1.6s ease;
+    filter: none;
+}
+
+
+.cover:hover {
+    filter: contrast(1.4);  
+    transition: filter 0.6s ease, background-color 1.6s ease;
+    background-color: #000;
+}
+
+.proximamente{
+    height: 100svh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 900;
+    font-size: 1.5rem;
+    background-color: var(--text-primary);
+    color: var(--foreground);
+}
+
+@media (max-width: 768px) {
+    .container {
+        /* min-height: 100svh; */
+        height: auto;
+    }
+}
