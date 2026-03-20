@@ -65,7 +65,6 @@ export default function ArtistProfile({ userId,profile, onNavigate }: ArtistProf
       const result = await fetchArtistByUserIdAction(userId)
 
       if (result.success && result.profile) {
-        console.log(result.profile)
         setArtist(result.profile)
       } else if (result.success && !result.profile) {
         // No hay perfil de artista
@@ -158,7 +157,6 @@ export default function ArtistProfile({ userId,profile, onNavigate }: ArtistProf
   return (
     <div>
       {artist.map((profile) => {
-        console.log(profile)
         const genres = profile.genres || []
         const contactInfo = profile.contact_info || {}
         const socialLinks = profile.social_links || {}

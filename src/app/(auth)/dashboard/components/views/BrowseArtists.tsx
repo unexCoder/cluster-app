@@ -139,7 +139,7 @@ export default function BrowseArtists({ onNavigate }: BrowseArtistsProps) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header} style={{ width: '100%' }}>
+      <div className={styles.header}>
         <h2>Browse Artists</h2>
         <button
           className={styles.refreshButton}
@@ -152,7 +152,7 @@ export default function BrowseArtists({ onNavigate }: BrowseArtistsProps) {
       {artists.length === 0 ? (
         <div className={styles.empty}>No artists found</div>
       ) : (
-        <div className={styles.tableContainer} style={{ width: '100%' }}>
+        <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
               <tr>
@@ -189,7 +189,6 @@ export default function BrowseArtists({ onNavigate }: BrowseArtistsProps) {
                   <td>
                     <button
                       className={styles.actionButton}
-                      // onMouseEnter={ () => setSelectedArtistId(artist.id)} // set the ID first!
                       onClick={() => {
                         setSelectedArtistId(artist.id) // ADD THIS LINE!
                         onNavigate('Artist Profile', artist.id)
@@ -199,8 +198,6 @@ export default function BrowseArtists({ onNavigate }: BrowseArtistsProps) {
                     </button>
                     <button
                       className={styles.actionButton}
-                      // onClick={() => onNavigate('Update Artist Profile')}
-                      // onMouseEnter={ () => setSelectedArtistId(artist.id)} // set the ID first!
                       onClick={() => {
                         setSelectedArtistId(artist.id) // ADD THIS LINE!
                         onNavigate('Update Artist Profile', artist.id)
@@ -211,8 +208,6 @@ export default function BrowseArtists({ onNavigate }: BrowseArtistsProps) {
 
                     <button
                       className={styles.actionButton}
-                      // onClick={() => onNavigate('Update Artist Profile')}
-                      onMouseEnter={ () => setSelectedArtistId(artist.id)} // set the ID first!
                       onClick={() => {
                         setSelectedArtistId(artist.id) // ADD THIS LINE!
                         !artist.deleted_at ? setShowDeleteModal(true) : handleActivate()

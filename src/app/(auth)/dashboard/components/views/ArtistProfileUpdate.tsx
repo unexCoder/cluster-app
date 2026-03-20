@@ -1,18 +1,17 @@
 'use client'
 
 import { useArtistForm } from '@/hooks/useArtistForm'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styles from './artistProfileCreate.module.css'
 import { StepIndicator } from '../components/StepIndicator'
-import { Step1BasicInfo } from '../steps/Step1BasicInfo'
-import { Step2ContactInfo } from '../steps/Step2ContactInfo'
-import { Step3socialLinks } from '../steps/Step3SocialLinks'
-import { Step4TechInfo } from '../steps/Step4TechInfo'
+import { Step1BasicInfo } from '../steps/artist/Step1BasicInfo' 
+import { Step2ContactInfo } from '../steps/artist/Step2ContactInfo'
+import { Step3socialLinks } from '../steps/artist/Step3SocialLinks'
+import { Step4TechInfo } from '../steps/artist/Step4TechInfo' 
 import { updateArtistProfileAction } from '@/app/actions/artists'
 import { ValidationErrors } from '../../../../../../types/types'
 import { artistInfoSchema, contactInfoSchema, socialLinksSchema, techInfoSchema } from '@/lib/validations/artistProfile'
 import { z } from 'zod'
-import { profile } from 'console'
 
 interface ArtistProfileUpdateProps {
   userId: string
@@ -25,7 +24,7 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
   const {
     formData,
     currentStep,
-    error,
+    // error,
     creating,
     updateField,
     addGenre,
@@ -72,8 +71,8 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
             tiktok: socialLinks?.tiktok || ''
           },
           technical: {
-            // requirements: initialData.technical_requirements || '',
-            requirements: '',
+            requirements: initialData.technical_requirements || '',
+            // requirements: '',
             riderUrl: initialData.rider_url || '',
             presskitUrl: initialData.presskit_url || ''
           }
@@ -227,12 +226,53 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
     setCurrentStep(currentStep - 1)
   }
 
+  const [canSubmit, setCanSubmit] = useState(false)
+  const submitAttemptedRef = useRef(false)
+
+  // Unified effect for step transitions
+    useEffect(() => {
+      // Reset submission guard whenever step changes
+      submitAttemptedRef.current = false
+  
+      if (currentStep === 4) {
+        // Disable submission initially
+        setCanSubmit(false)
+  
+        // Enable submission after component is fully mounted and stable
+        const timer = setTimeout(() => {
+          setCanSubmit(true)
+        }, 300) // 300ms delay
+  
+        return () => clearTimeout(timer)
+      } else {
+        // Disable submission on any other step
+        setCanSubmit(false)
+      }
+    }, [currentStep])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+    e.stopPropagation()
+
+    // Prevent duplicate/accidental submissions
+    if (submitAttemptedRef.current) {
+      console.log('BLOCKED: Already submitted')
+      return
+    }
+
+    // Only allow submission on step 4
+    if (currentStep !== 4) {
+      console.log('BLOCKED: Not on step 4')
+      return
+    }
+
+    // Add a small delay to ensure step transition is complete
+    await new Promise(resolve => setTimeout(resolve, 100))
     if (!validateCurrentStep()) {
       return
     }
+
+    submitAttemptedRef.current = true
 
     try {
       setCreating(true)
@@ -253,7 +293,7 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
       }
 
       await updateArtistProfileAction(artistData)
-      console.log('Profile updated successfully:', formData)
+      // console.log('Profile updated successfully:', formData)
       
       onNavigate?.('Artist Profile')
     } catch (err) {
@@ -285,7 +325,7 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
         </div>
         <button
           type="button"
-          onClick={() => onNavigate?.('Artist Profile',artistId)}
+          onClick={() => onNavigate?.('Artist Profile')}
           style={{
             padding: '0 16px',
             height: '24px',
@@ -405,14 +445,14 @@ export default function ArtistProfileUpdate({ userId, artistId, initialData, onN
             ) : (
               <button
                 type="submit"
-                disabled={creating}
+                disabled={creating || !canSubmit}
                 style={{
                   padding: '10px 24px',
-                  background: creating ? '#93c5fd' : '#3b82f6',
+                  background: (creating || !canSubmit) ? '#93c5fd' : '#3b82f6',
                   color: 'white',
                   border: 'none',
                   borderRadius: '6px',
-                  cursor: creating ? 'not-allowed' : 'pointer',
+                  cursor: (creating || !canSubmit) ? 'not-allowed' : 'pointer',
                   fontSize: '14px',
                   marginLeft: 'auto'
                 }}

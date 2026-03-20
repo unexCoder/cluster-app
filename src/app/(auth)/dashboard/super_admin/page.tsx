@@ -23,12 +23,30 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<UserData | null>(null)
   const [selectedArtistId, setSelectedArtistId] = useState<string | null>(null)
+  const [selectedVenueId, setSelectedVenueId] = useState<string | null>(null)
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
+  const [selectedPerformanceId, setSelectedPerformanceId] = useState<string | null>(null)
   const [displayUX, setDisplayUX] = useState('');
 
-  const updateUX = (value: string,  artistId?: string | null) => {
+  const updateUX = (value: string,  id?: string | null) => {
     setDisplayUX(value);
-    setSelectedArtistId(artistId || null)
-    console.log(value)
+
+    // Handle artist ID
+    if (value === 'Artist Profile' || value === 'Update Artist Profile') {
+      setSelectedArtistId(id || null)
+    }
+    // Handle venue ID
+    if (value === 'Venue Profile Edit') {
+      setSelectedVenueId(id || null)
+    }
+    // Handle event ID
+    if (value === 'Event Edit') {
+      setSelectedEventId(id || null)
+    }
+    // Handle performance ID
+    if (value === 'Artist Event Link Edit' || 'Performance Detail') {
+      setSelectedPerformanceId(id || null)
+    }
   };
 
   useEffect(() => {
@@ -95,15 +113,20 @@ export default function AdminDashboard() {
     {
       label: 'Cluster Managment',
       children: [
+        { label: 'Venues' },
         { label: 'Event List' },
-        { label: 'Venues' }
+        { label: 'Artist > Event Link' }
       ]
     },
     { label: 'Financial Control' },
     { label: 'Analitics' },
     { label: 'Security Logs' },
     { label: 'Profile' },
-    // { label: 'Artist Profile'}
+    { label: 'Email',
+      children: [
+        { label: 'Compose' },
+        { label: 'Inbox' },
+    ]}
   ]
 
   return (
@@ -120,6 +143,9 @@ export default function AdminDashboard() {
             activeView={displayUX}
             userId={userData.userId}
             artistId={selectedArtistId}
+            venueId={selectedVenueId}
+            eventId={selectedEventId}
+            performanceId={selectedPerformanceId}
             onNavigate={updateUX}
           />
         </div>

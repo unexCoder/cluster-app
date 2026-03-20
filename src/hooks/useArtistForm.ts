@@ -33,7 +33,7 @@ export const useArtistForm = () => {
   const [formData, setFormData] = useState<ArtistFormData>(INITIAL_FORM_DATA)
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({})
   const [currentStep, setCurrentStep] = useState(1)
-  const [error, setError] = useState<string | null>(null)
+  // const [error, setError] = useState<string | null>(null)
   const [creating, setCreating] = useState(false)
 
   const updateField = (field: string, value: any) => {
@@ -77,61 +77,60 @@ export const useArtistForm = () => {
       delete newErrors[field]
       return newErrors
     })
-    setError(null)
+    // setError(null)
   }
 
-  const validateStep = (step: number): boolean => {
-    const errors: ValidationErrors = {}
+  // const validateStep = (step: number): boolean => {
+  //   const errors: ValidationErrors = {}
 
-    switch (step) {
-      case 1:
-        if (!formData.name.trim()) errors.name = 'Artist name is required'
-        if (!formData.stageName.trim()) errors.stageName = 'Stage name is required'
-        if (!formData.pictureUrl.trim()) errors.pictureUrl = 'Picture URL is required'
-        if (!formData.bio.trim()) errors.bio = 'Bio is required'
-        if (formData.genres.length === 0) errors.genres = 'Add at least one genre'
-        break
-      case 2:
-        if (!formData.contactInfo.email.trim()) {
-          errors['contactInfo.email'] = 'Contact email is required'
-        }
-        break
-      case 3:
-        // Social links are optional
-        break
-      case 4:
-        if (!formData.technical.requirements.trim() && !formData.technical.riderUrl.trim()) {
-          errors.technical = 'Technical requirements or rider URL is required'
-        }
-        break
-    }
+  //   switch (step) {
+  //     case 1:
+  //       if (!formData.name.trim()) errors.name = 'Artist name is required'
+  //       if (!formData.stageName.trim()) errors.stageName = 'Stage name is required'
+  //       if (!formData.pictureUrl.trim()) errors.pictureUrl = 'Picture URL is required'
+  //       if (!formData.bio.trim()) errors.bio = 'Bio is required'
+  //       if (formData.genres.length === 0) errors.genres = 'Add at least one genre'
+  //       break
+  //     case 2:
+  //       if (!formData.contactInfo.email.trim()) {
+  //         errors['contactInfo.email'] = 'Contact email is required'
+  //       }
+  //       break
+  //     case 3:
+  //       // Social links are optional
+  //       break
+  //     case 4:
+  //       if (!formData.technical.requirements.trim() && !formData.technical.riderUrl.trim()) {
+  //         errors.technical = 'Technical requirements or rider URL is required'
+  //       }
+  //       break
+  //   }
 
-    if (Object.keys(errors).length > 0) {
-      setValidationErrors(errors)
-      setError(Object.values(errors)[0])
-      return false
-    }
+  //   if (Object.keys(errors).length > 0) {
+  //     setValidationErrors(errors)
+  //     setError(Object.values(errors)[0])
+  //     return false
+  //   }
     
-    setValidationErrors(errors)
-    return true
-  }
+  //   setValidationErrors(errors)
+  //   return true
+  // }
 
   return {
     formData,
     validationErrors,
     currentStep,
-    error,
+    // error,
     creating,
     updateField,
     addGenre,
     removeGenre,
     clearFieldError,
-    validateStep,
+    // validateStep,
     setCurrentStep,
-    setError,
+    // setError,
     setCreating,
     setValidationErrors,
     setFormData
-    // setError
   }
 }

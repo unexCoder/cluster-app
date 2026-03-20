@@ -84,7 +84,7 @@ export const PDFField: React.FC<PDFFieldProps> = ({
         />
         
         {helperText && (
-          <p style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>
+          <p style={{ fontSize: '12px', marginTop: '4px' }}>
             {helperText}
           </p>
         )}

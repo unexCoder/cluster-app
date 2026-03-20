@@ -1,7 +1,7 @@
 import React from 'react'
-import { FormField } from '../components/FormField'
-import type { SocialLinks, ValidationErrors } from '../../../../../../types/types'
-import styles from './steps.module.css'
+import { FormField } from '../../components/FormField'
+import type { SocialLinks, ValidationErrors } from '../../../../../../../types/types'
+import styles from '../steps.module.css'
 import { socialLinksSchema } from '@/lib/validations/artistProfile'
 import { z } from 'zod'
 
@@ -109,7 +109,7 @@ export const Step3socialLinks: React.FC<Step3Props> = ({
             <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>
                 Social Networks
             </h3>
-            <p style={{ color: '#6b7280', fontSize: '14px', marginBottom: '24px' }}>
+            <p style={{ fontSize: '14px', marginBottom: '24px' }}>
                 How people can find you on network?
             </p>
 
