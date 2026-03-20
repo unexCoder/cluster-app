@@ -15,10 +15,6 @@ export default function Ed2K26() {
         </ErrorBoundary>
       </div>
     </div>
-    <div id='proximamente' className={styles.proximamente}>
-      <p>proximamente</p>
-    </div>
-
     </>
   )
 }

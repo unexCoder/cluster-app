@@ -3,6 +3,6 @@ import styles from './logo.module.css'
 
 export default function Logo() {
   return (
-    <div className={styles.logo}>Festival Cluster</div>
+    <div className={styles.logo}>Festival Cluster /</div>
   )
 }
