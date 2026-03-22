@@ -11,7 +11,7 @@ export default function NavBar() {
           <li><Link href="#proximamente" onClick={() => document.querySelector('#proximamente')?.scrollIntoView({ behavior: 'smooth' })}>Edicion 2026</Link></li>
           <li><Link href="#proximamente" onClick={() => document.querySelector('#proximamente')?.scrollIntoView({ behavior: 'smooth' })}>Artistas</Link></li>
           <li><Link href="#proximamente" onClick={() => document.querySelector('#proximamente')?.scrollIntoView({ behavior: 'smooth' })}>Talleres</Link></li>
-          <li><Link href="#proximamente" onClick={() => document.querySelector('#proximamente')?.scrollIntoView({ behavior: 'smooth' })}>Tickets</Link></li>
+          <li><Link href="/tickets">Tickets</Link></li>
         </ul>
       </nav>
     </div>

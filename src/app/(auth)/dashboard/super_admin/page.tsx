@@ -27,6 +27,9 @@ export default function AdminDashboard() {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
   const [selectedPerformanceId, setSelectedPerformanceId] = useState<string | null>(null)
   const [displayUX, setDisplayUX] = useState('');
+  const [selectedEmail, setSelectedEmail] = useState<string | null>(null)
+  const [selectedTicketTierId, setSelectedTicketTierId] = useState<string | null>(null)
+
 
   const updateUX = (value: string,  id?: string | null) => {
     setDisplayUX(value);
@@ -46,6 +49,14 @@ export default function AdminDashboard() {
     // Handle performance ID
     if (value === 'Artist Event Link Edit' || 'Performance Detail') {
       setSelectedPerformanceId(id || null)
+    }
+    // Handle email 
+    if (value === 'Compose') {
+      setSelectedEmail(id || null)
+    }
+    // Handle ticket tier ID
+    if (value === 'Ticket Tier Edit') {
+        setSelectedTicketTierId(id || null)
     }
   };
 
@@ -115,11 +126,23 @@ export default function AdminDashboard() {
       children: [
         { label: 'Venues' },
         { label: 'Event List' },
-        { label: 'Artist > Event Link' }
+        { label: 'Artist > Event Link' },
+        { label: 'Ticket Tier List' }
       ]
     },
-    { label: 'Financial Control' },
-    { label: 'Analitics' },
+    { label: 'Financial Control',
+      children: [
+        { label: 'Orders' },
+        { label: 'Payments' }
+      ]
+     },
+    { label: 'Analitics',
+      children: [
+        { label: 'Tickets' },
+        { label: 'Ticket Checkin' },
+        { label: 'Ticket Validation Log' }
+      ]
+     },
     { label: 'Security Logs' },
     { label: 'Profile' },
     { label: 'Email',
@@ -147,6 +170,8 @@ export default function AdminDashboard() {
             eventId={selectedEventId}
             performanceId={selectedPerformanceId}
             onNavigate={updateUX}
+            selectedEmail={selectedEmail}
+            ticketTierId={selectedTicketTierId}
           />
         </div>
       </DashboardLayout>

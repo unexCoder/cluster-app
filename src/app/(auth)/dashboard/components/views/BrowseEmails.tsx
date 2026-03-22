@@ -33,7 +33,11 @@ interface ReceivedEmail {
   received_at: string
 }
 
-export default function BrowseEmails() {
+interface BrowseEmailsProps {
+  onNavigate?: (view: string, id?: string | null) => void
+}
+
+export default function BrowseEmails({ onNavigate }: BrowseEmailsProps) {
   const [emails, setEmails] = useState<ReceivedEmail[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -104,7 +108,7 @@ export default function BrowseEmails() {
           onMouseLeave={e => (e.currentTarget.style.background = '#1e3a5f22')}
           title={`Download ${name}${attachment.size ? ` (${formatBytes(attachment.size)})` : ''}`}
         >
-          📎 <span style={{paddingLeft:'5px'}}>{name}</span> 
+          📎 <span style={{ paddingLeft: '5px' }}>{name}</span>
         </a>
       )
     }
@@ -298,6 +302,18 @@ export default function BrowseEmails() {
                                 </pre>
                               </div>
                             )}
+                            {/* Reply button */}
+                            <div style={{ marginTop: '12px', borderTop: '1px solid #2d2d4e', paddingTop: '12px' }}>
+                              <button
+                                className={styles.actionButton}
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  onNavigate?.('Compose', email.from_address)
+                                }}
+                              >
+                                Reply to {email.from_address}
+                              </button>
+                            </div>
                           </div>
                         </td>
                       </tr>

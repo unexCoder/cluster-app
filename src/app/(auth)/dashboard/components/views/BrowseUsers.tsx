@@ -4,6 +4,10 @@ import React, { useEffect, useState } from 'react'
 import { fetchUsersAction, updateUserRoleAction, updateUserStatusAction } from '@/app/actions/users'
 import styles from './dashboardViews.module.css'
 
+interface BrowseUserProps {
+  onNavigate: (view: string, id?: string | null) => void
+}
+
 interface User {
   id: string
   email: string
@@ -18,7 +22,7 @@ interface User {
 const ROLE_ROTATION = ['customer', 'artist', 'staff', 'admin'] as const;
 const STATUS_ROTATION = ['active', 'inactive', 'suspended', 'banned'] as const;
 
-export default function BrowseUsers() {
+export default function BrowseUsers({onNavigate}:BrowseUserProps) {
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -149,29 +153,29 @@ export default function BrowseUsers() {
   // handler para cambiar el status
   const handleStatusClick = async (userId: string, currentStatus: string) => {
     const nextStatus = getNextStatus(currentStatus);
-    
+
     const confirmed = window.confirm(
       `Change status from "${currentStatus}" to "${nextStatus}"?`
     );
-    
+
     if (!confirmed) return;
 
     try {
       // Actualizar estado local optimistamente
-      setUsers(prevUsers => 
-        prevUsers.map(user => 
+      setUsers(prevUsers =>
+        prevUsers.map(user =>
           user.id === userId ? { ...user, status: nextStatus } : user
         )
       );
 
       const result = await updateUserStatusAction(userId, nextStatus);
-      
+
       if (!result.success) {
         throw new Error(result.error);
       }
 
       console.log(`Updated user ${userId} status to ${nextStatus}`);
-      
+
     } catch (err) {
       console.error('Failed to update status:', err);
       fetchUsers();
@@ -211,7 +215,12 @@ export default function BrowseUsers() {
                 <tr key={user.id}>
                   <td>{user.first_name}</td>
                   <td>{user.last_name}</td>
-                  <td>{user.email}</td>
+                  <td> <span onClick={() => {
+                    onNavigate('Compose', user.email)
+                    }} style={{ color: '#60a5fa', textDecoration: 'underline', cursor: 'pointer' }}>
+                    {user.email}
+                  </span>
+                  </td>
                   <td>
                     <span
                       className={styles.roleBadge}
@@ -236,24 +245,24 @@ export default function BrowseUsers() {
                     >{user.role}</span>
                   </td>
                   <td
-                     style={{ 
-                        color: getStatusColor(user.status),
-                        cursor: 'pointer',
-                        // padding: '4px 12px',
-                        // backgroundColor: `${getStatusColor(user.status)}15`,
-                        display: 'inline-block',
-                        transition: 'transform 0.2s, opacity 0.2s'
-                      }}
-                      onClick={() => handleStatusClick(user.id, user.status)}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'scale(1.05)';
-                        e.currentTarget.style.opacity = '0.8';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'scale(1)';
-                        e.currentTarget.style.opacity = '1';
-                      }}
-                      title={`Click to change status (current: ${user.status})`}
+                    style={{
+                      color: getStatusColor(user.status),
+                      cursor: 'pointer',
+                      // padding: '4px 12px',
+                      // backgroundColor: `${getStatusColor(user.status)}15`,
+                      display: 'inline-block',
+                      transition: 'transform 0.2s, opacity 0.2s'
+                    }}
+                    onClick={() => handleStatusClick(user.id, user.status)}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                      e.currentTarget.style.opacity = '0.8';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.opacity = '1';
+                    }}
+                    title={`Click to change status (current: ${user.status})`}
                   >{user.status}</td>
                   <td>
                     {user.created_at

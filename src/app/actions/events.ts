@@ -301,6 +301,7 @@ export async function deleteEventAction(eventId: string) {
 
 export async function getEventFrontDataById(id: string) {
   const rows = await query(`SELECT 
+    e.id                AS event_id,
     e.name              AS event_name,
     e.start_date_time,
     e.end_date_time,
@@ -342,6 +343,7 @@ export async function getEventFrontDataById(id: string) {
 
   const first = rows[0]
   return {
+    id:              first.event_id,
     name:            first.event_name,
     start_date_time: first.start_date_time,
     end_date_time:   first.end_date_time,
@@ -376,6 +378,7 @@ export async function getEventFrontDataById(id: string) {
 
 export async function getEventFrontDataBySlug(slug: string) {
   const rows = await query(`SELECT 
+    e.id                AS event_id,
     e.name              AS event_name,
     e.start_date_time,
     e.end_date_time,
@@ -417,6 +420,7 @@ export async function getEventFrontDataBySlug(slug: string) {
 
   const first = rows[0]
   return {
+    id:              first.event_id,
     name:            first.event_name,
     start_date_time: first.start_date_time,
     end_date_time:   first.end_date_time,

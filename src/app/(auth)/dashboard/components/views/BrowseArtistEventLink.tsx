@@ -1,11 +1,10 @@
-'use client'
-
 import React, { useEffect, useState } from 'react'
 import { fetchEventArtistPerformancesAction, deleteEventArtistPerformanceAction, type EventArtistPerformanceRow, fetchPerformancesByArtistIdAction } from '@/app/actions/artist-event-link'
 import styles from './dashboardViews.module.css'
 import DeleteModal from '../components/DeleteModal'
 import { fetchEventsAction } from '@/app/actions/events'
 import { fetchArtistsAction } from '@/app/actions/artists'
+import { formatDate } from '@/app/utils/dateFormat'
 
 interface BrowseEventArtistPerformancesProps {
   onNavigate: (view: string, id?: string | null) => void
@@ -151,7 +150,7 @@ export default function BrowseEventArtistPerformances({ onNavigate, artistId }: 
 
   const formatTimestamp = (ts: Date | null) => {
     if (!ts) return 'N/A'
-    return new Date(ts).toLocaleString([], {
+    return new Date(ts).toLocaleString('es-AR', {
       hour: '2-digit',
       minute: '2-digit',
     })
@@ -159,12 +158,16 @@ export default function BrowseEventArtistPerformances({ onNavigate, artistId }: 
 
   const formatDate = (ts: Date | null) => {
     if (!ts) return 'N/A'
-    return new Date(ts).toLocaleDateString()
+    return new Date(ts).toLocaleDateString('es-AR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: '2-digit'
+          })
   }
 
   const formatTime = (ts: Date | null) => {
     if (!ts) return 'N/A'
-    return new Date(ts).toLocaleTimeString([], {
+    return new Date(ts).toLocaleTimeString('es-AR', {
       hour: '2-digit',
       minute: '2-digit',
     })
