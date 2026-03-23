@@ -1,0 +1,11 @@
+.container {
+    height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.imgContainer {
+    /* width: 1000px; */
+    /* transform: scale(0.15); */
+}
