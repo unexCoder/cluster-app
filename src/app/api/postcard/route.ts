@@ -21,13 +21,16 @@ export async function GET(request: NextRequest) {
   let bckGnd1: string = searchParams.get('bckGndb') || '#c30f45';
   let color: string = searchParams.get('color') || '#231123';
   const w: number = parseInt(searchParams.get('width') || '3840');
-  
+  const h: number = parseInt(searchParams.get('height') || '3840');
+  console.log('heiiii ',h);
   // Ensure colors have # prefix for canvas
   bckGnd0 = bckGnd0.startsWith('#') ? bckGnd0 : `#${bckGnd0}`;
   bckGnd1 = bckGnd1.startsWith('#') ? bckGnd1 : `#${bckGnd1}`;
   
-  const width: number = w * 3 / 4;
-  const height: number = w;
+  // const width: number = w * 3 / 4;
+  const width: number = w;
+  // const height: number = w;
+  const height: number = h ? h : w;
   
   // Cluster Position parameters
   const xPos: number = parseInt(searchParams.get('x') || '0');

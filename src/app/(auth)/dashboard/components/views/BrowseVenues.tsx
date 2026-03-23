@@ -147,12 +147,12 @@ export default function BrowseVenues({ onNavigate }: BrowseVenuesProps) {
             <tbody>
               {venues.map((venue) => {
                 // Parse JSON fields
-                const contactInfo = typeof venue.contact_info === 'string' 
-                  ? JSON.parse(venue.contact_info) 
+                const contactInfo = typeof venue.contact_info === 'string'
+                  ? JSON.parse(venue.contact_info)
                   : venue.contact_info
                 // const venueInfo = JSON.parse(venue.venue_info)
                 // const imageUrls = JSON.parse(venue.image_urls)
-                
+
                 return (
                   <tr key={venue.id}>
                     <td>{venue.name}</td>
@@ -161,8 +161,13 @@ export default function BrowseVenues({ onNavigate }: BrowseVenuesProps) {
                     <td>{venue.address}</td>
                     <td>{venue.city}</td>
                     <td>{contactInfo.name}</td>
-                    <td>{contactInfo.email}</td>
-                    <td>{ formatPhone(contactInfo.phone)}</td>
+                    <td
+                      onClick={() => onNavigate?.('Compose', contactInfo.email)}
+                      style={{ color: '#60a5fa', textDecoration: 'underline', cursor: 'pointer' }}
+                    >
+                      {contactInfo.email}
+                    </td>
+                    <td>{formatPhone(contactInfo.phone)}</td>
                     {/* <td>
                       {venue.created_at
                         ? new Date(venue.created_at).toLocaleDateString()
@@ -171,7 +176,7 @@ export default function BrowseVenues({ onNavigate }: BrowseVenuesProps) {
                     <td>
                       <button
                         className={styles.actionButton}
-                        onClick={() => onNavigate('Venue Profile Edit',venue.id)}
+                        onClick={() => onNavigate('Venue Profile Edit', venue.id)}
                       >
                         Edit
                       </button>
@@ -185,7 +190,7 @@ export default function BrowseVenues({ onNavigate }: BrowseVenuesProps) {
                   </tr>
                 )
               }
-            )}
+              )}
             </tbody>
           </table>
         </div>
@@ -197,9 +202,9 @@ export default function BrowseVenues({ onNavigate }: BrowseVenuesProps) {
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
               <h3>Confirm Deletion</h3>
-              <button 
+              <button
                 className={styles.closeButton}
-                onClick={() => setShowDeleteModal(false) }
+                onClick={() => setShowDeleteModal(false)}
                 disabled={deleting}
               >
                 <X size={20} />
@@ -237,7 +242,7 @@ export default function BrowseVenues({ onNavigate }: BrowseVenuesProps) {
   )
 }
 
-function formatPhone(phone:string) {
+function formatPhone(phone: string) {
   const cleaned = phone.replace(/[^\d+]/g, '');
 
   return cleaned.replace(

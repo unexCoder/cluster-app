@@ -136,6 +136,7 @@
 
 .modal {
   background: #fff0;
+  color: #e5e7eb;
   border-radius: 8px;
   max-width: 500px;
   width: 90%;
@@ -183,7 +184,8 @@
 
 .modalBody p {
   margin: 0 0 10px 0;
-  color: #374151;
+  /* color: #374151; */
+  color: #e5e7eb;
 }
 
 .modalFooter {

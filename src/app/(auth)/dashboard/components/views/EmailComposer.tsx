@@ -1,6 +1,6 @@
 'use client';
 import styles from './emailComposer.module.css'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface EmailFormData {
   to: string;
@@ -9,9 +9,13 @@ interface EmailFormData {
   from?: string;
 }
 
-export default function EmailComposer() {
+interface EmailComposerProps {
+  prefillTo?: string | null
+}
+
+export default function EmailComposer({ prefillTo }: EmailComposerProps) {
   const [formData, setFormData] = useState<EmailFormData>({
-    to: '',
+    to: prefillTo ?? '',
     subject: '',
     message: '',
     from: 'info@festivalcluster.org',
@@ -78,6 +82,12 @@ export default function EmailComposer() {
       [e.target.name]: e.target.value,
     });
   };
+
+  useEffect(() => {
+    if (prefillTo) {
+      setFormData(prev => ({ ...prev, to: prefillTo }))
+    }
+  }, [prefillTo])
 
   return (
     <div className={styles.container}>
@@ -147,8 +157,8 @@ export default function EmailComposer() {
         {status.type && (
           <div
             className={`${status.type === 'success'
-                ? 'bg-green-50 text-green-800'
-                : 'bg-red-50 text-red-800'
+              ? 'bg-green-50 text-green-800'
+              : 'bg-red-50 text-red-800'
               }`}
           >
             {status.message}

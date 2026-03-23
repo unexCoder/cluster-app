@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import styles from './eventDisplay.module.css'
 import Link from 'next/link'
+import TicketTierList from './TicketTierList'
 
 interface EventDisplayProps {
   id: string
@@ -29,6 +30,7 @@ interface Venue {
 }
 
 interface Event {
+  id: string
   name: string
   description: string
   short_description: string
@@ -66,6 +68,8 @@ export default function EventDisplay({ id }: EventDisplayProps) {
         }
 
         const data: { event: Event } = await response.json()
+        console.log('event data:', data.event)
+
         setEvent(data.event) // unwrap the nested { event: {...} }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unexpected error occurred')
@@ -76,6 +80,7 @@ export default function EventDisplay({ id }: EventDisplayProps) {
 
     fetchEvent()
   }, [id])
+  
 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleString('es-AR', {
@@ -173,8 +178,10 @@ export default function EventDisplay({ id }: EventDisplayProps) {
       </div>
 
       {/* Tikets */}
+      {/* Tickets */}
       <div className={styles.tikets}>
-        <h2>Tikets</h2>
+        <h2>Entradas</h2>
+        <TicketTierList eventId={event.id} eventSlug={id} />
       </div>
 
     </div>

@@ -6,6 +6,7 @@ import styles from './dashboardViews.module.css'
 import { X } from 'lucide-react'
 import { fetchVenuesAction } from '@/app/actions/venues'
 import Link from 'next/link'
+import { formatDate } from '@/app/utils/dateFormat'
 
 interface Event {
   id: string
@@ -42,6 +43,25 @@ interface VenueOption {
   name: string
   city: string
   capacity: number
+}
+
+const TYPE_COLOR: Record<string, string> = {
+  concert:     '#8b5cf6', // purple
+  festival:    '#f59e0b', // amber
+  workshop:    '#3b82f6', // blue
+  conference:  '#6366f1', // indigo
+  exhibition:  '#10b981', // emerald
+  party:       '#ec4899', // pink
+  other:       '#9ca3af', // gray
+}
+
+const STATUS_COLOR: Record<string, string> = {
+  draft:      '#9ca3af', // gray
+  published:  '#22c55e', // green
+  cancelled:  '#ef4444', // red
+  postponed:  '#f59e0b', // amber
+  completed:  '#3b82f6', // blue
+  sold_out:   '#ec4899', // pink
 }
 
 export default function BrowseEvents({ onNavigate }: BrowseEventProps) {
@@ -132,6 +152,7 @@ export default function BrowseEvents({ onNavigate }: BrowseEventProps) {
   }
 
 
+
   if (loading) {
     return (
       <div className={styles.container}>
@@ -194,16 +215,13 @@ export default function BrowseEvents({ onNavigate }: BrowseEventProps) {
                   </td>
                   <td>{venues.find(v => v.id === event.venue_id)?.city ?? '—'}
                   </td>
-                  <td>{venues.find(v => v.id === event.venue_id)?.capacity ?? '—'} / { event.remaining_capacity}
+                  <td>{venues.find(v => v.id === event.venue_id)?.capacity ?? '—'} / {event.remaining_capacity}
                   </td>
-
-                  <td>{  new Date(event.start_date_time).toLocaleString()}</td>
-                  <td>{  new Date(event.end_date_time).toLocaleTimeString()}</td>
-                  <td>{  new Date(event.doors_open_time).toLocaleTimeString()}</td>
-
-                  <td>{ event.status }</td>
-                  <td>{ event.event_type }</td>
-
+                  <td>{formatDate(event.start_date_time)}</td>
+                  <td>{formatDate(event.end_date_time)}</td>
+                  <td>{formatDate(event.doors_open_time)}</td>
+                  <td style={{ color: STATUS_COLOR[event.status] ?? '#888888', fontWeight: 600 }}>{event.status}</td>
+                  <td style={{ color: TYPE_COLOR[event.event_type] ?? '#888888', fontWeight: 600 }}>{event.event_type}</td>
 
                   {/* <td>
                     {event.created_at

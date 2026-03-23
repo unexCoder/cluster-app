@@ -6,7 +6,7 @@ import styles from './dashboardViews.module.css'
 import styles_local from './artistProfile.module.css'
 import Link from 'next/link'
 
-import  DeleteModal  from '../components/DeleteModal'
+import DeleteModal from '../components/DeleteModal'
 
 interface Artist {
   id: string
@@ -37,7 +37,7 @@ interface ArtistProfileProps {
   onNavigate?: (view: string, artistId?: string | null) => void
 }
 
-export default function ArtistProfile({ userId,profile, onNavigate }: ArtistProfileProps) {
+export default function ArtistProfile({ userId, profile, onNavigate }: ArtistProfileProps) {
   const [artist, setArtist] = useState<Artist[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -173,7 +173,7 @@ export default function ArtistProfile({ userId,profile, onNavigate }: ArtistProf
                 <div style={{ display: 'flex', gap: '12px' }}>
                   <button
                     className={styles.actionButton}
-                    onClick={() => onNavigate?.('Update Artist Profile',profile.id)}
+                    onClick={() => onNavigate?.('Update Artist Profile', profile.id)}
                   >
                     Edit Profile
                   </button>
@@ -265,9 +265,12 @@ export default function ArtistProfile({ userId,profile, onNavigate }: ArtistProf
                     {contactInfo.email && (
                       <div className={styles.infoGroup}>
                         <label>Email:</label>
-                        <a href={`mailto:${contactInfo.email}`} style={{ color: '#3b82f6' }}>
+                        <span
+                          onClick={() => onNavigate?.('Compose', contactInfo.email)}
+                          style={{ color: '#60a5fa', textDecoration: 'underline', cursor: 'pointer' }}
+                        >
                           {contactInfo.email}
-                        </a>
+                        </span>
                       </div>
                     )}
                     {contactInfo.phone && (
@@ -392,7 +395,7 @@ export default function ArtistProfile({ userId,profile, onNavigate }: ArtistProf
                   <div className={styles.infoGroup}>
                     <label>Profile URL:</label>
                     <span style={{ color: '#3b82f6', fontFamily: 'monospace', fontSize: '13px' }}>
-                      <Link href={`/artist/${profile.slug}` } target="_blank">/artist/{profile.slug}</Link>
+                      <Link href={`/artist/${profile.slug}`} target="_blank">/artist/{profile.slug}</Link>
                     </span>
                   </div>
                   {profile.is_verified === 1 && (
@@ -423,22 +426,22 @@ export default function ArtistProfile({ userId,profile, onNavigate }: ArtistProf
                     </span>
                   </div>
                   <div className={styles.infoGroup}>
-                    {profile.deleted_at && 
-                     <>
-                      <label>Deleted:</label>
-                      <span style={{color:'#f00'}}>
-                        {profile.deleted_at
-                          ? new Date(profile.deleted_at).toLocaleDateString()
-                          : 'N/A'}
-                      </span>
-                    </>
+                    {profile.deleted_at &&
+                      <>
+                        <label>Deleted:</label>
+                        <span style={{ color: '#f00' }}>
+                          {profile.deleted_at
+                            ? new Date(profile.deleted_at).toLocaleDateString()
+                            : 'N/A'}
+                        </span>
+                      </>
                     }
                   </div>
                 </div>
               </div>
 
               <div style={{ display: 'flex', gap: '12px' }}>
-                {!profile.deleted_at && 
+                {!profile.deleted_at &&
                   <button
                     className={styles.actionButton}
                     onClick={() => setShowDeleteModal(true)}
@@ -446,14 +449,14 @@ export default function ArtistProfile({ userId,profile, onNavigate }: ArtistProf
                     Delete Profile
                   </button>
                 }
-                {/* Delete Confirmation Modal */}              
-                {showDeleteModal && 
+                {/* Delete Confirmation Modal */}
+                {showDeleteModal &&
                   <DeleteModal
                     onConfirm={handleDeleteProfile}
                     onCancel={() => setShowDeleteModal(false)}
                     deleting={deleting}
-                />}
-  
+                  />}
+
               </div>
 
             </div>

@@ -25,6 +25,15 @@ import ArtistEventLinkEdit from './views/ArtistEventLinkEdit';
 import PerformanceDetail from './views/PerformanceDetail';
 import { getEventArtistPerformanceByIdAction } from '@/app/actions/artist-event-link';
 import BrowseEmails from './views/BrowseEmails';
+import BrowseTicketTier from './views/BrowseTicketTier';
+import BrowseOrders from './views/BrowseOrders';
+import BrowsePayments from './views/BrowsePayments';
+import BrowseTickets from './views/BrowseTickets';
+import BrowseTicketCheckins from './views/BrowseTicketCheckins';
+import BrowseTicketValidationLogs from './views/BrowseTicketValidationLogs';
+import TicketTierCreate from './views/TicketTierCreate';
+import TicketTierEdit from './views/TicketTierEdit';
+import { fetchTicketTierById } from '@/lib/api/ticketTier'
 
 interface DashboardContentProps {
   activeView: string;
@@ -34,14 +43,17 @@ interface DashboardContentProps {
   eventId?: string | null;
   performanceId?: string | null;
   onNavigate(view: string, artistId?: string | null, eventId?: string | null): void;
+  selectedEmail?: string | null;
+  ticketTierId?: string | null;
 }
 
-export default function DashboardContent({ activeView, userId, artistId, venueId, eventId, performanceId, onNavigate }: DashboardContentProps) {
+export default function DashboardContent({ activeView, userId, artistId, venueId, eventId, performanceId, onNavigate,selectedEmail, ticketTierId }: DashboardContentProps) {
   const [artistProfile, setArtistProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [venueProfile, setVenueProfile] = useState<any>(null);
   const [eventData, setEventData] = useState<any>(null);
   const [performanceData, setPerformanceData] = useState<any>(null);
+  const [ticketTierData, setTicketTierData] = useState<any>(null)
 
   // Fetch artist profile when needed
   useEffect(() => {
@@ -114,17 +126,30 @@ export default function DashboardContent({ activeView, userId, artistId, venueId
     if (activeView === 'Artist Event Link Edit' && performanceId) {
       setLoadingProfile(true)
       setPerformanceData(null)
-
+      
       getEventArtistPerformanceByIdAction(performanceId)
-        .then((data) => {
-          if (data.success && data.performance) {
-            setPerformanceData(data.performance)  // ← unwrap here
-          }
-        })
-        .catch((err) => console.error('Failed to fetch performances:', err))
-        .finally(() => setLoadingProfile(false))
+      .then((data) => {
+        if (data.success && data.performance) {
+          setPerformanceData(data.performance)  // ← unwrap here
+        }
+      })
+      .catch((err) => console.error('Failed to fetch performances:', err))
+      .finally(() => setLoadingProfile(false))
     }
   }, [activeView, performanceId])
+  
+  // Fetch ticket tier data when needed
+  useEffect(() => {
+    if (activeView === 'Ticket Tier Edit' && ticketTierId) {
+      setLoadingProfile(true)
+      setTicketTierData(null)
+
+      fetchTicketTierById(ticketTierId)
+        .then((data) => setTicketTierData(data))
+        .catch((err) => console.error('Failed to fetch ticket tier:', err))
+        .finally(() => setLoadingProfile(false))
+    }
+  }, [activeView, ticketTierId])
 
   // Función que retorna el componente basado en la vista activa
   const renderView = () => {
@@ -134,11 +159,11 @@ export default function DashboardContent({ activeView, userId, artistId, venueId
       case 'User Managment':
         // return <div>User Managment</div>;
       case 'Browse Users':
-        return <BrowseUsers />;
+        return <BrowseUsers onNavigate={onNavigate}/>;
       case 'Browse Artists':
         return <BrowseArtists onNavigate={onNavigate} />;
       case 'Mailing List':
-        return <MailingList />;
+        return <MailingList onNavigate={onNavigate}/>;
       case 'Cluster Managment':
         // return <div>Cluster Management</div>;
       case 'Event List':
@@ -187,11 +212,37 @@ export default function DashboardContent({ activeView, userId, artistId, venueId
         onNavigate={onNavigate}       
         artistId={artistId ?? undefined}   // ← pass it through
       />
+      case 'Ticket Tier List':
+        return <BrowseTicketTier onNavigate={onNavigate} />;
+      case 'Ticket Tier Create':
+        return <TicketTierCreate onNavigate={onNavigate} />
+      case 'Ticket Tier Edit':
+        if (!ticketTierId) return <div>Ticket Tier ID not available</div>
+        if (loadingProfile) return <div>Loading ticket tier...</div>
+        if (!ticketTierData) return <div>No ticket tier found</div>
+          return <TicketTierEdit
+              tierId={ticketTierId}
+              initialData={ticketTierData}
+              onNavigate={onNavigate}
+          />
+
       case 'Financial Control':
         return <div>Financial Control</div>;
-      case 'Analitics':
-        return <div>Analytics</div>;
-      case 'Security Logs':
+      case 'Orders':
+        return <BrowseOrders onNavigate={onNavigate} />;
+      case 'Payments':
+        return <BrowsePayments onNavigate={onNavigate} />;
+        
+        case 'Analitics':
+          return <div>Analytics</div>;
+        case 'Tickets':
+          return <BrowseTickets onNavigate={onNavigate} />;
+        case 'Ticket Checkin':
+          return <BrowseTicketCheckins onNavigate={onNavigate} />;
+        case 'Ticket Validation Log':
+          return <BrowseTicketValidationLogs onNavigate={onNavigate} />;
+      
+        case 'Security Logs':
         return <div>Security Logs</div>;
       case 'Profile':
         return userId ? <DisplayProfile userId={userId} onNavigate={onNavigate} /> : <div>User ID not available</div>;
@@ -209,9 +260,9 @@ export default function DashboardContent({ activeView, userId, artistId, venueId
         );
       case 'Email':
       case 'Inbox':
-          return <BrowseEmails />
+          return <BrowseEmails onNavigate={onNavigate}/>
       case 'Compose':
-        return <EmailComposer />;
+        return <EmailComposer prefillTo={selectedEmail} />;
 
       // Artist dashboard
       case 'Artist Profile':

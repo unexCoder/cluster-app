@@ -15,7 +15,12 @@ interface MailingListRow {
     user_agent?: string
 }
 
-export default function BrowseUsers() {
+interface MaillinListProps {
+    onNavigate: (view: string, id?: string | null) => void
+}
+
+
+export default function BrowseUsers({ onNavigate }: MaillinListProps) {
     const [mailingList, setMailingList] = useState<MailingListRow[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -90,7 +95,15 @@ export default function BrowseUsers() {
                         <tbody>
                             {mailingList.map((mail) => (
                                 <tr key={mail.id}>
-                                    <td>{mail.email}</td>
+
+                                    <td
+                                        onClick={() => onNavigate?.('Compose', mail.email)}
+                                        style={{ color: '#60a5fa', textDecoration: 'underline', cursor: 'pointer' }}
+                                    >
+                                        {mail.email}
+                                    </td>
+
+                                    {/* <td>{mail.email}</td> */}
 
                                     <td>
                                         {mail.confirmed_at
