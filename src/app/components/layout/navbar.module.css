@@ -11,3 +11,30 @@
     align-items: baseline;
     color: var(--text-primary);
 }
+
+@media (max-width: 768px) {
+
+    /* Styles */
+    .navbarContainer {
+        font-size: 2rem;
+        /* display: none; */
+        z-index: 10;
+        /* padding-top: 4%; */
+    }
+    
+    .navbarContainer ul {
+        display: flex;
+        flex-direction: column;
+        padding: 0 15px;
+        gap: 5px;
+        color: var(--foreground);
+        text-shadow: 0 1px 1px rgba(0, 0, 0);   
+    }
+}
+
+@media ((min-width: 768px) and (max-width: 968px)) {    
+    .navbarContainer ul {
+        flex-direction: row;
+        gap:10px;
+    }
+}

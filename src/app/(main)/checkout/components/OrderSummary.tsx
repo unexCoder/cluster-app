@@ -2,6 +2,7 @@
 'use client'
 
 import { CartItem } from '@/../types/checkout'
+import styles from './checkout.module.css'
 
 interface OrderSummaryProps {
   cart: CartItem[]
@@ -17,121 +18,87 @@ export default function OrderSummary({ cart, orderNumber, total }: OrderSummaryP
     return acc
   }, {})
 
+  const totalQty = cart.reduce((acc, i) => acc + i.quantity, 0)
+
   return (
-    <div style={{
-      position: 'sticky',
-      top: '32px',
-      background: '#1f2937',
-      borderRadius: '12px',
-      border: '1px solid #374151',
-      overflow: 'hidden',
-      height: 'fit-content'
-    }}>
+    <div className={styles.summary}>
+
       {/* Header */}
-      <div style={{
-        padding: '16px 20px',
-        background: '#111827',
-        borderBottom: '1px solid #374151'
-      }}>
-        <p style={{ margin: 0, fontWeight: '700', fontSize: '15px' }}>
-          Resumen de compra
-        </p>
+      <div className={styles.summary__header}>
+        <p className={styles.summary__title}>Resumen de compra</p>
         {orderNumber && (
-          <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#6b7280' }}>
-            Orden #{orderNumber}
-          </p>
+          <p className={styles.summary__orderNumber}>Orden #{orderNumber}</p>
         )}
       </div>
 
       {/* Cart items */}
-      <div style={{ padding: '16px 20px' }}>
+      <div className={styles.summary__body}>
         {cart.length === 0 ? (
-          <p style={{ margin: 0, fontSize: '14px', color: '#6b7280', textAlign: 'center', padding: '16px 0' }}>
-            No hay entradas seleccionadas
-          </p>
+          <p className={styles.summary__empty}>No hay entradas seleccionadas</p>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div className={styles.summary__itemList}>
             {Object.entries(byEvent).map(([eventId, items]) => (
-              <div key={eventId}>
+              <div key={eventId} className={styles.summary__eventGroup}>
+
                 {/* Event name */}
-                <p style={{
-                  margin: '0 0 8px',
-                  fontSize: '12px',
-                  fontWeight: '600',
-                  color: '#9ca3af',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.06em'
-                }}>
+                <p className={styles.summary__eventName}>
                   {items[0].event_name}
                 </p>
 
                 {/* Tiers */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div className={styles.summary__tierList}>
                   {items.map(item => (
-                    <div key={item.tier_id} style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'flex-start',
-                      gap: '12px'
-                    }}>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ margin: 0, fontSize: '14px', fontWeight: '500' }}>
+                    <div key={item.tier_id} className={styles.summary__tierRow}>
+                      <div className={styles.summary__tierInfo}>
+                        <p className={styles.summary__tierName}>
                           {item.tier_name}
                         </p>
-                        <p style={{ margin: '2px 0 0', fontSize: '12px', color: '#6b7280' }}>
+                        <p className={styles.summary__tierQty}>
                           {item.quantity} × ${Number(item.price).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                         </p>
                       </div>
-                      <p style={{
-                        margin: 0, fontSize: '14px',
-                        fontWeight: '600', flexShrink: 0
-                      }}>
+                      <p className={styles.summary__tierSubtotal}>
                         ${(item.price * item.quantity).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                       </p>
                     </div>
                   ))}
                 </div>
+
               </div>
             ))}
           </div>
         )}
       </div>
 
-      {/* Divider */}
+      {/* Breakdown + total — solo si hay items */}
       {cart.length > 0 && (
         <>
-          <div style={{ height: '1px', background: '#374151', margin: '0 20px' }} />
+          <div className={styles.summary__divider} />
 
           {/* Subtotal breakdown */}
-          <div style={{ padding: '14px 20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <p style={{ margin: 0, fontSize: '13px', color: '#9ca3af' }}>
-                Subtotal ({cart.reduce((acc, i) => acc + i.quantity, 0)} entrada{cart.reduce((acc, i) => acc + i.quantity, 0) !== 1 ? 's' : ''})
+          <div className={styles.summary__breakdown}>
+            <div className={styles.summary__breakdownRow}>
+              <p className={styles.summary__breakdownLabel}>
+                Subtotal ({totalQty} entrada{totalQty !== 1 ? 's' : ''})
               </p>
-              <p style={{ margin: 0, fontSize: '13px', color: '#9ca3af' }}>
+              <p className={styles.summary__breakdownValue}>
                 ${total.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
               </p>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <p style={{ margin: 0, fontSize: '13px', color: '#9ca3af' }}>Descuentos</p>
-              <p style={{ margin: 0, fontSize: '13px', color: '#22c55e' }}>—</p>
+            <div className={styles.summary__breakdownRow}>
+              <p className={styles.summary__breakdownLabel}>Descuentos</p>
+              <p className={[styles.summary__breakdownValue, styles['summary__breakdownValue--discount']].join(' ')}>
+                —
+              </p>
             </div>
           </div>
 
-          <div style={{ height: '1px', background: '#374151', margin: '0 20px' }} />
+          <div className={styles.summary__divider} />
 
           {/* Total */}
-          <div style={{
-            padding: '16px 20px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <p style={{ margin: 0, fontWeight: '700', fontSize: '15px' }}>Total</p>
-            <p style={{
-              margin: 0, fontWeight: '700',
-              fontSize: '20px', color: '#f9fafb'
-            }}>
+          <div className={styles.summary__total}>
+            <p className={styles.summary__totalLabel}>Total</p>
+            <p className={styles.summary__totalAmount}>
               ${total.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
             </p>
           </div>
@@ -139,19 +106,11 @@ export default function OrderSummary({ cart, orderNumber, total }: OrderSummaryP
       )}
 
       {/* Security badge */}
-      <div style={{
-        padding: '12px 20px',
-        borderTop: '1px solid #374151',
-        background: '#111827',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px'
-      }}>
-        <span style={{ fontSize: '14px' }}>🔒</span>
-        <p style={{ margin: 0, fontSize: '12px', color: '#6b7280' }}>
-          Compra 100% segura y encriptada
-        </p>
+      <div className={styles.summary__securityBadge}>
+        <span className={styles.summary__securityIcon}>🔒</span>
+        <p className={styles.summary__securityText}>Compra 100% segura y encriptada</p>
       </div>
+
     </div>
   )
 }

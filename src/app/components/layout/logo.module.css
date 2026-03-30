@@ -8,3 +8,12 @@
     /* background-color: var(--background); */
     color: var(--background);
 }
+
+@media (max-width: 768px) {
+    .logo {
+        font-size: 2.75rem;
+        font-weight: 900;
+        padding: 0 15px;
+        text-shadow: 0 1px 1px var(--background);
+    }
+}

@@ -19,6 +19,11 @@ export async function fetchOrders(): Promise<Order[]> {
   return res.json()
 }
 
+type Item = {
+  ticket_tier_id: string;
+  quantity: number;
+};
+
 export async function createOrder(data: {
   guest_name: string
   guest_email: string
@@ -28,9 +33,12 @@ export async function createOrder(data: {
   discount_amount?: number
   tax_amount?: number
   total_amount: number
+  items: Item[]
 }) {
+
+
   const payload = {
-    id: crypto.randomUUID(),
+    // id: crypto.randomUUID(), // se genera en backend
     order_number: `ORD-${Date.now()}`,
     guest_name: data.guest_name,
     guest_email: data.guest_email,
@@ -40,9 +48,13 @@ export async function createOrder(data: {
     discount_amount: data.discount_amount?.toFixed(2) ?? '0.00',
     tax_amount: data.tax_amount?.toFixed(2) ?? '0.00',
     total_amount: data.total_amount.toFixed(2),
-    status: 'pending'
+    status: 'pending',
+    items: data.items.map(i => ({
+      ticket_tier_id: i.ticket_tier_id,
+      quantity: i.quantity
+    }))
   }
-
+  console.log("payload:: ",payload)  
   const res = await fetch(`${API_BASE}/order`, {
     method: 'POST',
     headers,

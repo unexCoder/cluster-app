@@ -1,6 +1,6 @@
 import { Metadata } from "next";
-import Footer from "../components/layout/Footer";
 import { NavigationProvider } from "../context/NavigationContext";
+import FooterWrapper from "../components/layout/FooterWrapper";
 
 export const metadata: Metadata = {
   title: {
@@ -69,7 +69,7 @@ export default function MainLayout({
     <>
       <NavigationProvider>
         {children}
-        <Footer />
+        <FooterWrapper />
       </NavigationProvider>
     </>
   );
