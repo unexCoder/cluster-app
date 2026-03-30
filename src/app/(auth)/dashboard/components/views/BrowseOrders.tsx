@@ -38,8 +38,8 @@ export default function BrowseOrders({ onNavigate }: BrowseOrdersProps) {
     }
   }
 
-  console.log('tiers: ', orders)
-
+  console.log(orders)
+  
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -71,7 +71,7 @@ export default function BrowseOrders({ onNavigate }: BrowseOrdersProps) {
                 <th>Order #</th>
                 <th>Guest</th>
                 <th>Email</th>
-                <th>Phone</th>
+                {/* <th>Phone</th> */}
                 <th>Subtotal</th>
                 <th>Discount</th>
                 <th>Tax</th>
@@ -91,7 +91,7 @@ export default function BrowseOrders({ onNavigate }: BrowseOrdersProps) {
                     >
                       {order.guest_email}
                     </td>
-                  <td>{order.guest_phone ?? '—'}</td>
+                  {/* <td>{order.guest_phone ?? '—'}</td> */}
                   <td>${Number(order.subtotal).toFixed(2)}</td>
                   <td>${Number(order.discount_amount ?? 0).toFixed(2)}</td>
                   <td>${Number(order.tax_amount ?? 0).toFixed(2)}</td>

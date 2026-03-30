@@ -20,20 +20,10 @@
     background-color: #000;
 }
 
-.proximamente{
-    height: 100svh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: 900;
-    font-size: 1.5rem;
-    background-color: var(--text-secondary);
-    color: var(--text-primary);
-}
-
 @media (max-width: 768px) {
-    .container {
-        /* min-height: 100svh; */
-        height: auto;
+    .cover{
+        min-height: 100svh;
+        position: absolute;
+        top: 50px;
     }
 }

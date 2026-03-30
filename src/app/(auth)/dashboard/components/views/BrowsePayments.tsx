@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import styles from './dashboardViews.module.css'
 import { fetchPayments } from '@/lib/api/payment'
-import { Payment } from '../../../../../../types/types'
+import { fetchOrders } from '@/lib/api/order'
+import { Payment, Order } from '../../../../../../types/types'
 import { formatDate } from '@/app/utils/dateFormat'
 
 interface BrowsePaymentsProps {
@@ -9,34 +10,36 @@ interface BrowsePaymentsProps {
 }
 
 const STATUS_COLOR: Record<string, string> = {
-  pending:            '#f59e0b', // amber
-  processing:         '#3b82f6', // blue
-  completed:          '#22c55e', // green
-  failed:             '#ef4444', // red
-  refunded:           '#6366f1', // indigo
+  pending: '#f59e0b', // amber
+  processing: '#3b82f6', // blue
+  completed: '#22c55e', // green
+  failed: '#ef4444', // red
+  refunded: '#6366f1', // indigo
   partially_refunded: '#8b5cf6', // purple
-  cancelled:          '#9ca3af', // gray
+  cancelled: '#9ca3af', // gray
 }
 
 const METHOD_COLOR: Record<string, string> = {
-  credit_card:    '#3b82f6', // blue
-  debit_card:     '#6366f1', // indigo
-  paypal:         '#0ea5e9', // sky
-  mercadopago:    '#22c55e', // green
-  bank_transfer:  '#f59e0b', // amber
-  cash:           '#84cc16', // lime
-  crypto:         '#8b5cf6', // purple
-  pagofacil:      '#f97316', // orange
-  rapipago:       '#ec4899', // pink
+  credit_card: '#3b82f6', // blue
+  debit_card: '#6366f1', // indigo
+  paypal: '#0ea5e9', // sky
+  mercadopago: '#22c55e', // green
+  bank_transfer: '#f59e0b', // amber
+  cash: '#84cc16', // lime
+  crypto: '#8b5cf6', // purple
+  pagofacil: '#f97316', // orange
+  rapipago: '#ec4899', // pink
 }
 
 export default function BrowsePayments({ onNavigate }: BrowsePaymentsProps) {
   const [payments, setPayments] = useState<Payment[]>([])
+  const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     loadPayments()
+    loadOrders()
   }, [])
 
   const loadPayments = async () => {
@@ -52,7 +55,19 @@ export default function BrowsePayments({ onNavigate }: BrowsePaymentsProps) {
     }
   }
 
-  console.log('tiers: ', payments)
+  const loadOrders = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const data = await fetchOrders()
+      setOrders(data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -91,7 +106,8 @@ export default function BrowsePayments({ onNavigate }: BrowsePaymentsProps) {
               {payments.map((payment) => (
                 <tr key={payment.id}>
                   <td>{payment.transaction_id ?? '—'}</td>
-                  <td>{payment.order_id}</td>
+                  <td>{orders.find(o => o.id === payment.order_id)?.order_number ?? '—'}
+                  </td>
                   <td>${Number(payment.amount).toFixed(2)}</td>
                   <td style={{ color: METHOD_COLOR[payment.payment_method] ?? '#888888', fontWeight: 600 }}>{payment.payment_method}</td>
                   {/* <td>{payment.provider ?? '—'}</td> */}

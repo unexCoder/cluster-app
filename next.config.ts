@@ -27,7 +27,8 @@ const nextConfig: NextConfig = {
     qualities: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
   },
   // enable cache components
-  cacheComponents: true,
+  cacheComponents: process.env.NODE_ENV === 'production', // solo en prod
+  // cacheComponents: true,
 };
 
 export default nextConfig;

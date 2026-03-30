@@ -75,6 +75,7 @@
     }
     
     .bottomFooter {
+        margin-top: 21%;
         font-size: 0.75rem;
     }
     
@@ -87,6 +88,7 @@
     }
 
     .suscriptContainer {
+        margin-top: 5%;
         padding: 50px 0 0;
         display: flex;
         align-items: center;

@@ -9,6 +9,8 @@
     /* Styles */
     .headerContainer {
         flex-direction: column;
-        /* align-items: center; */
+        height: auto;
+        align-items: flex-start;
+        background-color: #fff0;
     }
 }
