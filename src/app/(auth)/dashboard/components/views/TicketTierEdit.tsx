@@ -24,6 +24,7 @@ interface TicketTierForm {
   sales_start: string
   sales_end: string
   benefits: string[]
+  background_url: string
 }
 
 interface Event {
@@ -50,6 +51,7 @@ export default function TicketTierEdit({ tierId, initialData, onNavigate }: Tick
     sales_start: '',
     sales_end: '',
     benefits: [],
+    background_url: '',
   })
   const [currentStep, setCurrentStep] = useState(1)
   const [updating, setUpdating] = useState(false)
@@ -86,17 +88,18 @@ export default function TicketTierEdit({ tierId, initialData, onNavigate }: Tick
     }
 
     setFormData({
-      event_id:     initialData.event_id ?? '',
-      name:         initialData.name ?? '',
-      description:  initialData.description ?? '',
-      price:        initialData.price?.toString() ?? '',
-      quantity:     initialData.quantity?.toString() ?? '',
+      event_id: initialData.event_id ?? '',
+      name: initialData.name ?? '',
+      description: initialData.description ?? '',
+      price: initialData.price?.toString() ?? '',
+      quantity: initialData.quantity?.toString() ?? '',
       max_per_order: initialData.max_per_order?.toString() ?? '',
-      sort_order:   initialData.sort_order?.toString() ?? '0',
-      is_active:    Boolean(initialData.is_active),
-      sales_start:  toDateTimeLocal(initialData.sales_start),
-      sales_end:    toDateTimeLocal(initialData.sales_end),
-      benefits:     parseBenefits(initialData.benefits),
+      sort_order: initialData.sort_order?.toString() ?? '0',
+      is_active: Boolean(initialData.is_active),
+      sales_start: toDateTimeLocal(initialData.sales_start),
+      sales_end: toDateTimeLocal(initialData.sales_end),
+      benefits: parseBenefits(initialData.benefits),
+      background_url: initialData.background_url ?? '',
     })
   }, [initialData])
 
@@ -150,17 +153,18 @@ export default function TicketTierEdit({ tierId, initialData, onNavigate }: Tick
       setUpdating(true)
 
       const payload = {
-        event_id:      formData.event_id,
-        name:          formData.name,
-        description:   formData.description || null,
-        price:         formData.price,
-        quantity:      Number(formData.quantity),
+        event_id: formData.event_id,
+        name: formData.name,
+        description: formData.description || null,
+        price: formData.price,
+        quantity: Number(formData.quantity),
         max_per_order: formData.max_per_order ? Number(formData.max_per_order) : null,
-        sort_order:    Number(formData.sort_order),
-        is_active:     formData.is_active ? 1 : 0,
-        sales_start:   formatDateTime(formData.sales_start),
-        sales_end:     formatDateTime(formData.sales_end),
-        benefits:      formData.benefits.length > 0 ? formData.benefits : null,
+        sort_order: Number(formData.sort_order),
+        is_active: formData.is_active ? 1 : 0,
+        sales_start: formatDateTime(formData.sales_start),
+        sales_end: formatDateTime(formData.sales_end),
+        benefits: formData.benefits.length > 0 ? formData.benefits : null,
+        background_url: formData.background_url,
       }
 
       await updateTicketTier(tierId, payload)
@@ -351,6 +355,19 @@ export default function TicketTierEdit({ tierId, initialData, onNavigate }: Tick
                 </div>
               </div>
 
+              {/* Background url */}
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500' }}>Background url</label>
+                <input
+                  type="text"
+                  value={formData.background_url}
+                  onChange={e => updateField('background_url', e.target.value)}
+                  placeholder="http://localhost:3000/api/postcard"
+                  style={{ width: '100%', padding: '10px', borderRadius: '6px', background: '#111827', color: 'white', border: errors.name ? '1px solid #ef4444' : '1px solid #374151' }}
+                />
+                {errors.name && <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px' }}>{errors.name}</p>}
+              </div>
+
               <div>
                 <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500' }}>Benefits</label>
                 <div style={{ display: 'flex', gap: '8px', marginBottom: '10px' }}>
@@ -410,7 +427,9 @@ export default function TicketTierEdit({ tierId, initialData, onNavigate }: Tick
             {currentStep === 1 ? (
               <button
                 type="button"
-                onClick={() => { if (validateStep1()) setCurrentStep(2) }}
+                onClick={(e) => { 
+                  e.preventDefault()
+                  if (validateStep1()) setCurrentStep(2) }}
                 style={{ padding: '10px 24px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', marginLeft: 'auto' }}
               >
                 Next

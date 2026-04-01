@@ -3,16 +3,17 @@ import React, { useEffect, useState } from 'react'
 import styles from './dashboardViews.module.css'
 import { fetchOrders } from '@/lib/api/order'
 import { Order } from '@/../types/types'
+import { formatDate } from '@/app/utils/dateFormat'
 
 interface BrowseOrdersProps {
   onNavigate: (view: string, id?: string | null) => void
 }
 
 const STATUS_COLOR: Record<string, string> = {
-  pending:            '#f59e0b', // amber
-  confirmed:          '#22c55e', // green
-  cancelled:          '#ef4444', // red
-  refunded:           '#3b82f6', // blue
+  pending: '#f59e0b', // amber
+  confirmed: '#22c55e', // green
+  cancelled: '#ef4444', // red
+  refunded: '#3b82f6', // blue
   partially_refunded: '#8b5cf6', // purple
 }
 
@@ -29,8 +30,8 @@ export default function BrowseOrders({ onNavigate }: BrowseOrdersProps) {
     try {
       setLoading(true)
       setError(null)
-      const data = await fetchOrders()
-      setOrders(data)
+      const response = await fetchOrders()
+      setOrders(response.data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
@@ -39,7 +40,7 @@ export default function BrowseOrders({ onNavigate }: BrowseOrdersProps) {
   }
 
   console.log(orders)
-  
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -86,18 +87,20 @@ export default function BrowseOrders({ onNavigate }: BrowseOrdersProps) {
                   <td>{order.order_number}</td>
                   <td>{order.guest_name}</td>
                   <td
-                      onClick={() => onNavigate?.('Compose', order.guest_email)}
-                      style={{ color: '#60a5fa', textDecoration: 'underline', cursor: 'pointer' }}
-                    >
-                      {order.guest_email}
-                    </td>
+                    onClick={() => onNavigate?.('Compose', order.guest_email)}
+                    style={{ color: '#60a5fa', textDecoration: 'underline', cursor: 'pointer' }}
+                  >
+                    {order.guest_email}
+                  </td>
                   {/* <td>{order.guest_phone ?? '—'}</td> */}
                   <td>${Number(order.subtotal).toFixed(2)}</td>
                   <td>${Number(order.discount_amount ?? 0).toFixed(2)}</td>
                   <td>${Number(order.tax_amount ?? 0).toFixed(2)}</td>
                   <td>${Number(order.total_amount).toFixed(2)}</td>
-                  <td  style={{ color: STATUS_COLOR[order.status] ?? '#888888', fontWeight: 600 }}>{order.status}</td>
-                  <td>{order.created_at ? new Date(order.created_at).toLocaleString() : '—'}</td>
+                  <td style={{ color: STATUS_COLOR[order.status] ?? '#888888', fontWeight: 600 }}>{order.status}</td>
+                  <td>
+                    {order.created_at ? `${formatDate(order.created_at)} hs.` : '—'}
+                  </td>
                 </tr>
               ))}
             </tbody>

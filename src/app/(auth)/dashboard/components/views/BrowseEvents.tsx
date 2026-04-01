@@ -217,9 +217,9 @@ export default function BrowseEvents({ onNavigate }: BrowseEventProps) {
                   </td>
                   <td>{venues.find(v => v.id === event.venue_id)?.capacity ?? '—'} / {event.remaining_capacity}
                   </td>
-                  <td>{formatDate(event.start_date_time)}</td>
-                  <td>{formatDate(event.end_date_time)}</td>
-                  <td>{formatDate(event.doors_open_time)}</td>
+                  <td>{formatDate(event.start_date_time)} hs.</td>
+                  <td>{formatDate(event.end_date_time)} hs.</td>
+                  <td>{formatDate(event.doors_open_time)} hs.</td>
                   <td style={{ color: STATUS_COLOR[event.status] ?? '#888888', fontWeight: 600 }}>{event.status}</td>
                   <td style={{ color: TYPE_COLOR[event.event_type] ?? '#888888', fontWeight: 600 }}>{event.event_type}</td>
 

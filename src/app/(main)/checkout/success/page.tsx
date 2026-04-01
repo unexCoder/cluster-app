@@ -51,20 +51,34 @@ export default function CheckoutSuccess() {
       return
     }
 
-    if (!orderId || !paymentId) {
+    if (!orderId) {
       setError('Información de orden no disponible')
       setLoading(false)
       return
     }
 
+    const isFreeOrder = params.get('payment') === 'free'
+
+
     const load = async () => {
       try {
-        const [orderData, paymentData] = await Promise.all([
-          fetchOrderById(orderId),
-          getPaymentStatus(paymentId)
-        ])
-        setOrder(orderData)
-        setPayment(paymentData)
+        if (isFreeOrder) {
+          // Free order — only fetch order, no payment record exists
+          const orderData = await fetchOrderById(orderId)
+          setOrder(orderData)
+        } else {
+          if (!paymentId) {
+            setError('Información de pago no disponible')
+            setLoading(false)
+            return
+          }
+          const [orderData, paymentData] = await Promise.all([
+            fetchOrderById(orderId),
+            getPaymentStatus(paymentId)
+          ])
+          setOrder(orderData)
+          setPayment(paymentData)
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Error al cargar la orden')
       } finally {
@@ -87,6 +101,13 @@ export default function CheckoutSuccess() {
       icon: '✅',
       title: '¡Pago confirmado!',
       message: 'Tu compra fue procesada exitosamente. Recibirás tus tickets por email en los próximos minutos.',
+      color: '#22c55e',
+      bg: '#052e16'
+    },
+    confirmed: {
+      icon: '✅',
+      title: '¡Entrada confirmada!',
+      message: 'Tu entrada gratuita fue registrada exitosamente. Recibirás tus tickets por email en los próximos minutos.',
       color: '#22c55e',
       bg: '#052e16'
     },
@@ -367,9 +388,13 @@ export default function CheckoutSuccess() {
             Revisá tu email
           </p>
           <p style={{ margin: 0, fontSize: '13px', color: '#9ca3af', lineHeight: '1.5' }}>
-            Tus tickets llegarán a <strong style={{ color: '#d1d5db' }}>{order?.guest_email}</strong> una vez confirmado el pago.
-            Revisá también la carpeta de spam.
+            Tus tickets llegarán a <strong style={{ color: '#d1d5db' }}>{order?.guest_email}</strong>
+            {params.get('payment') === 'free'
+              ? '. Revisá también la carpeta de spam.'
+              : ' una vez confirmado el pago. Revisá también la carpeta de spam.'
+            }
           </p>
+
         </div>
       </div>
 

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import styles from './dashboardViews.module.css'
 import { fetchTickets } from '@/lib/api/ticket'
-import { Ticket } from '../../../../../../types/types'
+import { Order, Ticket } from '../../../../../../types/types'
 import { formatDate } from '@/app/utils/dateFormat'
+import { fetchOrders } from '@/lib/api/order'
 
 interface BrowseTicketsProps {
   onNavigate: (view: string, id?: string | null) => void
@@ -22,11 +23,13 @@ const STATUS_COLOR: Record<string, string> = {
 
 export default function BrowseTickets({ onNavigate }: BrowseTicketsProps) {
   const [tickets, setTickets] = useState<Ticket[]>([])
+  const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     loadTickets()
+    loadOrders()
   }, [])
 
   const loadTickets = async () => {
@@ -42,7 +45,18 @@ export default function BrowseTickets({ onNavigate }: BrowseTicketsProps) {
     }
   }
 
-  console.log('tiers: ', tickets)
+  const loadOrders = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        const response = await fetchOrders()
+        setOrders(response.data)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
+      } finally {
+        setLoading(false)
+      }
+    }
 
   return (
     <div className={styles.container}>
@@ -73,7 +87,7 @@ export default function BrowseTickets({ onNavigate }: BrowseTicketsProps) {
             <thead>
               <tr>
                 <th>Ticket #</th>
-                <th>Order Id</th>
+                <th>Order Numner</th>
                 <th>Holder</th>
                 <th>Email</th>
                 <th>Status</th>
@@ -91,7 +105,8 @@ export default function BrowseTickets({ onNavigate }: BrowseTicketsProps) {
               {tickets.map((ticket) => (
                 <tr key={ticket.id}>
                   <td>{ticket.ticket_number}</td>
-                  <td>{ticket.order_id}</td>
+                  <td>{orders.find(o => o.id === ticket.order_id)?.order_number ?? '—'}
+                  </td>
                   <td>{ticket.current_holder_name ?? '—'}</td>
                   <td
                     onClick={() => onNavigate?.('Compose', ticket.current_holder_email)}

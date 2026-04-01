@@ -4,7 +4,8 @@ export const DATE_FORMAT: Intl.DateTimeFormatOptions = {
   month: '2-digit',
   year: '2-digit',
   hour: '2-digit',
-  minute: '2-digit'
+  minute: '2-digit',
+  hour12: false
 }
 
 export const LOCALE = 'es-AR'

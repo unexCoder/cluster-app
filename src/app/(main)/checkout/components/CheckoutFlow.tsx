@@ -64,6 +64,17 @@ export default function CheckoutFlow({ eventId }: CheckoutFlowProps) {
             })
             console.log(order)
 
+            // ── Free order: backend already confirmed it, skip payment entirely ──
+            if (order.status === "confirmed" && order.payment === "free") {
+                const params = new URLSearchParams({
+                    order_id: order.id,
+                    status: "confirmed",
+                    payment: "free",
+                })
+                window.location.href = `/checkout/success?${params.toString()}`
+                return  // ← prevent falling through to step 3
+            }
+
             setState(prev => ({
                 ...prev,
                 guest,

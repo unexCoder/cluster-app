@@ -154,6 +154,16 @@ export default function BrowseEmails({ onNavigate }: BrowseEmailsProps) {
     )
   }
 
+  const DATE_FORMAT: Intl.DateTimeFormatOptions = {
+  day: '2-digit',
+  month: '2-digit',
+  year: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false
+}
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -203,7 +213,7 @@ export default function BrowseEmails({ onNavigate }: BrowseEmailsProps) {
                         )}
                       </td>
 
-                      <td>{email.received_at ? new Date(email.received_at).toLocaleString() : 'N/A'}</td>
+                      <td>{email.received_at ? new Date(email.received_at).toLocaleString('es-AR',DATE_FORMAT) : 'N/A'}</td>
                       <td>
                         <button
                           className={styles.actionButton}

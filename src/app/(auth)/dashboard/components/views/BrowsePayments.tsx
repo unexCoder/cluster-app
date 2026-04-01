@@ -46,8 +46,8 @@ export default function BrowsePayments({ onNavigate }: BrowsePaymentsProps) {
     try {
       setLoading(true)
       setError(null)
-      const data = await fetchPayments()
-      setPayments(data)
+      const response = await fetchPayments()
+      setPayments(response.data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
@@ -60,7 +60,7 @@ export default function BrowsePayments({ onNavigate }: BrowsePaymentsProps) {
       setLoading(true)
       setError(null)
       const data = await fetchOrders()
-      setOrders(data)
+      setOrders(data.data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
@@ -72,12 +72,6 @@ export default function BrowsePayments({ onNavigate }: BrowsePaymentsProps) {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2>Browse Payments</h2>
-        {/* <button
-          className={styles.refreshButton}
-          onClick={() => onNavigate('Event Create')}
-        >
-          Add Ticket Tier
-        </button> */}
       </div>
       {loading && <p>Loading...</p>}
 
@@ -115,7 +109,9 @@ export default function BrowsePayments({ onNavigate }: BrowsePaymentsProps) {
                   <td>{payment.fraud_score ?? '—'}</td>
                   <td>{payment.requires_kyc_verification ? 'Yes' : 'No'}</td>
                   <td>{payment.flagged_for_review ? '⚠️' : '—'}</td>
-                  <td>{payment.paid_at ? formatDate(payment.paid_at) : '—'}</td>
+                  <td>
+                    {payment.paid_at ? `${formatDate(payment.paid_at)} hs.` : '—'}
+                  </td>
                 </tr>
               ))}
             </tbody>
