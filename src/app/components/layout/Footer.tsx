@@ -48,7 +48,7 @@ export default function Footer() {
           <h3>Acerca de</h3>
           <ul>
             <li><Link href={'/microcluster'}>Misión</Link></li>
-            <li><Link href={'/blog'}>Blog</Link></li>
+            <li><Link href={'/fast-foreward'}>Blog</Link></li>
             <li><Link href={'/contacto'}>Contacto y equipo</Link></li>
             <li>Accesibilidad</li>
             <li>Ediciones previas</li>

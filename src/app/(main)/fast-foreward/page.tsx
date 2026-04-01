@@ -1,5 +1,5 @@
 import React from 'react'
-import FastForward from '@/app/(main)/blog/components/FastForward'
+import FastForward from './components/FastForward'
 
 export default function Blog() {
   return (
