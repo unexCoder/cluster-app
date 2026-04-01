@@ -2,6 +2,10 @@ import { Metadata } from "next";
 import { NavigationProvider } from "../context/NavigationContext";
 import FooterWrapper from "../components/layout/FooterWrapper";
 
+export const viewport = {
+  themeColor: "#000000",
+};
+
 export const metadata: Metadata = {
   title: {
     default: "Festival Cluster",
@@ -14,6 +18,7 @@ export const metadata: Metadata = {
   themeColor: "#000000",
   icons: {
     icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" }
     ],
@@ -70,6 +75,8 @@ export const metadata: Metadata = {
   }
 };
 
+
+
 export default function MainLayout({
   children,
 }: Readonly<{
@@ -78,6 +85,7 @@ export default function MainLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Event",
+    "@id": "https://festivalcluster.org/#event",
     name: "Festival Cluster",
     description: "Festival Tecnológico | Encuentro de creatividad y transformación digital",
     url: "https://festivalcluster.org",
@@ -109,11 +117,16 @@ export default function MainLayout({
       url: "https://festivalcluster.org",
       price: "0",
       priceCurrency: "ARS",
-      availability: "https://schema.org/InStock"
+      availability: "https://schema.org/InStock",
+      validFrom: "2026-01-01T00:00:00-03:00"
     }
   };
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <NavigationProvider>
         {children}
         <FooterWrapper />
