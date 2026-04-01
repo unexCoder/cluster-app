@@ -153,6 +153,7 @@ export default function BrowseEventArtistPerformances({ onNavigate, artistId }: 
     return new Date(ts).toLocaleString('es-AR', {
       hour: '2-digit',
       minute: '2-digit',
+      hour12: false
     })
   }
 
@@ -161,15 +162,17 @@ export default function BrowseEventArtistPerformances({ onNavigate, artistId }: 
     return new Date(ts).toLocaleDateString('es-AR', {
             day: '2-digit',
             month: '2-digit',
-            year: '2-digit'
+            year: '2-digit',
+            hour12: false
           })
-  }
-
-  const formatTime = (ts: Date | null) => {
-    if (!ts) return 'N/A'
-    return new Date(ts).toLocaleTimeString('es-AR', {
-      hour: '2-digit',
-      minute: '2-digit',
+        }
+        
+        const formatTime = (ts: Date | null) => {
+          if (!ts) return 'N/A'
+          return new Date(ts).toLocaleTimeString('es-AR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
     })
   }
 
@@ -261,14 +264,14 @@ export default function BrowseEventArtistPerformances({ onNavigate, artistId }: 
                     ) : 'N/A'}
                   </td>
                   <td>{formatDate(performance.start_time)}</td>
-                  <td>{formatTime(performance.start_time)}</td>
-                  <td>{formatTime(performance.end_time)}</td>
+                  <td>{formatTime(performance.start_time)} hs.</td>
+                  <td>{formatTime(performance.end_time)} hs.</td>
                   <td>
                     {performance.set_duration_minutes != null
                       ? `${performance.set_duration_minutes} '`
                       : 'N/A'}
                   </td>
-                  <td>{formatTimestamp(performance.soundcheck_time)}</td>
+                  <td>{formatTimestamp(performance.soundcheck_time)} hs.</td>
                   <td>
                     <span style={{ color: BACKSTAGE_COLORS[performance.backstage_access] }}>
                       {performance.backstage_access.charAt(0).toUpperCase() +

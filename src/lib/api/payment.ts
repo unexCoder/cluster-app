@@ -8,7 +8,14 @@ const headers = {
   'X-API-Secret': API_SECRET
 }
 
-export async function fetchPayments(): Promise<Payment[]> {
+export interface PaginatedResponse<T> {
+  count: number
+  data: T[]
+  limit: number
+  offset: number
+}
+
+export async function fetchPayments(): Promise<PaginatedResponse<Payment>> {
   const res = await fetch(`${API_BASE}/payment`, {
     method: 'GET',
     headers

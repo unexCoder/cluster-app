@@ -162,8 +162,8 @@ export default function Step1Tickets({ preselectedEventId, onConfirm, onCartChan
                 <p style={{ margin: '4px 0 0', fontSize: '13px', color: '#9ca3af' }}>
                   {new Date(event.start_date_time).toLocaleString('es-AR', {
                     day: '2-digit', month: 'long', year: 'numeric',
-                    hour: '2-digit', minute: '2-digit'
-                  })}
+                    hour: '2-digit', minute: '2-digit', hour12: false
+                  })} hs.
                 </p>
               )}
             </div>

@@ -140,8 +140,8 @@ export default function BrowseTicketTier({ onNavigate }: BrowseTicketTierProps) 
                                         <td>{tier.quantity_reserved}</td>
                                         <td>{tier.quantity - tier.quantity_sold - tier.quantity_reserved}</td>
                                         <td>{tier.max_per_order ?? '—'}</td>
-                                        <td>{formatDate(tier.sales_start)}</td>
-                                        <td>{formatDate(tier.sales_end)}</td>
+                                        <td>{formatDate(tier.sales_start)} hs.</td>
+                                        <td>{formatDate(tier.sales_end)} hs.</td>
                                         <td style={{ color: tier.is_active ? '#22c55e' : '#ef4444', fontWeight: '600' }}>
                                             {tier.is_active ? 'Active' : 'Inactive'}
                                         </td>

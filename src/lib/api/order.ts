@@ -8,7 +8,15 @@ const headers = {
   'X-API-Secret': API_SECRET
 }
 
-export async function fetchOrders(): Promise<Order[]> {
+
+export interface PaginatedResponse<T> {
+  count: number
+  data: T[]
+  limit: number
+  offset: number
+}
+
+export async function fetchOrders(): Promise<PaginatedResponse<Order>> {
   const res = await fetch(`${API_BASE}/order`, {
     method: 'GET',
     headers
