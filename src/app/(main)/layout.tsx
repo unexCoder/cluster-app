@@ -5,16 +5,26 @@ import FooterWrapper from "../components/layout/FooterWrapper";
 export const metadata: Metadata = {
   title: {
     default: "Festival Cluster",
-    template: "%s | Festival Clusterr"
+    template: "%s | Festival Cluster"
   },
   description: "Festival Tecnológico | Encuentro de creatividad y transformación digital",
-  keywords: ["festival","creatividad tecnológica", "desarrollo web", "innovación digital", "tecnología", "microCluster"],
+  keywords: ["festival", "creatividad tecnológica", "desarrollo web", "innovación digital", "tecnología", "microCluster"],
   authors: [{ name: "Luigi Tamagnini" }],
   creator: "Luigi Tamagnini",
+  themeColor: "#000000",
+  icons: {
+    icon: [
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" }
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }
+    ]
+  },
   openGraph: {
     type: "website",
     locale: "es_AR",
-    url: "https://festivalcluster.org/microcluster",
+    url: "https://festivalcluster.org",
     siteName: "Festival Cluster",
     title: "Festival Cluster",
     description: "Festival Tecnológico. Encuentro de creatividad y transformación digital",
@@ -32,7 +42,7 @@ export const metadata: Metadata = {
         height: 630,
         alt: "Festival Cluster"
       }
-    ]
+    ],
   },
   // Twitter/X
   twitter: {
@@ -54,7 +64,7 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     }
   },
-  
+
   alternates: {
     canonical: "https://festivalcluster.org"
   }
@@ -65,6 +75,43 @@ export default function MainLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: "Festival Cluster",
+    description: "Festival Tecnológico | Encuentro de creatividad y transformación digital",
+    url: "https://festivalcluster.org",
+    image: [
+      "https://festivalcluster.org/og-image.jpeg",
+      "https://festivalcluster.org/og-image-w.jpeg"
+    ],
+    startDate: "2026-08-25T18:00:00-03:00", // 🔴 ajustar
+    endDate: "2026-08-25T23:59:00-03:00",   // 🔴 ajustar
+    eventStatus: "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    location: {
+      "@type": "Place",
+      name: "Cultural Fontanarosa, Rosario",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Rosario",
+        addressRegion: "Santa Fe",
+        addressCountry: "AR"
+      }
+    },
+    organizer: {
+      "@type": "Organization",
+      name: "Festival Cluster",
+      url: "https://festivalcluster.org"
+    },
+    offers: {
+      "@type": "Offer",
+      url: "https://festivalcluster.org",
+      price: "0",
+      priceCurrency: "ARS",
+      availability: "https://schema.org/InStock"
+    }
+  };
   return (
     <>
       <NavigationProvider>

@@ -4,7 +4,7 @@ import { MetadataRoute } from 'next'
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Festival Cluster',
-    short_name: 'Festival Cluster',
+    short_name: 'Red Cluster',
     description: 'Festival Tecnológico | Encuentro de creatividad y transformación digital',
     start_url: '/',
     display: 'standalone',
@@ -13,17 +13,18 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: 'landscape-primary',
     icons: [
       {
-        src: '/icon.png',
-        sizes: '192x192',
-        type: 'image/png',
-        purpose: 'maskable',
+        src: "/icon-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose:"maskable"
       },
       {
-        src: '/icon.png',
-        sizes: '512x512',
-        type: 'image/png',
-        purpose: 'any',
-      },
+        src: "/icon-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any"
+      }
     ],
+    id: '/'
   }
 }
