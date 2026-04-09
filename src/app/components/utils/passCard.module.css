@@ -1,0 +1,76 @@
+.container {
+  max-width: 400px;
+}
+
+.table {
+  width: 100%;
+  background-color: #1a1a2e;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  border: 1px solid #2d2d44;
+}
+
+.headerImage {
+  display: block;
+  width: 100%;
+  border-radius: 12px 12px 0 0;
+}
+
+.innerContainer {
+  padding: 20px;
+}
+
+.innerTable {
+  width: 100%;
+}
+
+.leftCol {
+  width: 60%;
+  vertical-align: top;
+}
+
+.rightCol {
+  width: 40%;
+  vertical-align: top;
+  text-align: right;
+}
+
+.label {
+  margin: 0 0 2px;
+  color: #9ca3af;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.valuePrimary {
+  margin: 0 0 16px;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.valueSecondary {
+  margin: 0 0 16px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ticketNumber {
+  margin: 0;
+  color: #ffffff;
+  font-size: 13px;
+  font-family: monospace;
+}
+
+.qr {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  background: #ffffff33;
+  padding: 6px;
+  display: block;
+  margin-left: auto;
+}
