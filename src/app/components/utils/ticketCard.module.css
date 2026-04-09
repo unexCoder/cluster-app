@@ -8,7 +8,7 @@
     font-family: sans-serif;
     background-size: cover;
     background-position: center;
-    background-color: #f0f;
+    background-color: #f3f3f3;
 }
 
 .containerMinimal {
@@ -24,8 +24,7 @@
     background-position: center;
     display: flex;
     flex-direction: column;
-    background-color: #f00;
-    /* justify-content: center; */
+    background-color: #f3f3f3;
     align-items: center;
 }
 
@@ -48,7 +47,7 @@
 
 .qrInner {
     display: inline-flex;
-    background: #fff;
+    background: #00000033;
     padding: 2px;
     border-radius: 12px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -59,7 +58,7 @@
 }
 .qrInnerMinimal {
     display: inline-flex;
-    background: #fff;
+    background: #00000033;
     padding: 2px;
     border-radius: 12px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);

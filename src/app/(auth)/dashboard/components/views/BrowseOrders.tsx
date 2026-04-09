@@ -99,7 +99,7 @@ export default function BrowseOrders({ onNavigate }: BrowseOrdersProps) {
                   <td>${Number(order.total_amount).toFixed(2)}</td>
                   <td style={{ color: STATUS_COLOR[order.status] ?? '#888888', fontWeight: 600 }}>{order.status}</td>
                   <td>
-                    {order.created_at ? `${formatDate(order.created_at)} hs.` : '—'}
+                    {order.created_at ? `${formatDate(order.created_at)}` : '—'}
                   </td>
                 </tr>
               ))}

@@ -1,5 +1,7 @@
 import { Resend } from 'resend';
 import { welcomeEmailTemplate } from './email-templates';
+import { PassCardEmailTemplate, type TicketEmailData } from '@/lib/email-templates'
+
 
 export const resend = new Resend(process.env.RESEND_API_KEY);
 export const runtime = "nodejs";
@@ -35,3 +37,23 @@ export async function sendWelcomeEmail(
 }
 
 
+export async function sendTicketEmail(data: TicketEmailData) {
+  try {
+    const template =  await PassCardEmailTemplate(data)
+    const { data: result, error } = await resend.emails.send({
+      from:    'Festival Cluster <tickets@festivalcluster.org>',
+      to:      data.guest_email,
+      subject: template.subject,
+      html:    template.html,
+      text:    template.text,
+    })
+    if (error) {
+      console.error('[TicketEmail] Resend error:', error)
+      return { success: false, error }
+    }
+    return { success: true, data: result }
+  } catch (error) {
+    console.error('[TicketEmail] Unexpected error:', error)
+    return { success: false, error }
+  }
+}

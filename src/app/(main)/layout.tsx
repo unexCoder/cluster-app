@@ -123,6 +123,8 @@ export default function MainLayout({
   };
   return (
     <>
+      {/* <script src="https://cdn.jsdelivr.net/npm/eruda"></script> */}
+      {/* <script>eruda.init();</script> */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

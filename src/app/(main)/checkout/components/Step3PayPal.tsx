@@ -29,18 +29,42 @@ export default function Step3PayPal({
     setApiError(null)
 
     try {
+      // convertir ARS → USD en tiempo real
+      const today = new Date().toISOString().slice(0, 10)
+      const cacheKey = 'fx_ars_eur'
+      const cached = sessionStorage.getItem(cacheKey)
+      let rate: number = 0.0;
+
+      if (cached) {
+        const parsed = JSON.parse(cached)
+        rate = parsed.date === today ? parsed.rate : null
+      }
+
+      if (!rate) {
+        const fxRes = await fetch(
+          'https://api.frankfurter.dev/v2/rates?base=ARS&quotes=EUR'
+        )
+        if (!fxRes.ok) throw new Error('No se pudo obtener el tipo de cambio')
+        const fxData = await fxRes.json()
+        rate = fxData[0].rate
+        sessionStorage.setItem(cacheKey, JSON.stringify(fxData[0]))
+      }
+
+      const amountEur = (amount * rate).toFixed(2)
+
       const result = await createPayPalCheckout({
-        order_id:    orderId,
-        amount:      amount.toFixed(2),
-        currency:    'USD',
+        order_id: orderId,
+        // amount: amount.toFixed(2),
+        amount: amountEur,
+        currency: 'EUR',
         description,
-        email:       guest.guest_email,
-        name:        guest.guest_name,
+        email: guest.guest_email,
+        name: guest.guest_name,
       })
 
       onComplete({
-        payment_id:   result.payment_id,
-        status:       result.status,
+        payment_id: result.payment_id,
+        status: result.status,
         approval_url: result.approval_url,
       })
     } catch (err) {

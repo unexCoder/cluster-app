@@ -93,6 +93,7 @@ export default function BrowsePayments({ onNavigate }: BrowsePaymentsProps) {
                 <th>Fraud Score</th>
                 <th>KYC</th>
                 <th>Flagged</th>
+                <th>Created At</th>
                 <th>Paid At</th>
               </tr>
             </thead>
@@ -102,7 +103,11 @@ export default function BrowsePayments({ onNavigate }: BrowsePaymentsProps) {
                   <td>{payment.transaction_id ?? '—'}</td>
                   <td>{orders.find(o => o.id === payment.order_id)?.order_number ?? '—'}
                   </td>
-                  <td>${Number(payment.amount).toFixed(2)}</td>
+                  <td>
+                    {payment.payment_method === 'paypal'
+                      ? `EUR ${Number(payment.amount).toFixed(2)}`
+                      : `$${Number(payment.amount).toFixed(2)}`}
+                  </td>
                   <td style={{ color: METHOD_COLOR[payment.payment_method] ?? '#888888', fontWeight: 600 }}>{payment.payment_method}</td>
                   {/* <td>{payment.provider ?? '—'}</td> */}
                   <td style={{ color: STATUS_COLOR[payment.status] ?? '#888888', fontWeight: 600 }}>{payment.status}</td>
@@ -110,7 +115,10 @@ export default function BrowsePayments({ onNavigate }: BrowsePaymentsProps) {
                   <td>{payment.requires_kyc_verification ? 'Yes' : 'No'}</td>
                   <td>{payment.flagged_for_review ? '⚠️' : '—'}</td>
                   <td>
-                    {payment.paid_at ? `${formatDate(payment.paid_at)} hs.` : '—'}
+                    {payment.created_at ? `${formatDate(payment.created_at)}` : '—'}
+                  </td>
+                  <td>
+                    {payment.paid_at ? `${formatDate(payment.paid_at)}` : '—'}
                   </td>
                 </tr>
               ))}
