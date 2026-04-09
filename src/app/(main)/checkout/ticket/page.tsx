@@ -10,7 +10,7 @@ export default function TicketPage() {
   const a = randomHex24();
   const b = randomHex24();
   // const BG       = `${BASE_URL}/api/postcard?bckGnda=${a}&bckGndb=${b}&color=2e3ac6`
-  const BG       = `${process.env.BASE_URL}/api/postcard?bckGnda=${a}&bckGndb=${b}&color=2e3ac6`
+  const BG       = `${process.env.NEXT_PUBLIC_APP_URL}/api/postcard?bckGnda=${a}&bckGndb=${b}&color=2e3ac6`
   const TICKET_ID = '95cce602-d49e-47e6-b71e-aa5494406b39'
 
   const ticket: TicketData = {
@@ -29,7 +29,7 @@ export default function TicketPage() {
     // — Assets
     background_url: BG,
     // qr_src: `${BASE_URL}/api/qr/${TICKET_ID}`,
-    qr_src: `${process.env.BASE_URL}/api/qr/${TICKET_ID}?bg=${a}`,
+    qr_src: `${process.env.NEXT_PUBLIC_APP_URL}/api/qr/${TICKET_ID}?bg=${a}`,
   }
 
   return (
