@@ -1,11 +1,7 @@
 import TicketCard from '@/app/components/utils/TicketCard'
 import { PassCard }  from '@/app/components/utils/PassCard'
 import { type TicketData } from '@/../types/ticket'
-
-export function randomHex24(): string {
-  const value = Math.floor(Math.random() * 0xffffff);
-  return value.toString(16).padStart(6, "0");
-}
+import { randomHex24 } from '@/app/utils/random'
 
 export default function TicketPage() {
   // const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? ''
