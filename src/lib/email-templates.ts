@@ -89,6 +89,7 @@ export async function PassCardHtml(props: PassCardProps): Promise<string> {
   return renderToStaticMarkup(React.createElement(PassCard, props))
 }
 
+
 export async function PassCardEmailTemplate(data: TicketEmailData): Promise<TicketEmailOutput> {
   const { guest_name, order_number, total_amount, event, cards } = data
 
@@ -156,6 +157,13 @@ export async function PassCardEmailTemplate(data: TicketEmailData): Promise<Tick
 </html>`
 
   const total = Number(total_amount);
+  const formattedTotal = !isNaN(total) && total > 0
+  ? total.toLocaleString("es-AR", {
+      style: "currency",
+      currency: "ARS",
+    })
+  : "Free";
+
   const text = `Tus entradas — ${event.name}
 
 Hola ${guest_name},
@@ -167,12 +175,7 @@ ${cards.map(c => `Entrada: ${c.tier_name}\nN°: ${c.ticket_number}\nTitular: ${g
 
 Orden: ${order_number}
 // Total: $${Number(total_amount).toLocaleString('es-AR')}
-Total: ${total > 0
-  ?  total.toLocaleString("es-AR", {
-      style: "currency",
-      currency: "ARS",
-    })
-  : "Free"}
+Total: ${formattedTotal}
 
 Presentá el QR en la entrada del evento.
 El equipo de Festival Cluster`
