@@ -134,7 +134,14 @@ export default function BrowseTicketTier({ onNavigate }: BrowseTicketTierProps) 
                                                 : '—'
                                             }
                                         </td>
-                                        <td>${Number(tier.price).toFixed(2)}</td>
+                                        <td>
+                                            {tier.price > 0
+                                                ? tier.price.toLocaleString("es-AR", {
+                                                    style: "currency",
+                                                    currency: "ARS",
+                                                })
+                                                : "Free"}
+                                        </td>
                                         <td>{tier.quantity}</td>
                                         <td>{tier.quantity_sold}</td>
                                         <td>{tier.quantity_reserved}</td>

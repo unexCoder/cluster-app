@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
   title: {
     default: "Festival Cluster",
-    template: "%s | Festival Clusterr"
+    template: "%s | Festival Cluster"
   },
   description: "Festival Tecnológico | Encuentro de creatividad y transformación digital",
   keywords: ["festival","creatividad tecnológica", "desarrollo web", "innovación digital", "tecnología", "microCluster"],

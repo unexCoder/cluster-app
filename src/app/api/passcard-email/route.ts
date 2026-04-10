@@ -1,6 +1,7 @@
 import { requireApiKey } from '@/lib/security'
 import { NextRequest, NextResponse } from 'next/server'
 import { type TicketEmailData } from '@/lib/email-templates'
+import { formatDate, formatDateForEmail } from '@/app/utils/dateFormat'
 
 export const runtime = 'nodejs'
 export const maxDuration = 10
@@ -14,19 +15,19 @@ function toAbsoluteUrl(url: string): string {
   return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`
 }
 
-async function fetchAsset(url: string): Promise<string> {
-  if (!url) return ''
-  try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(5000) })
-    if (!res.ok) return ''
-    const contentType = res.headers.get('content-type') ?? ''
-    if (contentType.includes('svg')) return await res.text()
-    const buffer = await res.arrayBuffer()
-    return `data:${contentType.split(';')[0]};base64,${Buffer.from(buffer).toString('base64')}`
-  } catch {
-    return url
-  }
-}
+// async function fetchAsset(url: string): Promise<string> {
+//   if (!url) return ''
+//   try {
+//     const res = await fetch(url, { signal: AbortSignal.timeout(5000) })
+//     if (!res.ok) return ''
+//     const contentType = res.headers.get('content-type') ?? ''
+//     if (contentType.includes('svg')) return await res.text()
+//     const buffer = await res.arrayBuffer()
+//     return `data:${contentType.split(';')[0]};base64,${Buffer.from(buffer).toString('base64')}`
+//   } catch {
+//     return url
+//   }
+// }
 
 export async function POST(request: NextRequest) {
   const authError = requireApiKey(request)
@@ -54,15 +55,17 @@ export async function POST(request: NextRequest) {
       tier_price:     ticket.tier_price ?? '',
     }))
 
+    const total = total_amount > 1 ? String(total_amount) : "Free" 
+    // const time = Date(event.time). 
     const emailData: TicketEmailData = {
       guest_name,
       guest_email,
       order_number,
-      total_amount: String(total_amount),
+      total_amount: total,
       event: {
         name: event.name,
-        date: event.date,
-        time: event.time ?? '',
+        date: formatDateForEmail(event.date),
+        time: event.time ? event.time.slice(0,5) : '',
         location: event.location ?? '',
       },
       cards,
