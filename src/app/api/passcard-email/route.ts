@@ -54,14 +54,12 @@ export async function POST(request: NextRequest) {
       tier_name:      ticket.tier_name,
       tier_price:     ticket.tier_price ?? '',
     }))
-
-    const total = total_amount > 1 ? String(total_amount) : "Free" 
-    // const time = Date(event.time). 
+    
     const emailData: TicketEmailData = {
       guest_name,
       guest_email,
       order_number,
-      total_amount: total,
+      total_amount: total_amount,
       event: {
         name: event.name,
         date: formatDateForEmail(event.date),
