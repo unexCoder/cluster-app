@@ -4,29 +4,29 @@ import { type TicketData as PassCardProps } from '@/../types/ticket'
 export { type PassCardProps }
 
 export interface TicketEmailAttachment {
-  filename:  string
-  path:      string
+  filename: string
+  path: string
   contentId: string
 }
 
 export interface TicketEmailData {
-  guest_name:   string
-  guest_email:  string
+  guest_name: string
+  guest_email: string
   order_number: string
   total_amount: string
   event: {
-    name:     string
-    date:     string
-    time:     string
+    name: string
+    date: string
+    time: string
     location: string
   }
-  cards:       Array<PassCardProps>
+  cards: Array<PassCardProps>
 }
 
 export interface TicketEmailOutput {
-  subject:     string
-  html:        string
-  text:        string
+  subject: string
+  html: string
+  text: string
 }
 
 export const welcomeEmailTemplate = (email: string, confirmationToken?: string) => {
@@ -85,7 +85,7 @@ export const welcomeEmailTemplate = (email: string, confirmationToken?: string) 
 
 export async function PassCardHtml(props: PassCardProps): Promise<string> {
   const { renderToStaticMarkup } = await import('react-dom/server')
-  const { PassCard }             = await import('@/app/components/utils/PassCard')
+  const { PassCard } = await import('@/app/components/utils/PassCard')
   return renderToStaticMarkup(React.createElement(PassCard, props))
 }
 
@@ -93,7 +93,7 @@ export async function PassCardEmailTemplate(data: TicketEmailData): Promise<Tick
   const { guest_name, order_number, total_amount, event, cards } = data
 
   const cardHtmlParts = await Promise.all(cards.map(card => PassCardHtml(card)))
-  const cardHtml      = cardHtmlParts.join('')
+  const cardHtml = cardHtmlParts.join('')
 
   const html = `<!DOCTYPE html>
 <html lang="es">
@@ -155,6 +155,7 @@ export async function PassCardEmailTemplate(data: TicketEmailData): Promise<Tick
 </body>
 </html>`
 
+  const total = Number(total_amount);
   const text = `Tus entradas — ${event.name}
 
 Hola ${guest_name},
@@ -165,7 +166,13 @@ Fecha: ${event.date} | Hora: ${event.time} | Lugar: ${event.location}
 ${cards.map(c => `Entrada: ${c.tier_name}\nN°: ${c.ticket_number}\nTitular: ${guest_name}`).join('\n---\n')}
 
 Orden: ${order_number}
-Total: $${Number(total_amount).toLocaleString('es-AR')}
+// Total: $${Number(total_amount).toLocaleString('es-AR')}
+Total: ${total > 0
+  ?  total.toLocaleString("es-AR", {
+      style: "currency",
+      currency: "ARS",
+    })
+  : "Free"}
 
 Presentá el QR en la entrada del evento.
 El equipo de Festival Cluster`
