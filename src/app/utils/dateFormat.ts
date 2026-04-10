@@ -14,3 +14,17 @@ export function formatDate(date: Date | string | null): string {
   if (!date) return '—'
   return new Date(date).toLocaleString(LOCALE, DATE_FORMAT)
 }
+
+export function formatDateForEmail(dateStr: string) {
+  const d = new Date(dateStr);
+
+  const day = String(d.getDate()).padStart(2, "0");
+
+  const month = d
+    .toLocaleString("en-US", { month: "short" })
+    .toUpperCase(); // SEP
+
+  const year = d.getFullYear();
+
+  return `${day} ${month} ${year}`;
+}

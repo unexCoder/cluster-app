@@ -6,6 +6,7 @@ import styles from './venueDisplay.module.css'
 import { Globe, MapPin, Users } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { getVenueTypeLabel } from '@/lib/formatters'
 
 interface VenueDisplayProps {
   slug: string
@@ -316,6 +317,14 @@ export default function VenueDisplay({ slug }: VenueDisplayProps) {
           {/* Venue Details */}
           <div className={styles.venueDetails}>
             <div className={styles.detailItem}>
+              
+              {venue.venueInfo?.type && (
+                <div className={styles.detailItem}>
+                  {/* <span>Type: {venue.venueInfo.type}</span> */}
+                  <span>{getVenueTypeLabel(venue.venueInfo.type)}</span>
+                </div>
+              )}
+
               <MapPin size={18} className={styles.icon} />
               {venue.latitude && venue.longitude ? (
                 <Link
@@ -336,11 +345,6 @@ export default function VenueDisplay({ slug }: VenueDisplayProps) {
               <div className={styles.detailItem}>
                 <Users size={18} className={styles.icon} />
                 <span style={{ paddingLeft: '5px' }}>Capacidad: {venue.capacity}</span>
-              </div>
-            )}
-            {venue.venueInfo?.type && (
-              <div className={styles.detailItem}>
-                <span>Type: {venue.venueInfo.type}</span>
               </div>
             )}
           </div>
@@ -382,7 +386,7 @@ export default function VenueDisplay({ slug }: VenueDisplayProps) {
                     rel="noopener noreferrer"
                   >
                     <Globe size={20} className={styles.icon} />
-                    <span style={{ paddingLeft: '5px' }}>{venue.contactInfo.website}</span>
+                    <span style={{ paddingLeft: '5px' }}>{venue.contactInfo.website.slice(0,30)}...</span>
                   </Link>
                 )}
                 {/* {venue.contactInfo.email && (

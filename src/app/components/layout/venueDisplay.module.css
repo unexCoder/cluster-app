@@ -100,14 +100,16 @@
 @media (max-width: 768px) {
     .container {
         /* min-height: 100svh; */
-        height: auto;
+        height: 100svh;
     }
-
+    
     .profileCard {
         flex-direction: column;
+        gap: 50px;
     }
-
+    
     .imgContainer {
+        padding-top: 20px;
         height: auto;
         min-width: 100%;
         transform: none;
