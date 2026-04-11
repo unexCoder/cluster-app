@@ -136,9 +136,9 @@ export default function BrowseTicketTier({ onNavigate }: BrowseTicketTierProps) 
                                         </td>
                                         <td>
                                             {Number(tier.price) > 0
-                                                ? tier.price.toLocaleString("es-AR", {
-                                                    style: "currency",
-                                                    currency: "ARS",
+                                                ? Number(tier.price).toLocaleString("es-AR", {
+                                                    style: "decimal",
+                                                    maximumFractionDigits: 0,
                                                 })
                                                 : "Free"}
                                         </td>
