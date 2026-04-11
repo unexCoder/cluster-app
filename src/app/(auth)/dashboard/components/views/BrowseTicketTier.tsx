@@ -134,7 +134,7 @@ export default function BrowseTicketTier({ onNavigate }: BrowseTicketTierProps) 
                                                 : '—'
                                             }
                                         </td>
-                                        <td>
+                                        <td style={{ textAlign: "right" }}>
                                             {Number(tier.price) > 0
                                                 ? Number(tier.price).toLocaleString("es-AR", {
                                                     style: "decimal",
