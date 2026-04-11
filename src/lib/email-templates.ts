@@ -92,6 +92,14 @@ export async function PassCardHtml(props: PassCardProps): Promise<string> {
 
 export async function PassCardEmailTemplate(data: TicketEmailData): Promise<TicketEmailOutput> {
   const { guest_name, order_number, total_amount, event, cards } = data
+  
+  const total = Number(total_amount);
+  const formattedTotal = !isNaN(total) && total > 0
+  ? total.toLocaleString("es-AR", {
+      style: "currency",
+      currency: "ARS",
+    })
+  : "Free";
 
   const cardHtmlParts = await Promise.all(cards.map(card => PassCardHtml(card)))
   const cardHtml = cardHtmlParts.join('')
@@ -141,7 +149,7 @@ export async function PassCardEmailTemplate(data: TicketEmailData): Promise<Tick
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
               <td><p style="margin:0;color:#9ca3af;font-size:13px;">Orden ${order_number}</p></td>
-              <td align="right"><p style="margin:0;color:#ffffff;font-size:13px;font-weight:600;">$${Number(total_amount).toLocaleString('es-AR', { minimumFractionDigits: 0 })}</p></td>
+              <td align="right"><p style="margin:0;color:#ffffff;font-size:13px;font-weight:600;">${formattedTotal}</p></td>
             </tr>
           </table>
         </td></tr>
@@ -155,14 +163,6 @@ export async function PassCardEmailTemplate(data: TicketEmailData): Promise<Tick
   </table>
 </body>
 </html>`
-
-  const total = Number(total_amount);
-  const formattedTotal = !isNaN(total) && total > 0
-  ? total.toLocaleString("es-AR", {
-      style: "currency",
-      currency: "ARS",
-    })
-  : "Free";
 
   const text = `Tus entradas — ${event.name}
 
