@@ -2,7 +2,7 @@
 
 import { getVenueBySlugAction } from '@/app/actions/venues'
 import React, { useEffect, useState } from 'react'
-import styles from './venueDisplay.module.css'
+import styles from './VenueDisplay.module.css'
 import { Globe, MapPin, Users } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'

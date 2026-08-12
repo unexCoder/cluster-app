@@ -2,7 +2,7 @@
 
 import { fetchArtistBySlugAction } from '@/app/actions/artists'
 import React, { useEffect, useState } from 'react'
-import styles from './artistDisplay.module.css'
+import styles from './ArtistDisplay.module.css'
 import { Globe, Instagram, Music, Youtube, Facebook, Twitter } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'

@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import styles from './eventDisplay.module.css'
+import styles from './EventDisplay.module.css'
 import Link from 'next/link'
 import TicketTierList from './TicketTierList'
 

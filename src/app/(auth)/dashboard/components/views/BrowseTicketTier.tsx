@@ -110,7 +110,7 @@ export default function BrowseTicketTier({ onNavigate }: BrowseTicketTierProps) 
                             <tr>
                                 <th>Name</th>
                                 <th>Event</th>
-                                <th>Price</th>
+                                <th style={{ textAlign: "right" }}>Price</th>
                                 <th>Quantity</th>
                                 <th>Sold</th>
                                 <th>Reserved</th>

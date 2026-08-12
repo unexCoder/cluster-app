@@ -52,7 +52,7 @@ export const PassCard: React.FC<TicketData> = (props) => {
                         <p className={styles.label} style={{ margin: '0 0 2px', color: '#9ca3af', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Titular</p>
                         <p className={styles.valueSecondary} style={{ margin: '0 0 16px', color: '#ffffff', fontSize: '14px', fontWeight: 500 }}>{props.guest_name}</p>
                         <p className={styles.label} style={{ margin: '0 0 2px', color: '#9ca3af', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>N° de entrada</p>
-                        <p className={styles.ticketNumber} style={{ margin: 0, color: '#ffffff', fontSize: '13px', fontFamily: 'monospace' }}>{num}</p>
+                        <p className={styles.ticketNumber} style={{ margin: 0, color: '#ffffff', fontSize: '13px', fontFamily: 'monospace' }}>{num.replace(/^TK-/, '')}</p>
                       </td>
 
                       <td className={styles.rightCol} style={{ width: '40%', verticalAlign: 'top', textAlign: 'right', padding: '6px' }}>
